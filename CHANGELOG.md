@@ -7,4 +7,8 @@ and [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
-<!-- Add entries under Added / Changed / Fixed / Removed as you make changes. -->
+### Added
+
+- Design record: the crank-slider mechanism, the syringe and N20 gearmotor dimensions, and what is
+  open (`docs/design.md`)
+- `just check` / `just test` gates for the OpenSCAD source, CI, and the pre-commit config

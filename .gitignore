@@ -40,3 +40,9 @@ Thumbs.db
 
 # Logs
 *.log
+
+# Generated renders and exports
+output/
+
+# Local scratch: session notes, partspec contracts (untracked by choice)
+working/

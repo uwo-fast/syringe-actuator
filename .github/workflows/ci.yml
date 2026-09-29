@@ -1,0 +1,71 @@
+# All real work happens in individual jobs; `ok` is the single status check for branch
+# protection. Pull requests only: with "require branches to be up to date" on, a run on push to
+# main re-proves the PR run on an identical tree. `just check && just test` is the local
+# equivalent.
+
+name: CI
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+  pull-requests: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  changes:
+    name: Detect changes
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      code: ${{ steps.filter.outputs.code }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          # every: a file counts as code only if it matches ALL patterns, so the negations apply.
+          predicate-quantifier: every
+          filters: |
+            code:
+              - '**'
+              - '!docs/**'
+              - '!**/*.md'
+
+  cad:
+    name: CAD
+    needs: [changes]
+    if: needs.changes.outputs.code == 'true'
+    # Pinned: the gates depend on OpenSCAD's exact warnings and exports, and apt's OpenSCAD comes
+    # with the runner image. 24.04 ships 2021.01, the version the gates were written against.
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: extractions/setup-just@v2
+      - name: Install toolchain
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y openscad clang-format
+      - run: just setup
+      - run: just check
+      - run: just test
+
+  # A job skipped by a conditional reports success, so `ok` fails only on failure or cancel.
+  ok:
+    name: ok
+    if: always()
+    needs: [changes, cad]
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Fail if any upstream job failed or was cancelled
+        if: contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled')
+        run: exit 1
+      - name: Pass
+        run: echo 'All checks passed or were skipped'

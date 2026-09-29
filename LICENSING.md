@@ -1,10 +1,5 @@
 # Licensing
 
-<!-- Fill in the table below for the directories this repository actually has, and
-     delete the rows it does not.
-     Pure-software repository? Delete this file and LICENSES/, keep the root
-     LICENSE, and follow the note in the README's License section. -->
-
 This document states which licence covers which parts of this repository, and
 explains what that means. [What applies where](#what-applies-where) is the operative
 section — it is how these files are made available. The commentary around it is for
@@ -25,16 +20,14 @@ picture lives.
 
 ## What applies where
 
-<!-- Operative section: keep only the rows that describe real directories here. -->
-
 | Path | Licence |
 | --- | --- |
-| `software/`, `firmware/`, scripts and build tooling | `GPL-3.0-or-later` |
-| `hardware/` — schematics, PCB layouts, gerbers, fabrication outputs | `CERN-OHL-S-2.0` |
-| `cad/` — parametric CAD source (`.scad`, CadQuery, build123d) | `GPL-3.0-or-later` **and** `CERN-OHL-S-2.0` |
+| `justfile`, `.github/`, and other build tooling | `GPL-3.0-or-later` |
+| `cad/` — parametric CAD source (`.scad`) | `GPL-3.0-or-later` **and** `CERN-OHL-S-2.0` |
 | `cad/` — geometry (STL, STEP, 3MF), drawings and bill of materials generated from that source | `CERN-OHL-S-2.0` |
-| `data/` — measurement data, calibration sets | `CC-BY-4.0` |
 | `docs/` | see below |
+
+Add a row to the table above for each new top-level directory.
 
 Parametric CAD source is granted under both licences so that a licensee who Makes a
 Product from the geometry can satisfy CERN-OHL-S-2.0 §4, which requires the Complete

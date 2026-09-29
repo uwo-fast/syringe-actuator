@@ -1,0 +1,17 @@
+# Formatting for this repo's OpenSCAD sources. Taken from uniTube, which verified it.
+# clang-format has no OpenSCAD parser; it treats .scad as C-like, which is close
+# enough for braces, indentation and argument wrapping. This config reproduces the formatting
+# uniTube verified byte-identical against a third-party source before committing it.
+BasedOnStyle: LLVM
+BreakBeforeBraces: Allman
+ColumnLimit: 120
+IndentWidth: 4
+AllowShortFunctionsOnASingleLine: None
+AllowShortBlocksOnASingleLine: Never
+AllowShortIfStatementsOnASingleLine: false
+# OpenSCAD has NO adjacent-string-literal concatenation. clang-format's default
+# of splitting a long string across lines produces `"a" "b"`, which is a C idiom
+# and a SYNTAX ERROR here -- it silently corrupted an assert message during
+# Phase 1 before this was set. Never turn this back on.
+BreakStringLiterals: false
+AlwaysBreakBeforeMultilineStrings: false

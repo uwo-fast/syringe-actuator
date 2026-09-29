@@ -1,20 +1,23 @@
-# Replace the placeholders below before publishing — GitHub renders this as the
-# repository's "Cite this repository" entry. The title, author names, and url are
-# the values most likely to be wrong if left unedited.
 cff-version: 1.2.0
 message: "If you use this project, please cite it using the metadata below."
-title: "Project Name"
+title: "Syringe Actuator"
+abstract: >-
+  A 3D-printed crank that drives a syringe plunger back and forth from a
+  continuously running N20 gearmotor.
 type: software
 authors:
-  - family-names: "Last"
-    given-names: "First"
+  - family-names: "Brooks"
+    given-names: "Cameron K."
     # orcid: "https://orcid.org/0000-0000-0000-0000"
 version: "0.1.0"
-# date-released: "YYYY-MM-DD"
-url: "https://github.com/uwo-fast/repo-name"
+repository-code: "https://github.com/uwo-fast/syringe-actuator"
 # Only the software licence goes here. A licence list in CFF means "either licence,
 # at your option", which is not what a repository licensed separately by component
-# grants; where there is a hardware licence, LICENSING.md states it. Delete these
-# three lines in a software-only repository.
+# grants; LICENSING.md states the hardware licence.
 license: GPL-3.0-or-later
-# doi: "10.xxxx/xxxxx"
+keywords:
+  - syringe
+  - crank
+  - gearmotor
+  - open source hardware
+  - OpenSCAD
