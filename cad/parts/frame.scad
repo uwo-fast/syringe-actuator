@@ -70,7 +70,14 @@ module frame(s)
             translate([ x[0], -w / 2, 0 ]) cube([ x[1] - x[0], w, t ]);
             translate([ block[0], -w / 2, t - 1 ]) cube([ block[1] - block[0], w, z - t + 3 ]);
             translate([ ring_x, 0, 0 ]) on_axis(s, ring_d, ring[1]);
-            translate([ ring_x, -ring_d / 2, t - 1 ]) cube([ ring[1], ring_d, z - t + 1 ]);
+            // under the ring, a base that flares from its sides at the axis's height down to the plate's
+            // edges; the ring's top half, which the barrel springs open, stands free of it
+            translate([ ring_x, 0, 0 ]) rotate([ 90, 0, 90 ]) linear_extrude(ring[1]) difference()
+            {
+                translate([ -w / 2, t - 1 ]) square([ w, z - t + 1 ]);
+                for (side = [ -1, 1 ])
+                    translate([ side * w / 2, z ]) scale([ (w - ring_d) / 2, z - t ]) circle(1);
+            }
             guide = get(s, "guide");
             // the rails run from the flange block's back wall, out to the plate's edges
             for (side = [ -1, 1 ])
