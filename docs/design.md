@@ -17,7 +17,7 @@ Mounting the assembly is deferred until the prototype works; it is held by hand 
 An in-line crank-slider. The motor's shaft stands vertical on the line of the syringe's axis, so the
 crank, the rod and the plunger all move in one horizontal plane:
 
-- **Frame.** A 5 mm plate, about 172 × 31 mm. The barrel's flanges drop into a slot at one end,
+- **Frame.** A 5 mm plate, about 174 × 31 mm. The barrel's flanges drop into a slot at one end,
   and the slot's walls take both the push and the pull. The barrel snaps into a ring 15 mm in front
   of the slot, and is the only guide the plunger has. The motor hangs under the plate's other end:
   its gearbox sits 2 mm up into a pocket, located by its bushing and held by two M1.6 × 3 pan
@@ -56,6 +56,8 @@ plunger speed of about 106 mm/s. A lower supply voltage slows the motor roughly 
 | Barrel flanges | 24.5 × 12.6 mm, 2.0 mm thick |
 | Push-button | Ø12.6 mm, 1.6 mm thick |
 | Working stroke | 58 mm |
+| Plunger exposed, stopper bottomed (flange rear face to push-button front face) | 10.75 mm |
+| Plunger ribs, widest across | 7.5 mm (ribs about 1 mm thick) |
 
 The size is inferred to be 3 mL, because published 3 mL inner diameters (8.57–8.94 mm, BD and
 Terumo, from syringe-pump libraries) give 3.4–3.6 mL over 58 mm. A 5 mL barrel (ID about 12 mm)
@@ -98,11 +100,6 @@ draws the inline one, simplified, from the figures above.
 
 ## Open
 
-1. **Measure before printing.** The catalog marks these NOMINAL (`cad/catalog.scad`):
-   - **`exposed`:** from the flange's rear face to the push-button's front face, with the plunger
-     all the way in. It sets where the stroke sits, and so whether the stopper bottoms out.
-   - **`plunger_span`:** the widest the plunger's ribs reach across the axis. It sets the slots in
-     the frame's back wall and the clip's front wall.
-2. **Also measure** the plan shape of the barrel flanges; the slot is the 24.5 × 12.6 envelope with
+1. **Measure** the plan shape of the barrel flanges; the slot is the 24.5 × 12.6 envelope with
    clearance. For the worm motor, if it is ever used, measure its shaft length and boss.
-3. **Mounting:** deferred until the prototype works.
+2. **Mounting:** deferred until the prototype works.
