@@ -24,14 +24,16 @@ syringe_3ml = [
 ];
 
 // Pololu micro metal gearmotor dimension drawing, 2024-04-03 (the N20 form factor), 1000:1 gearbox.
-// Section w x h throughout; the M1.6 holes are pitch apart across w. shaft_l from the gearbox face.
+// Section w x h throughout; the M1.6 holes are pitch apart across w. shaft_l from the gearbox face,
+// measured on the motor in hand 2026-09-29, D-profile over its whole length.
 n20_1000 = [
     [ "name", "N20 inline gearmotor, 12 V 1000:1" ], [ "w", 12 ], [ "h", 10 ], [ "gearbox_l", 12.5 ], [ "can_l", 16.2 ],
-    [ "shaft_d", 3 ], [ "shaft_flat", 2.5 ], [ "shaft_l", 10 ], [ "bushing_d", 4 ], [ "bushing_h", 0.7 ],
+    [ "shaft_d", 3 ], [ "shaft_flat", 2.5 ], [ "shaft_l", 9 ], [ "bushing_d", 4 ], [ "bushing_h", 0.7 ],
     [ "hole_pitch", 9 ]
 ];
 
-// ISO 4762 socket head and ISO 7045 pan head table values.
+// ISO 4762 socket head, ISO 7045 pan head and ISO 7089 washer table values.
 m3_shcs =
     [ [ "name", "ISO 4762 M3" ], [ "d", 3 ], [ "clear", 3.4 ], [ "tap", 2.5 ], [ "head_d", 5.5 ], [ "head_h", 3 ] ];
 m1_6_pan = [ [ "name", "ISO 7045 M1.6" ], [ "d", 1.6 ], [ "clear", 1.8 ], [ "head_d", 3.2 ], [ "head_h", 1.3 ] ];
+m3_washer = [ [ "name", "ISO 7089 M3" ], [ "id", 3.2 ], [ "od", 7 ], [ "h", 0.5 ] ];

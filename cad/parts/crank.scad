@@ -4,21 +4,23 @@
  * @author Cameron K. Brooks
  * @copyright 2026
  *
- * The rod lies on the arm's top face and the pin screw threads into the arm, so the rod holds the
- * crank down on its shaft; the D-flat carries the torque. z = 0 at the hub's underside, the shaft on
- * the z axis, the pin on +x. Prints upside down, the arm's top face on the bed.
+ * The rod turns on a boss on the crank's top face, and the pin screw clamps a washer down on the
+ * boss, not on the rod. The D-bore is blind: pressed on, the crank stops on the shaft's tip, which
+ * sets its height over the plate; the D-flat carries the torque. z = 0 at the underside, the shaft on
+ * the z axis, the pin on +x. Prints as it stands.
  */
 
 // clang-format off
 include <../lib/struct.scad>;
 // clang-format on
 
-// throw: shaft axis to pin axis. press: per side, a printed bore round a steel shaft.
+// throw: shaft axis to pin axis. press: per side, a printed bore round a steel shaft. h: underside
+// to the top face the rod lies on. boss: [d, h] of the pin's boss. bore: the blind bore's depth, the
+// shaft's reach into the crank. end_d: the pin end, the rod's width.
 // clang-format off
-function crank_spec(motor, pin, press, throw, hub_h, arm_t, hub_d = 12, end_d = 8) = [
+function crank_spec(motor, pin, press, throw, h, boss, bore, end_d, hub_d = 12) = [
     ["name", "crank"], ["motor", motor], ["pin", pin], ["press", press], ["throw", throw],
-    ["hub_h", hub_h], ["arm_t", arm_t], ["hub_d", hub_d], ["end_d", end_d],
-    ["h", hub_h + arm_t],
+    ["h", h], ["boss", boss], ["bore", bore], ["hub_d", hub_d], ["end_d", end_d],
 ];
 // clang-format on
 
@@ -38,18 +40,19 @@ module crank(s)
 {
     h = get(s, "h");
     throw = get(s, "throw");
+    boss = get(s, "boss");
     difference()
     {
         union()
         {
-            cylinder(d = get(s, "hub_d"), h = h);
-            translate([ 0, 0, get(s, "hub_h") ]) linear_extrude(get(s, "arm_t")) hull()
+            linear_extrude(h) hull()
             {
                 circle(d = get(s, "hub_d"));
                 translate([ throw, 0 ]) circle(d = get(s, "end_d"));
             }
+            translate([ throw, 0, h - 1 ]) cylinder(d = boss[0], h = boss[1] + 1);
         }
-        translate([ 0, 0, -1 ]) linear_extrude(h + 2) d_shaft(get(s, "motor"), get(s, "press"));
-        translate([ throw, 0, -1 ]) cylinder(d = get(get(s, "pin"), "tap"), h = h + 2);
+        translate([ 0, 0, -1 ]) linear_extrude(get(s, "bore") + 1) d_shaft(get(s, "motor"), get(s, "press"));
+        translate([ throw, 0, -1 ]) cylinder(d = get(get(s, "pin"), "tap"), h = h + boss[1] + 2);
     }
 }

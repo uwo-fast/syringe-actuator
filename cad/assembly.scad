@@ -81,6 +81,7 @@ module report(L)
              asin(throw / get(L, "rod_l")), " deg"));
     echo(str("frame ", get(f, "x")[1] - get(f, "x")[0], " x ", get(f, "w"), ", syringe axis ", get(L, "axis_z"),
              " above its underside"));
-    echo(str("screws: 2 x M3 x ", get(L, "pin_l"), " (crank pin, clip pin); 2 x M1.6 x ", get(L, "motor_screw_l"),
-             " pan head (motor), ", get(L, "motor_thread"), " of it into the gearbox"));
+    echo(str("screws: 2 x M3 x ", get(L, "pin_l"), " with 2 x M3 washer (crank pin, clip pin), ", get(L, "pin_thread"),
+             " of thread; 2 x M1.6 x ", get(L, "motor_screw_l"), " pan head (motor), ", get(L, "motor_thread"),
+             " of it into the gearbox"));
 }

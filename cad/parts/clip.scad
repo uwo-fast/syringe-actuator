@@ -5,21 +5,22 @@
  * @copyright 2026
  *
  * The button drops in from above, the plunger through a slot in the front wall; the front wall pulls
- * and the back wall pushes. The plunger holds the clip on its axis, and the rod, screwed down onto
- * the tongue's top face, keeps it level. x = 0 at the button's front face, z = 0 on the syringe
- * axis, which is the tongue's top face. Prints as it stands.
+ * and the back wall pushes. The plunger holds the clip on its axis, and the rod, lying on the
+ * tongue's top face and turning on its boss, keeps it level. x = 0 at the button's front face, z = 0
+ * on the syringe axis, which is the tongue's top face. Prints as it stands.
  */
 
 // clang-format off
 include <../lib/struct.scad>;
 // clang-format on
 
-// clear: back wall to the rod's end. end_d: the tongue's round end, the rod's width.
+// boss: [d, h] of the pin's boss. end_d: the tongue's round end, the rod's width. clear: back wall to
+// the rod's end.
 // clang-format off
-function clip_spec(syringe, pin, fit, wall, clear = 1, end_d = 8) =
+function clip_spec(syringe, pin, fit, wall, boss, end_d, clear = 1) =
     let (r = get(syringe, "button_d") / 2 + fit, back = get(syringe, "button_t") + fit + wall) [
         ["name", "plunger clip"], ["syringe", syringe], ["pin", pin], ["fit", fit], ["wall", wall],
-        ["end_d", end_d], ["back", back], ["pin_x", back + clear + end_d / 2],
+        ["boss", boss], ["end_d", end_d], ["back", back], ["pin_x", back + clear + end_d / 2],
         ["half_w", r + wall], ["bottom", -(r + wall)], ["top", r],
     ];
 // clang-format on
@@ -36,6 +37,7 @@ module clip(s)
     hw = get(s, "half_w");
     r = get(sy, "button_d") / 2 + fit;
     span = get(sy, "plunger_span") / 2 + fit;
+    boss = get(s, "boss");
     difference()
     {
         union()
@@ -46,9 +48,10 @@ module clip(s)
                 translate([ 0, -get(s, "end_d") / 2 ]) square([ 1, get(s, "end_d") ]);
                 translate([ pin_x - back + 1, 0 ]) circle(d = get(s, "end_d"));
             }
+            translate([ pin_x, 0, -1 ]) cylinder(d = boss[0], h = boss[1] + 1);
         }
         translate([ -fit, -r, -r ]) cube([ get(sy, "button_t") + 2 * fit, 2 * r, 2 * r + 1 ]);
         translate([ -fit - wall - 1, -span, -span ]) cube([ wall + 2, 2 * span, top + span + 1 ]);
-        translate([ pin_x, 0, bottom - 1 ]) cylinder(d = get(get(s, "pin"), "tap"), h = -bottom + 2);
+        translate([ pin_x, 0, bottom - 1 ]) cylinder(d = get(get(s, "pin"), "tap"), h = -bottom + boss[1] + 2);
     }
 }
