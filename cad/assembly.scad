@@ -4,7 +4,7 @@
  * @author Cameron K. Brooks
  * @copyright 2026
  *
- * Printed parts are wheat, the syringe translucent, the motor grey. The bought parts are drawn from
+ * Printed parts are wheat, the syringe translucent, the motor and the screws grey. The bought parts are drawn from
  * their catalog figures, simplified.
  */
 
@@ -28,6 +28,7 @@ module assembly(L, a, bought = true)
     {
         syringe(L, px - get(get(L, "clip"), "pin_x"));
         motor(L);
+        screws(L, [ cp, [ px, 0 ] ]);
     }
 }
 
@@ -70,6 +71,35 @@ module motor(L)
             cube([ get(m, "h"), get(m, "w"), get(m, "can_l") ]);
         color("silver") translate([ 0, 0, f ]) cylinder(d = get(m, "shaft_d"), h = get(m, "shaft_l"));
     }
+}
+
+// The pin screws and washers on their bosses at pins [[x, y], ...], and the motor screws seated in
+// their counterbores. Each screw's length is under its head.
+module screws(L, pins)
+{
+    pin = get(L, "pin");
+    washer = get(L, "pin_washer");
+    ms = get(L, "motor_screw");
+    seat = get(L, "axis_z") + get(get(L, "crank"), "boss")[1];
+    color("silver") for (p = pins) translate([ p[0], p[1], seat ])
+    {
+        difference()
+        {
+            cylinder(d = get(washer, "od"), h = get(washer, "h"));
+            translate([ 0, 0, -1 ]) cylinder(d = get(washer, "id"), h = get(washer, "h") + 2);
+        }
+        screw(pin, get(L, "pin_l"), get(washer, "h"));
+    }
+    ms_seat = get(L, "face_z") + get(L, "motor_screw_l") - get(L, "motor_thread");
+    color("dimgray") for (y = [ -1, 1 ] * get(get(L, "motor"), "hole_pitch") / 2)
+        translate([ get(L, "crank_x"), y, ms_seat ]) screw(ms, get(L, "motor_screw_l"), 0);
+}
+
+// A screw of length len whose head seats at z = seat.
+module screw(s, len, seat)
+{
+    translate([ 0, 0, seat ]) cylinder(d = get(s, "head_d"), h = get(s, "head_h"));
+    translate([ 0, 0, seat - len ]) cylinder(d = get(s, "d"), h = len);
 }
 
 // Echoes what to buy and the derived figures.
