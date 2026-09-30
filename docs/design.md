@@ -104,7 +104,7 @@ From a vendor outline drawing that is not to scale
 Not dimensioned by any source: the shaft's exposed length (6.4 to the start of the flat; one listing
 gives 8.3 overall), the boss's protrusion, and the side screw.
 
-No usable OpenSCAD model of either motor was found (NopSCADlib has none), so `cad/assembly.scad`
+No usable OpenSCAD model of either motor was found (NopSCADlib has none), so `cad/main.scad`
 draws the inline one, simplified, from the figures above.
 
 ## Open

@@ -1,18 +1,32 @@
 /**
  * @file main.scad
- * @brief The entry point: view the mechanism or one printed part
+ * @brief The syringe actuator: the layout, the assembly, and each printed part in its print orientation
  * @author Cameron K. Brooks
  * @copyright 2026
  *
- * Open this in OpenSCAD and use the Customizer, or pass -D on the command line:
+ * The one file that draws. Open it in OpenSCAD and use the Customizer, or pass -D:
  *   openscad -D 'part="crank"' -o crank.stl cad/main.scad
- * A printed part comes out in its print orientation. The assembly turns with View > Animate; `angle`
- * sets where it starts. `report` echoes the screws and the derived figures.
+ * The assembly turns with View > Animate; `angle` sets where it starts. `report` echoes the screws and
+ * the derived figures.
+ *
+ * An in-line crank-slider: the motor shaft stands vertical on the syringe axis's line, so the crank,
+ * the rod and the plunger move in one horizontal plane. The rod lies on the crank's top face and on
+ * the clip's tongue, both at the axis's height, and its ends turn on bosses that the pin screws clamp
+ * through washers. The clip's sled runs between rails on the frame, which take the rod's side load
+ * off the plunger. Numbers in layout() without a derivation are choices, and each says why.
+ *
+ * FRAME: x along the syringe axis, 0 at the flange's rear face, the nozzle towards -x; z = 0 at the
+ * plate's underside. The crank angle a is 0 with the pin pointing +x, away from the syringe, which is
+ * the plunger pulled out; a = 180 is it pushed in. Printed parts each have their own colour; the
+ * bought parts are drawn from their catalog figures, simplified.
  */
 
 // clang-format off
 include <catalog.scad>;
-include <assembly.scad>;
+include <parts/frame.scad>;
+include <parts/crank.scad>;
+include <parts/rod.scad>;
+include <parts/clip.scad>;
 // clang-format on
 
 // Customizer: one line per setting, so clang-format must leave the dropdown comments whole.
@@ -49,3 +63,168 @@ else if (part == "report")
     report(L);
 else
     assert(false, str("no part '", part, "'"));
+
+// ---- Layout
+
+// plate_t: stiff enough over the frame's length; pocket: the gearbox's depth into it, which locates
+// it square. gap: the crank's underside over the plate, set by the shaft's tip bottoming in the
+// crank's blind bore. float: the clip's underside over the plate. clip_wall: the clip's cup, which
+// bears only the stroke on the push-button's rim. rod_l: at least three throws, so the rod leans at
+// most asin(1/3) = 19.5 degrees. rod_w: wide enough for 2 of wall round a boss's bore. boss_d: the
+// washer overlaps the rod's bore round it by at least 0.5 a side. play: the rod's end float between
+// its seat and the washer. sled: [reach past the clip's pin, depth of its top and the rails' under the
+// rod]. slide: per side, the sled between the rails. recess: the motor screws' heads under the
+// plate's top. margin: the stopper stops this short of the barrel's end, for the error in exposed and
+// the print. pin_l and motor_screw_l: the screws' lengths.
+// clang-format off
+function layout(syringe, motor, pin, pin_washer, motor_screw, fit, press, wall,
+                plate_t = 5, pocket = 2, gap = 1, float = 1.5, clip_wall = 2, rod_t = 4, rod_l = 90,
+                rod_w = 10, boss_d = 5.6, play = 0.3, sled = [20, 2], slide = 0.3, recess = 0.2,
+                margin = 1, pin_l = 10, motor_screw_l = 3) =
+    let (
+        throw = get(syringe, "stroke") / 2,
+        boss = [boss_d, rod_t + play],
+        hole = boss_d + 2 * fit,
+        clip = clip_spec(syringe, pin, fit, clip_wall, boss, rod_w, sled),
+        axis_z = plate_t + float + get(clip, "half_w"),
+        hub_z = plate_t + gap,
+        bore = pocket + get(motor, "shaft_l") - hub_z,
+        crank = crank_spec(motor, pin, press, throw, axis_z - hub_z, boss, bore, rod_w),
+        rod = rod_spec(hole, rod_l, rod_t, rod_w),
+        button_in = get(syringe, "exposed") + margin,
+        crank_x = button_in + get(clip, "pin_x") + rod_l + throw,
+        rails = [button_in + 2 * throw + get(clip, "sled_end") + 1, get(clip, "half_w") + slide, axis_z - sled[1]],
+        sweep_x = crank_x - throw - rod_w / 2,
+        stack = boss[1] + get(pin_washer, "h"),
+        pin_tip = axis_z + stack - pin_l,
+        motor_seat_z = plate_t - get(motor_screw, "head_h") - recess
+    )
+    assert(bore >= 5, str("the shaft reaches only ", bore, " into the crank"))
+    assert(axis_z - hub_z - bore >= 1.5, "the crank's blind bore leaves under 1.5 over the shaft's tip")
+    assert(pin_tip >= hub_z, str("the pin screws reach ", hub_z - pin_tip, " too low: they would drag on the plate"))
+    assert(pin_l - stack >= 4, "the pin screws have under 4 of thread")
+    assert(get(pin_washer, "od") - hole >= 1, "the washers barely overlap the rod's bores")
+    assert(rod_w - hole >= 4, "the rod has under 2 of wall round its bores")
+    assert(rod_l >= 3 * throw, "the rod is under three throws long")
+    assert(sweep_x - rails[0] >= 1, str("the rails reach ", rails[0] - sweep_x + 1, " into the crank's sweep"))
+    assert(sled[1] >= 1, "the sled and the rails are under 1 below the rod")
+    [
+        ["name", "layout"], ["syringe", syringe], ["motor", motor], ["pin", pin], ["pin_l", pin_l],
+        ["pin_washer", pin_washer], ["motor_screw", motor_screw], ["motor_screw_l", motor_screw_l],
+        ["motor_seat_z", motor_seat_z], ["motor_thread", motor_screw_l - (motor_seat_z - pocket)],
+        ["pin_thread", pin_l - stack], ["throw", throw], ["rod_l", rod_l], ["axis_z", axis_z],
+        ["pocket", pocket], ["hub_z", hub_z], ["crank_x", crank_x],
+        ["frame", frame_spec(syringe, motor, motor_screw, fit, wall, plate_t, pocket, axis_z, crank_x, rails,
+                             motor_seat_z)],
+        ["crank", crank], ["rod", rod], ["clip", clip],
+    ];
+// clang-format on
+
+// The crank pin's [x, y] at crank angle a.
+function crank_pin(L, a) = [ get(L, "crank_x"), 0 ] + get(L, "throw") * [ cos(a), sin(a) ];
+
+// The clip pin's x at crank angle a; it stays on the axis.
+function clip_pin_x(L, a) = crank_pin(L, a)[0] - sqrt(pow(get(L, "rod_l"), 2) - pow(crank_pin(L, a)[1], 2));
+
+// ---- Assembly and report
+
+module assembly(L, a, bought = true)
+{
+    z = get(L, "axis_z");
+    cp = crank_pin(L, a);
+    px = clip_pin_x(L, a);
+    button_x = px - get(get(L, "clip"), "pin_x");
+    color("wheat") frame(get(L, "frame"));
+    color("gold") translate([ get(L, "crank_x"), 0, get(L, "hub_z") ]) rotate([ 0, 0, a ]) crank(get(L, "crank"));
+    color("mediumseagreen") translate([ px, 0, z ]) rotate([ 0, 0, atan2(cp[1], cp[0] - px) ]) rod(get(L, "rod"));
+    color("royalblue") translate([ button_x, 0, z ]) clip(get(L, "clip"));
+    if (bought)
+    {
+        syringe(L, button_x);
+        motor(L);
+        screws(L, [ cp, [ px, 0 ] ]);
+    }
+}
+
+// The syringe with its push-button's front face at x = button_x.
+module syringe(L, button_x)
+{
+    s = get(L, "syringe");
+    z = get(L, "axis_z");
+    ft = get(s, "flange_t");
+    front = -ft - get(s, "barrel_l");
+    stopper = front + button_x - get(s, "exposed");
+    span = get(s, "plunger_span");
+    translate([ 0, 0, z ])
+    {
+        color("white", 0.4) translate([ front, 0, 0 ]) rotate([ 0, 90, 0 ])
+            cylinder(d = get(s, "barrel_od"), h = get(s, "barrel_l"));
+        color("white", 0.6) translate([ -ft, -get(s, "flange")[0] / 2, -get(s, "flange")[1] / 2 ])
+            cube([ ft, get(s, "flange")[0], get(s, "flange")[1] ]);
+        color("white")
+        {
+            translate([ button_x, 0, 0 ]) rotate([ 0, 90, 0 ]) cylinder(d = get(s, "button_d"), h = get(s, "button_t"));
+            for (r = [ 0, 90 ])
+                rotate([ r, 0, 0 ]) translate([ stopper, -span / 2, -0.6 ]) cube([ button_x - stopper, span, 1.2 ]);
+        }
+        color("dimgray") translate([ stopper, 0, 0 ]) rotate([ 0, 90, 0 ])
+            cylinder(d = get(s, "barrel_od") - 1.2, h = 5);
+    }
+}
+
+module motor(L)
+{
+    m = get(L, "motor");
+    f = get(L, "pocket");
+    gb = get(m, "gearbox_l");
+    translate([ get(L, "crank_x"), 0, 0 ])
+    {
+        color("goldenrod") translate([ -get(m, "h") / 2, -get(m, "w") / 2, f - gb ])
+            cube([ get(m, "h"), get(m, "w"), gb ]);
+        color("silver") translate([ -get(m, "h") / 2, -get(m, "w") / 2, f - gb - get(m, "can_l") ])
+            cube([ get(m, "h"), get(m, "w"), get(m, "can_l") ]);
+        color("silver") translate([ 0, 0, f ]) cylinder(d = get(m, "shaft_d"), h = get(m, "shaft_l"));
+    }
+}
+
+// The pin screws and washers on their bosses at pins [[x, y], ...], and the motor screws seated in
+// their counterbores. Each screw's length is under its head.
+module screws(L, pins)
+{
+    pin = get(L, "pin");
+    washer = get(L, "pin_washer");
+    ms = get(L, "motor_screw");
+    seat = get(L, "axis_z") + get(get(L, "crank"), "boss")[1];
+    color("silver") for (p = pins) translate([ p[0], p[1], seat ])
+    {
+        difference()
+        {
+            cylinder(d = get(washer, "od"), h = get(washer, "h"));
+            translate([ 0, 0, -1 ]) cylinder(d = get(washer, "id"), h = get(washer, "h") + 2);
+        }
+        screw(pin, get(L, "pin_l"), get(washer, "h"));
+    }
+    color("dimgray") for (y = [ -1, 1 ] * get(get(L, "motor"), "hole_pitch") / 2)
+        translate([ get(L, "crank_x"), y, get(L, "motor_seat_z") ]) screw(ms, get(L, "motor_screw_l"), 0);
+}
+
+// A screw of length len whose head seats at z = seat.
+module screw(s, len, seat)
+{
+    translate([ 0, 0, seat ]) cylinder(d = get(s, "head_d"), h = get(s, "head_h"));
+    translate([ 0, 0, seat - len ]) cylinder(d = get(s, "d"), h = len);
+}
+
+// Echoes what to buy and the derived figures.
+module report(L)
+{
+    f = get(L, "frame");
+    throw = get(L, "throw");
+    echo(str("stroke ", 2 * throw, ", crank throw ", throw, ", rod ", get(L, "rod_l"), ", peak rod angle ",
+             asin(throw / get(L, "rod_l")), " deg"));
+    echo(str("frame ", get(f, "x")[1] - get(f, "x")[0], " x ", get(f, "w"), ", syringe axis ", get(L, "axis_z"),
+             " above its underside"));
+    echo(str("screws: 2 x M3 x ", get(L, "pin_l"), " with 2 x M3 washer (crank pin, clip pin), ", get(L, "pin_thread"),
+             " of thread; 2 x M1.6 x ", get(L, "motor_screw_l"), " pan head (motor), ", get(L, "motor_thread"),
+             " of it into the gearbox"));
+}

@@ -25,11 +25,11 @@ hardware has to say why a printed part cannot do the job.
 ## Layout
 
 ```
-cad/main.scad       THE ENTRY POINT, and the only file that draws: pick a part or the assembly
-cad/build.scad      layout(): every part's spec and position, from the catalog and the choices
+cad/main.scad       THE ENTRY POINT and the only file that draws: settings, layout() (every part's
+                    spec and position), the assembly (View > Animate turns it), `report`, and the
+                    part to draw
 cad/catalog.scad    bought parts (syringe, N20, screws), each figure with its source
 cad/parts/          one printed part per file: frame, crank, rod, clip
-cad/assembly.scad   the mechanism at a crank angle (View > Animate turns it), and `report`
 docs/design.md      mechanism, part dimensions and their sources, open questions
 tools/stl_edges.py  counts STL edges that do not join exactly two facets
 output/             generated exports (gitignored)
@@ -51,10 +51,13 @@ derived figures.
 
 ## Conventions
 
-- **Follow the uwo-fast CAD pattern** set by `thermoelectric-liquid-chiller`. Purchased parts are
-  key-value structs in `cad/catalog.scad`, read with `get(row, "key")`, which stops the build on a
-  missing or unmeasured value. A printed part is a `*_spec()` function and a module that takes the
-  spec. Nothing below `main.scad` reads a global.
+- **Bought parts are data, printed parts are specs.** Purchased parts are key-value structs in
+  `cad/catalog.scad`, read with `get(row, "key")`, which stops the build on a missing or unmeasured
+  value. A printed part is a `*_spec()` function and a module that takes the spec, in its own file
+  under `cad/parts/`. `layout()` in `main.scad` is the one place they are sized and arranged.
+  Nothing outside `main.scad` reads a global.
+- **Keep it as small as the design is.** Add a file when it separates something, not to mirror
+  another project's structure.
 - **Libraries draw nothing.** Only `cad/main.scad` has top-level geometry; `check-scad` fails any
   other file that does. Every printed part is a `part` choice in `main.scad`, added to `PARTS` in
   the justfile.
@@ -72,7 +75,6 @@ derived figures.
 
 - `uwo-fast/syringe-pump` — the precision pump this project deliberately is not. Its tooling
   patterns are reusable; its architecture is not.
-- `uwo-fast/thermoelectric-liquid-chiller` — the source of the CAD pattern above.
 
 ## Constraints
 
