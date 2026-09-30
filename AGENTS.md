@@ -25,7 +25,11 @@ hardware has to say why a printed part cannot do the job.
 ## Layout
 
 ```
-cad/main.scad       THE ENTRY POINT, and the only file that draws (not yet written)
+cad/main.scad       THE ENTRY POINT, and the only file that draws: pick a part or the assembly
+cad/build.scad      layout(): every part's spec and position, from the catalog and the choices
+cad/catalog.scad    bought parts (syringe, N20, screws), each figure with its source
+cad/parts/          one printed part per file: frame, crank, rod, clip
+cad/assembly.scad   the mechanism at a crank angle (View > Animate turns it), and `report`
 docs/design.md      mechanism, part dimensions and their sources, open questions
 tools/stl_edges.py  counts STL edges that do not join exactly two facets
 output/             generated exports (gitignored)
@@ -42,8 +46,8 @@ just test     # every printed part in PARTS exports as one solid, every edge man
 just export   # printed parts to output/*.stl
 ```
 
-Before `cad/` exists, `check` and `test` report themselves as skipped and pass. That is deliberate;
-the first `.scad` file makes them live.
+`openscad -D 'part="report"' -o /tmp/r.csg cad/main.scad` echoes the screws to buy and the
+derived figures.
 
 ## Conventions
 

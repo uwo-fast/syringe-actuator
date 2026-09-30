@@ -14,21 +14,37 @@ Mounting the assembly is deferred until the prototype works; it is held by hand 
 
 ## Mechanism
 
-A crank-slider:
+An in-line crank-slider. The motor's shaft stands vertical on the line of the syringe's axis, so the
+crank, the rod and the plunger all move in one horizontal plane:
 
-- **Crank** on the motor's output shaft (3 mm D-shaft), throw **29 mm** (half the 58 mm stroke).
-- **Connecting rod** from the crank pin (an M3 screw) to a **plunger clip** that captures the
-  push-button.
-- **Cradle** holding the barrel and capturing the barrel flanges, so the barrel takes the push and
-  the pull. The barrel is the only guide for the plunger.
+- **Frame.** A 5 mm plate, about 172 × 31 mm. The barrel's flanges drop into a slot at one end,
+  and the slot's walls take both the push and the pull. The barrel snaps into a ring 15 mm in front
+  of the slot, and is the only guide the plunger has. The motor hangs under the plate's other end:
+  its gearbox sits 2 mm up into a pocket, located by its bushing and held by two M1.6 × 3 pan
+  heads, counterbored below the crank's hub.
+- **Crank.** It presses onto the 3 mm D-shaft and carries the pin at a **29 mm throw**, half the
+  58 mm stroke.
+- **Rod.** A 90 mm rod runs from the crank pin to the clip. Both ends turn on M3 × 10 screws that
+  thread into the crank and the clip below it, and the rod lies on both parts' top faces.
+- **Plunger clip.** The push-button drops into a cup, and the plunger through a slot in its front
+  wall.
 
-The rod's angle `φ` puts a side load `F·tan(φ)` on the plunger, where `F` is the force along the
-stroke. Its peak is at `sin(φ) = r/L` for throw `r` and rod length `L`; a rod of at least `3r`
-(about 90 mm) keeps `φ` under 20°. That is a starting point, not a requirement.
+The motor never reverses: each revolution is one pull and one push. At a = 180° the plunger is in,
+stopping 1 mm short of the barrel's end, and at 0° it is out 58 mm.
+
+**Side load.** The rod's angle `φ` puts a side load `F·tan(φ)` on the plunger, where `F` is the
+force along the stroke. The rod is three throws long, so `φ` peaks at `asin(29/90)` = 18.8°.
 
 **Torque (estimate).** The peak crank torque is about `F·r`. At an assumed 3 N of seal friction
-(unmeasured) and `r` = 29 mm, that is about 0.09 N·m (0.9 kg·cm). Whether a given N20 turns it
-depends on its gear ratio; see the open items.
+(unmeasured) and `r` = 29 mm, that is about 0.09 N·m (0.9 kg·cm). A fully blocked line adds full
+vacuum on the bore: about 5.9 N at 8.66 mm ID, which makes 2.6 kg·cm with the friction.
+
+**Motor.** A 12 V N20 at about 30 rpm, which is a 1000:1-class gearbox: Pololu #3046 or a generic
+"N20 12V 30RPM". Pololu's #3046 gives 35 rpm free-running and a 10 kg·cm extrapolated stall, and
+recommends keeping instantaneous torque under 2.5 kg·cm on this gearbox
+(<https://www.pololu.com/category/60/micro-metal-gearmotors>). The running load is about a third
+of that limit, and a blocked line reaches about the limit. 35 rpm gives a 1.7 s cycle and a peak
+plunger speed of about 106 mm/s. A lower supply voltage slows the motor roughly in proportion.
 
 ## Parts
 
@@ -49,7 +65,7 @@ The part names follow ISO 7886-1: **barrel**, **barrel flanges** (finger grips),
 **push-button** (thumb rest), **plunger stopper** (the rubber piston) and **nozzle** (the luer
 tip).
 
-### N20 inline gearmotor
+### N20 inline gearmotor (the one used)
 
 From Pololu's micro metal gearmotor dimension drawing
 (<https://www.pololu.com/file/0J949/micro-metal-gearmotor-dimensions.pdf>, 2024-04-03):
@@ -77,14 +93,16 @@ From a vendor outline drawing that is not to scale
 Not dimensioned by any source: the shaft's exposed length (6.4 to the start of the flat; one listing
 gives 8.3 overall), the boss's protrusion, and the side screw.
 
-No usable OpenSCAD model of either motor was found (NopSCADlib has none), so they are modelled
-here from the figures above.
+No usable OpenSCAD model of either motor was found (NopSCADlib has none), so `cad/assembly.scad`
+draws the inline one, simplified, from the figures above.
 
 ## Open
 
-1. **Which motor for the first prototype, and its gear ratio.** The ratio sets the stroke rate and
-   whether the crank torque above is within reach.
-2. **Measure:** the plunger's cross-section, the plan shape of the barrel flanges (model the
-   24.5 × 12.6 envelope with clearance until then), and for the worm motor the shaft length and the
-   boss.
+1. **Measure before printing.** The catalog marks these NOMINAL (`cad/catalog.scad`):
+   - **`exposed`:** from the flange's rear face to the push-button's front face, with the plunger
+     all the way in. It sets where the stroke sits, and so whether the stopper bottoms out.
+   - **`plunger_span`:** the widest the plunger's ribs reach across the axis. It sets the slots in
+     the frame's back wall and the clip's front wall.
+2. **Also measure** the plan shape of the barrel flanges; the slot is the 24.5 × 12.6 envelope with
+   clearance. For the worm motor, if it is ever used, measure its shaft length and boss.
 3. **Mounting:** deferred until the prototype works.
