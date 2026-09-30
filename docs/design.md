@@ -17,15 +17,18 @@ Mounting the assembly is deferred until the prototype works; it is held by hand 
 An in-line crank-slider. The motor's shaft stands vertical on the line of the syringe's axis, so the
 crank, the rod and the plunger all move in one horizontal plane:
 
-- **Frame.** A 5 mm plate, about 174 × 31 mm. The barrel's flanges drop into a slot at one end,
+- **Frame.** A 5 mm plate, about 175 × 31 mm. The barrel's flanges drop into a slot at one end,
   and the slot's walls take both the push and the pull. The barrel snaps into a ring 15 mm in front
   of the slot, and is the only guide the plunger has. The motor hangs under the plate's other end:
   its gearbox sits 2 mm up into a pocket, located by its bushing and held by two M1.6 × 3 pan
   heads, counterbored below the crank's hub.
 - **Crank.** It presses onto the 3 mm D-shaft and carries the pin at a **29 mm throw**, half the
-  58 mm stroke.
-- **Rod.** A 90 mm rod runs from the crank pin to the clip. Both ends turn on M3 × 10 screws that
-  thread into the crank and the clip below it, and the rod lies on both parts' top faces.
+  58 mm stroke. Its D-bore is blind, so pressed on, it stops on the shaft's tip, 1 mm over the
+  plate.
+- **Rod.** A 90 mm rod runs from the crank pin to the clip, lying on both parts' top faces. Each end
+  turns on a printed boss 0.3 mm taller than the rod. An M3 × 10 screw and an M3 washer clamp down
+  on the boss, not on the rod, so the joint turns freely with the screw tight. A screw clamping the
+  rod itself would either lock the joint or work loose.
 - **Plunger clip.** The push-button drops into a cup, and the plunger through a slot in its front
   wall.
 
@@ -57,7 +60,7 @@ plunger speed of about 106 mm/s. A lower supply voltage slows the motor roughly 
 | Push-button | Ø12.6 mm, 1.6 mm thick |
 | Working stroke | 58 mm |
 | Plunger exposed, stopper bottomed (flange rear face to push-button front face) | 10.75 mm |
-| Plunger ribs, widest across | 7.5 mm (ribs about 1 mm thick) |
+| Plunger ribs, widest across | 7.5 mm (ribs about 1 mm thick); the last 9 mm before the push-button tapers to 6.6 mm |
 
 The size is inferred to be 3 mL, because published 3 mL inner diameters (8.57–8.94 mm, BD and
 Terumo, from syringe-pump libraries) give 3.4–3.6 mL over 58 mm. A 5 mL barrel (ID about 12 mm)
@@ -70,13 +73,14 @@ tip).
 ### N20 inline gearmotor (the one used)
 
 From Pololu's micro metal gearmotor dimension drawing
-(<https://www.pololu.com/file/0J949/micro-metal-gearmotor-dimensions.pdf>, 2024-04-03):
+(<https://www.pololu.com/file/0J949/micro-metal-gearmotor-dimensions.pdf>, 2024-04-03), except the
+shaft's length, measured on the motor in hand (2026-09-29):
 
 | Feature | Size |
 | --- | --- |
 | Can | 12.0 wide × 10.0 across flats × 15 long; end cap 1.2, then a Ø5 boss |
 | Gearbox | 12.0 × 10.0 × 9 long (12.5 at 1000:1) |
-| Shaft | Ø3.0, 2.5 across the flat, 10 long from the gearbox face |
+| Shaft | Ø3.0, 2.5 across the flat; 9 long from the gearbox face (measured), D-profile over its whole length |
 | Bushing | Ø4.0, 0.7 proud |
 | Mounting | 2 × M1.6 tapped, 9.0 apart, either side of the shaft |
 

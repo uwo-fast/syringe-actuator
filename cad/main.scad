@@ -31,8 +31,8 @@ wall = 3;
 /* [Hidden] */
 $fn = 48;
 
-L = layout(syringe = syringe_3ml, motor = n20_1000, pin = m3_shcs, motor_screw = m1_6_pan, fit = fit, press = press,
-           wall = wall);
+L = layout(syringe = syringe_3ml, motor = n20_1000, pin = m3_shcs, pin_washer = m3_washer, motor_screw = m1_6_pan,
+           fit = fit, press = press, wall = wall);
 
 // Each printed part, turned to how it prints.
 if (part == "assembly")
@@ -40,7 +40,7 @@ if (part == "assembly")
 else if (part == "frame")
     frame(get(L, "frame"));
 else if (part == "crank")
-    translate([ 0, 0, get(get(L, "crank"), "h") ]) rotate([ 180, 0, 0 ]) crank(get(L, "crank"));
+    crank(get(L, "crank"));
 else if (part == "rod")
     rod(get(L, "rod"));
 else if (part == "clip")

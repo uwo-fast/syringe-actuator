@@ -19,14 +19,15 @@ include <../lib/struct.scad>;
 
 // axis_z: the syringe axis's height; crank_x: the motor shaft's x. ring: [gap to the flange
 // block, length, wall] of the snap ring; snap: its opening, as a fraction of the barrel's diameter.
+// chamfer: the motor pocket's mouth.
 // clang-format off
 function frame_spec(syringe, motor, screw, fit, wall, plate_t, pocket, axis_z, crank_x,
-                    ring = [15, 6, 2], snap = 0.8) =
+                    ring = [15, 6, 2], snap = 0.8, chamfer = 0.5) =
     let (block = [-get(syringe, "flange_t") - fit - wall, fit + wall],
          ring_x = block[0] - ring[0] - ring[1]) [
         ["name", "frame"], ["syringe", syringe], ["motor", motor], ["screw", screw], ["fit", fit],
         ["plate_t", plate_t], ["pocket", pocket], ["axis_z", axis_z], ["crank_x", crank_x],
-        ["ring", ring], ["snap", snap], ["block", block], ["ring_x", ring_x],
+        ["ring", ring], ["snap", snap], ["chamfer", chamfer], ["block", block], ["ring_x", ring_x],
         ["w", get(syringe, "flange")[0] + 2 * (fit + wall)],
         ["x", [ring_x, crank_x + get(motor, "h") / 2 + fit + wall]],
     ];
@@ -60,6 +61,7 @@ module frame(s)
     ft = get(sy, "flange_t");
     flange = get(sy, "flange") + [ 2, 2 ] * fit;
     cx = get(s, "crank_x");
+    chamfer = get(s, "chamfer");
     difference()
     {
         union()
@@ -77,13 +79,17 @@ module frame(s)
         translate([ ring_x - 1, 0, 0 ]) on_axis(s, od, ring[1] + 2);
         translate([ ring_x - 1, -get(s, "snap") * od / 2, z ]) cube([ ring[1] + 2, get(s, "snap") * od, 100 ]);
         // the motor: gearbox pocket from below, bushing and shaft through, screws counterbored from above
-        translate([ cx - get(m, "h") / 2 - fit, -get(m, "w") / 2 - fit, -1 ])
-            cube([ get(m, "h") + 2 * fit, get(m, "w") + 2 * fit, get(s, "pocket") + 1 ]);
+        pocket = [ get(m, "h"), get(m, "w") ] + [ 2, 2 ] * fit;
+        translate([ cx - pocket[0] / 2, -pocket[1] / 2, -1 ]) cube([ pocket[0], pocket[1], get(s, "pocket") + 1 ]);
+        // the pocket's mouth chamfered, against the first layer's squash
+        translate([ cx, 0, -1 ]) linear_extrude(1 + chamfer, scale = [
+            pocket[0] / (pocket[0] + 2 * chamfer + 2), pocket[1] / (pocket[1] + 2 * chamfer + 2)
+        ]) square(pocket + [ 2, 2 ] * (chamfer + 1), center = true);
         translate([ cx, 0, -1 ]) cylinder(d = get(m, "bushing_d") + 2 * fit, h = t + 2);
         for (y = [ -1, 1 ] * get(m, "hole_pitch") / 2)
             translate([ cx, y, 0 ])
             {
-                translate([ 0, 0, -1 ]) cylinder(d = get(sc, "clear"), h = t + 2);
+                translate([ 0, 0, -1 ]) cylinder(d = get(sc, "clear") + 2 * fit, h = t + 2);
                 translate([ 0, 0, t - get(sc, "head_h") - 0.2 ])
                     cylinder(d = get(sc, "head_d") + 2 * fit, h = get(sc, "head_h") + 1.2);
             }
