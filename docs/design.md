@@ -19,7 +19,7 @@ crank, the rod and the plunger all move in one horizontal plane:
 
 - **Frame.** A 5 mm plate, about 175 × 31 mm. The barrel's flanges drop into a slot at one end,
   and the slot's walls take both the push and the pull. The barrel snaps into a ring 15 mm in front
-  of the slot, and is the only guide the plunger has. The motor hangs under the plate's other end:
+  of the slot. Two rails, 8 mm tall, stand either side of the clip's travel. The motor hangs under the plate's other end:
   its gearbox sits 2 mm up into a pocket, located by its bushing and held by two M1.6 × 3 pan
   heads, counterbored below the crank's hub.
 - **Crank.** It presses onto the 3 mm D-shaft and carries the pin at a **29 mm throw**, half the
@@ -30,13 +30,17 @@ crank, the rod and the plunger all move in one horizontal plane:
   on the boss, not on the rod, so the joint turns freely with the screw tight. A screw clamping the
   rod itself would either lock the joint or work loose.
 - **Plunger clip.** The push-button drops into a cup, and the plunger through a slot in its front
-  wall.
+  wall. A sled under the clip runs 20 mm past the rod's pin, between the frame's rails with 0.3 mm
+  a side. It stays 2 mm below the rod and clear of the plate.
 
 The motor never reverses: each revolution is one pull and one push. At a = 180° the plunger is in,
 stopping 1 mm short of the barrel's end, and at 0° it is out 58 mm.
 
-**Side load.** The rod's angle `φ` puts a side load `F·tan(φ)` on the plunger, where `F` is the
-force along the stroke. The rod is three throws long, so `φ` peaks at `asin(29/90)` = 18.8°.
+**Side load.** The rod's angle `φ` puts a side load `F·tan(φ)` on the clip, where `F` is the
+force along the stroke. The rod is three throws long, so `φ` peaks at `asin(29/90)` = 18.8°. The
+rails take that load. On the first print the clip had no guide. On the push stroke the side load
+bowed the plunger sideways and the clip turned with it (video, 2026-09-30). The plunger cannot carry
+a side load in compression.
 
 **Torque (estimate).** The peak crank torque is about `F·r`. At an assumed 3 N of seal friction
 (unmeasured) and `r` = 29 mm, that is about 0.09 N·m (0.9 kg·cm). A fully blocked line adds full

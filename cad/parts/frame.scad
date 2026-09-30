@@ -5,7 +5,7 @@
  * @copyright 2026
  *
  * The barrel's flange drops into a slot, whose walls take the push and the pull, and the barrel
- * snaps into a ring in front of it; the barrel is the only guide the plunger has. The motor's gearbox
+ * snaps into a ring in front of it. Two rails either side of the clip's travel guide its sled. The motor's gearbox
  * goes up into a pocket under the plate, located by its bushing and held by two M1.6 screws from
  * above, counterbored under the crank's hub; the motor hangs below the plate.
  *
@@ -19,15 +19,16 @@ include <../lib/struct.scad>;
 
 // axis_z: the syringe axis's height; crank_x: the motor shaft's x. ring: [gap to the flange
 // block, length, wall] of the snap ring; snap: its opening, as a fraction of the barrel's diameter.
-// chamfer: the motor pocket's mouth.
+// chamfer: the motor pocket's mouth. guide: [[x from, x to], half the gap between the rails, their
+// top's z].
 // clang-format off
-function frame_spec(syringe, motor, screw, fit, wall, plate_t, pocket, axis_z, crank_x,
+function frame_spec(syringe, motor, screw, fit, wall, plate_t, pocket, axis_z, crank_x, guide,
                     ring = [15, 6, 2], snap = 0.8, chamfer = 0.5) =
     let (block = [-get(syringe, "flange_t") - fit - wall, fit + wall],
          ring_x = block[0] - ring[0] - ring[1]) [
         ["name", "frame"], ["syringe", syringe], ["motor", motor], ["screw", screw], ["fit", fit],
         ["plate_t", plate_t], ["pocket", pocket], ["axis_z", axis_z], ["crank_x", crank_x],
-        ["ring", ring], ["snap", snap], ["chamfer", chamfer], ["block", block], ["ring_x", ring_x],
+        ["ring", ring], ["snap", snap], ["chamfer", chamfer], ["guide", guide], ["wall", wall], ["block", block], ["ring_x", ring_x],
         ["w", get(syringe, "flange")[0] + 2 * (fit + wall)],
         ["x", [ring_x, crank_x + get(motor, "h") / 2 + fit + wall]],
     ];
@@ -70,6 +71,10 @@ module frame(s)
             translate([ block[0], -w / 2, t - 1 ]) cube([ block[1] - block[0], w, z - t + 3 ]);
             translate([ ring_x, 0, 0 ]) on_axis(s, ring_d, ring[1]);
             translate([ ring_x, -ring_d / 2, t - 1 ]) cube([ ring[1], ring_d, z - t + 1 ]);
+            guide = get(s, "guide");
+            for (side = [ -1, 1 ])
+                translate([ guide[0][0], side > 0 ? guide[1] : -guide[1] - get(s, "wall"), t - 1 ])
+                    cube([ guide[0][1] - guide[0][0], get(s, "wall"), guide[2] - t + 1 ]);
         }
         // the flange's slot, then the barrel through the front wall and the plunger through the back
         translate([ -ft - fit, -flange[0] / 2, z - flange[1] / 2 ]) cube([ ft + 2 * fit, flange[0], 100 ]);
