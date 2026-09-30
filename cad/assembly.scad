@@ -4,8 +4,9 @@
  * @author Cameron K. Brooks
  * @copyright 2026
  *
- * Printed parts are wheat, the syringe translucent, the motor and the screws grey. The bought parts are drawn from
- * their catalog figures, simplified.
+ * Printed parts each have a colour: the frame wheat, the crank gold, the rod green and the clip blue.
+ * The syringe is translucent, and the motor and the screws grey. The bought parts are drawn from their
+ * catalog figures, simplified.
  */
 
 // clang-format off
@@ -17,13 +18,10 @@ module assembly(L, a, bought = true)
     z = get(L, "axis_z");
     cp = crank_pin(L, a);
     px = clip_pin_x(L, a);
-    color("wheat")
-    {
-        frame(get(L, "frame"));
-        translate([ get(L, "crank_x"), 0, get(L, "hub_z") ]) rotate([ 0, 0, a ]) crank(get(L, "crank"));
-        translate([ px, 0, z ]) rotate([ 0, 0, atan2(cp[1], cp[0] - px) ]) rod(get(L, "rod"));
-        translate([ px - get(get(L, "clip"), "pin_x"), 0, z ]) clip(get(L, "clip"));
-    }
+    color("wheat") frame(get(L, "frame"));
+    color("gold") translate([ get(L, "crank_x"), 0, get(L, "hub_z") ]) rotate([ 0, 0, a ]) crank(get(L, "crank"));
+    color("mediumseagreen") translate([ px, 0, z ]) rotate([ 0, 0, atan2(cp[1], cp[0] - px) ]) rod(get(L, "rod"));
+    color("royalblue") translate([ px - get(get(L, "clip"), "pin_x"), 0, z ]) clip(get(L, "clip"));
     if (bought)
     {
         syringe(L, px - get(get(L, "clip"), "pin_x"));
