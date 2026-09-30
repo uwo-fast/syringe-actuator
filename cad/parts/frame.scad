@@ -20,7 +20,7 @@ include <../lib/struct.scad>;
 // axis_z: the syringe axis's height; crank_x: the motor shaft's x. ring: [gap to the flange
 // block, length, wall] of the snap ring; snap: its opening, as a fraction of the barrel's diameter.
 // chamfer: the motor pocket's mouth. guide: [[x from, x to], half the gap between the rails, their
-// top's z].
+// top's z]; the rails start at the flange block, and reach out to the plate's edges.
 // clang-format off
 function frame_spec(syringe, motor, screw, fit, wall, plate_t, pocket, axis_z, crank_x, guide,
                     ring = [15, 6, 2], snap = 0.8, chamfer = 0.5) =
@@ -72,9 +72,10 @@ module frame(s)
             translate([ ring_x, 0, 0 ]) on_axis(s, ring_d, ring[1]);
             translate([ ring_x, -ring_d / 2, t - 1 ]) cube([ ring[1], ring_d, z - t + 1 ]);
             guide = get(s, "guide");
+            // the rails run from the flange block's back wall, out to the plate's edges
             for (side = [ -1, 1 ])
-                translate([ guide[0][0], side > 0 ? guide[1] : -guide[1] - get(s, "wall"), t - 1 ])
-                    cube([ guide[0][1] - guide[0][0], get(s, "wall"), guide[2] - t + 1 ]);
+                translate([ block[1] - 1, side > 0 ? guide[1] : -w / 2, t - 1 ])
+                    cube([ guide[0][1] - block[1] + 1, w / 2 - guide[1], guide[2] - t + 1 ]);
         }
         // the flange's slot, open at the sides, then the barrel through the front wall and the plunger
         // through the back

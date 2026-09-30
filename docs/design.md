@@ -19,9 +19,10 @@ crank, the rod and the plunger all move in one horizontal plane:
 
 - **Frame.** A 5 mm plate, about 175 × 25 mm, as wide as the barrel flanges. They drop into a slot
   at one end, and the slot's walls take both the push and the pull. The barrel snaps into a ring 15
-  mm in front of the slot. Two rails, 8 mm tall, stand either side of the clip's travel. The motor
-  hangs under the plate's other end: its gearbox sits 2 mm up into a pocket, located by its bushing
-  and held by two M1.6 × 3 pan heads, counterbored below the crank's hub.
+  mm in front of the slot. Two rails, 8 mm tall, run from the slot's back wall either side of the
+  clip's travel, out to the plate's edges. The motor hangs under the plate's other end: its gearbox
+  sits 2 mm up into a pocket, located by its bushing and held by two M1.6 × 3 pan heads,
+  counterbored below the crank's hub.
 - **Crank.** It presses onto the 3 mm D-shaft and carries the pin at a **29 mm throw**, half the
   58 mm stroke. Its D-bore is blind, so pressed on, it stops on the shaft's tip, 1 mm over the
   plate.
