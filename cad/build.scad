@@ -1,0 +1,67 @@
+/**
+ * @file build.scad
+ * @brief layout(): the bought parts and the design's choices in, every part's spec and position out
+ * @author Cameron K. Brooks
+ * @copyright 2026
+ *
+ * The one place the parts are arranged. An in-line crank-slider: the motor shaft stands vertical on
+ * the syringe axis's line, so the crank, the rod and the plunger move in one horizontal plane. The
+ * rod lies on the crank's arm and on the clip's tongue, whose top faces are both the axis's height.
+ * Numbers written here without a derivation are choices, and each says why.
+ *
+ * FRAME: x along the syringe axis, 0 at the flange's rear face, the nozzle towards -x; z = 0 at the
+ * plate's underside. The crank angle a is 0 with the pin pointing +x, away from the syringe, which is
+ * the plunger pulled out; a = 180 is it pushed in.
+ */
+
+// clang-format off
+include <parts/frame.scad>;
+include <parts/crank.scad>;
+include <parts/rod.scad>;
+include <parts/clip.scad>;
+// clang-format on
+
+// plate_t: stiff enough over the frame's length; pocket: the gearbox's depth into it, which locates
+// it square. gap: the hub over the plate. float: the clip's underside over the plate. arm_t: thread
+// for the crank pin. rod_l: at least three throws, so the rod leans at most asin(1/3) = 19.5 degrees.
+// margin: the stopper stops this short of the barrel's end, since exposed is NOMINAL. pin_l and
+// motor_screw_l: the screws' lengths.
+// clang-format off
+function layout(syringe, motor, pin, motor_screw, fit, press, wall,
+                plate_t = 5, pocket = 2, gap = 0.5, float = 1.5, arm_t = 6, rod_t = 4, rod_l = 90,
+                margin = 1, pin_l = 10, motor_screw_l = 3) =
+    let (
+        throw = get(syringe, "stroke") / 2,
+        clip = clip_spec(syringe, pin, fit, 2),
+        axis_z = plate_t + float - get(clip, "bottom"),
+        face_z = pocket,
+        hub_z = plate_t + gap,
+        crank = crank_spec(motor, pin, press, throw, axis_z - arm_t - hub_z, arm_t),
+        rod = rod_spec(pin, rod_l, rod_t),
+        pin_in = get(syringe, "exposed") + margin + get(clip, "pin_x"),
+        crank_x = pin_in + rod_l + throw,
+        shaft_tip = face_z + get(motor, "shaft_l"),
+        pin_tip = axis_z + rod_t - pin_l,
+        under_head = plate_t - pocket - get(motor_screw, "head_h") - 0.2
+    )
+    assert(shaft_tip - hub_z >= 5, str("the shaft reaches only ", shaft_tip - hub_z, " into the crank"))
+    assert(shaft_tip <= axis_z, "the shaft pokes above the crank's arm, where the rod slides")
+    assert(pin_tip >= hub_z, str("the pin screws reach ", hub_z - pin_tip, " too low: they would drag on the plate"))
+    assert(pin_l - rod_t >= 4, "the pin screws have under 4 of thread")
+    assert(rod_l - throw > (get(crank, "hub_d") + get(rod, "w")) / 2 + 1, "the clip hits the hub at the pull end")
+    [
+        ["name", "layout"], ["syringe", syringe], ["motor", motor], ["pin", pin], ["pin_l", pin_l],
+        ["motor_screw", motor_screw], ["motor_screw_l", motor_screw_l],
+        ["motor_thread", motor_screw_l - under_head],
+        ["throw", throw], ["rod_l", rod_l], ["axis_z", axis_z], ["face_z", face_z], ["hub_z", hub_z],
+        ["crank_x", crank_x],
+        ["frame", frame_spec(syringe, motor, motor_screw, fit, wall, plate_t, pocket, axis_z, crank_x)],
+        ["crank", crank], ["rod", rod], ["clip", clip],
+    ];
+// clang-format on
+
+// The crank pin's [x, y] at crank angle a.
+function crank_pin(L, a) = [ get(L, "crank_x"), 0 ] + get(L, "throw") * [ cos(a), sin(a) ];
+
+// The clip pin's x at crank angle a; it stays on the axis.
+function clip_pin_x(L, a) = crank_pin(L, a)[0] - sqrt(pow(get(L, "rod_l"), 2) - pow(crank_pin(L, a)[1], 2));
