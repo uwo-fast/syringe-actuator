@@ -29,7 +29,7 @@ function frame_spec(syringe, motor, screw, fit, wall, plate_t, pocket, axis_z, c
         ["name", "frame"], ["syringe", syringe], ["motor", motor], ["screw", screw], ["fit", fit],
         ["plate_t", plate_t], ["pocket", pocket], ["axis_z", axis_z], ["crank_x", crank_x],
         ["ring", ring], ["snap", snap], ["chamfer", chamfer], ["guide", guide], ["wall", wall], ["block", block], ["ring_x", ring_x],
-        ["w", get(syringe, "flange")[0] + 2 * (fit + wall)],
+        ["w", get(syringe, "flange")[0] + 2 * fit],
         ["x", [ring_x, crank_x + get(motor, "h") / 2 + fit + wall]],
     ];
 // clang-format on
@@ -76,8 +76,9 @@ module frame(s)
                 translate([ guide[0][0], side > 0 ? guide[1] : -guide[1] - get(s, "wall"), t - 1 ])
                     cube([ guide[0][1] - guide[0][0], get(s, "wall"), guide[2] - t + 1 ]);
         }
-        // the flange's slot, then the barrel through the front wall and the plunger through the back
-        translate([ -ft - fit, -flange[0] / 2, z - flange[1] / 2 ]) cube([ ft + 2 * fit, flange[0], 100 ]);
+        // the flange's slot, open at the sides, then the barrel through the front wall and the plunger
+        // through the back
+        translate([ -ft - fit, -w / 2 - 1, z - flange[1] / 2 ]) cube([ ft + 2 * fit, w + 2, 100 ]);
         translate([ block[0] - 1, 0, 0 ]) u_cut(s, od, -block[0]);
         translate([ fit - 1, 0, 0 ]) u_cut(s, get(sy, "plunger_span") + 2 * fit, block[1] - fit + 2);
         // the snap ring's bore and opening
