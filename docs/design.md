@@ -109,6 +109,7 @@ draws the inline one, simplified, from the figures above.
 
 ## Open
 
-1. **Measure** the plan shape of the barrel flanges; the slot is the 24.5 × 12.6 envelope with
-   clearance. For the worm motor, if it is ever used, measure its shaft length and boss.
+1. **Measure** the plan shape of the barrel flanges; the slot is open at the sides and 12.6 tall
+   with clearance, and 24.5 sets only the frame's width. For the worm motor, if it is ever used,
+   measure its shaft length and boss.
 2. **Mounting:** deferred until the prototype works.

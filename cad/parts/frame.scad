@@ -5,9 +5,9 @@
  * @copyright 2026
  *
  * The barrel's flange drops into a slot, whose walls take the push and the pull, and the barrel
- * snaps into a ring in front of it. Two rails either side of the clip's travel guide its sled. The motor's gearbox
- * goes up into a pocket under the plate, located by its bushing and held by two M1.6 screws from
- * above, counterbored under the crank's hub; the motor hangs below the plate.
+ * snaps into a ring in front of it. Two rails either side of the clip's travel guide its sled. The
+ * motor's gearbox goes up into a pocket under the plate, located by its bushing and held by two M1.6
+ * screws from above, counterbored under the crank's hub; the motor hangs below the plate.
  *
  * x along the syringe axis, 0 at the flange's rear face, the nozzle towards -x; z = 0 at the plate's
  * underside. Prints as it stands.
@@ -19,16 +19,18 @@ include <../lib/struct.scad>;
 
 // axis_z: the syringe axis's height; crank_x: the motor shaft's x. ring: [gap to the flange
 // block, length, wall] of the snap ring; snap: its opening, as a fraction of the barrel's diameter.
-// chamfer: the motor pocket's mouth. guide: [[x from, x to], half the gap between the rails, their
-// top's z]; the rails start at the flange block, and reach out to the plate's edges.
+// chamfer: the motor pocket's mouth. rails: [x of their end, half the gap between them, their top's
+// z]; they start at the flange block and reach out to the plate's edges. seat_z: the motor screws'
+// heads' seat.
 // clang-format off
-function frame_spec(syringe, motor, screw, fit, wall, plate_t, pocket, axis_z, crank_x, guide,
+function frame_spec(syringe, motor, screw, fit, wall, plate_t, pocket, axis_z, crank_x, rails, seat_z,
                     ring = [15, 6, 2], snap = 0.8, chamfer = 0.5) =
     let (block = [-get(syringe, "flange_t") - fit - wall, fit + wall],
          ring_x = block[0] - ring[0] - ring[1]) [
         ["name", "frame"], ["syringe", syringe], ["motor", motor], ["screw", screw], ["fit", fit],
         ["plate_t", plate_t], ["pocket", pocket], ["axis_z", axis_z], ["crank_x", crank_x],
-        ["ring", ring], ["snap", snap], ["chamfer", chamfer], ["guide", guide], ["wall", wall], ["block", block], ["ring_x", ring_x],
+        ["ring", ring], ["snap", snap], ["chamfer", chamfer], ["block", block], ["ring_x", ring_x],
+        ["rail_end", rails[0]], ["rail_gap", rails[1]], ["rail_top", rails[2]], ["seat_z", seat_z],
         ["w", get(syringe, "flange")[0] + 2 * fit],
         ["x", [ring_x, crank_x + get(motor, "h") / 2 + fit + wall]],
     ];
@@ -60,7 +62,7 @@ module frame(s)
     od = get(sy, "barrel_od") + 2 * fit;
     ring_d = od + 2 * ring[2];
     ft = get(sy, "flange_t");
-    flange = get(sy, "flange") + [ 2, 2 ] * fit;
+    slot_h = get(sy, "flange")[1] + 2 * fit;
     cx = get(s, "crank_x");
     chamfer = get(s, "chamfer");
     difference()
@@ -78,15 +80,15 @@ module frame(s)
                 for (side = [ -1, 1 ])
                     translate([ side * w / 2, z ]) scale([ (w - ring_d) / 2, z - t ]) circle(1);
             }
-            guide = get(s, "guide");
             // the rails run from the flange block's back wall, out to the plate's edges
+            gap = get(s, "rail_gap");
             for (side = [ -1, 1 ])
-                translate([ block[1] - 1, side > 0 ? guide[1] : -w / 2, t - 1 ])
-                    cube([ guide[0][1] - block[1] + 1, w / 2 - guide[1], guide[2] - t + 1 ]);
+                translate([ block[1] - 1, side > 0 ? gap : -w / 2, t - 1 ])
+                    cube([ get(s, "rail_end") - block[1] + 1, w / 2 - gap, get(s, "rail_top") - t + 1 ]);
         }
         // the flange's slot, open at the sides, then the barrel through the front wall and the plunger
         // through the back
-        translate([ -ft - fit, -w / 2 - 1, z - flange[1] / 2 ]) cube([ ft + 2 * fit, w + 2, 100 ]);
+        translate([ -ft - fit, -w / 2 - 1, z - slot_h / 2 ]) cube([ ft + 2 * fit, w + 2, 100 ]);
         translate([ block[0] - 1, 0, 0 ]) u_cut(s, od, -block[0]);
         translate([ fit - 1, 0, 0 ]) u_cut(s, get(sy, "plunger_span") + 2 * fit, block[1] - fit + 2);
         // the snap ring's bore and opening
@@ -104,8 +106,7 @@ module frame(s)
             translate([ cx, y, 0 ])
             {
                 translate([ 0, 0, -1 ]) cylinder(d = get(sc, "clear") + 2 * fit, h = t + 2);
-                translate([ 0, 0, t - get(sc, "head_h") - 0.2 ])
-                    cylinder(d = get(sc, "head_d") + 2 * fit, h = get(sc, "head_h") + 1.2);
+                translate([ 0, 0, get(s, "seat_z") ]) cylinder(d = get(sc, "head_d") + 2 * fit, h = t);
             }
     }
 }

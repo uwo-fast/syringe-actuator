@@ -4,9 +4,8 @@
  * @author Cameron K. Brooks
  * @copyright 2026
  *
- * Printed parts each have a colour: the frame wheat, the crank gold, the rod green and the clip blue.
- * The syringe is translucent, and the motor and the screws grey. The bought parts are drawn from their
- * catalog figures, simplified.
+ * Each printed part has its own colour; the bought parts are drawn from their catalog figures,
+ * simplified.
  */
 
 // clang-format off
@@ -18,13 +17,14 @@ module assembly(L, a, bought = true)
     z = get(L, "axis_z");
     cp = crank_pin(L, a);
     px = clip_pin_x(L, a);
+    button_x = px - get(get(L, "clip"), "pin_x");
     color("wheat") frame(get(L, "frame"));
     color("gold") translate([ get(L, "crank_x"), 0, get(L, "hub_z") ]) rotate([ 0, 0, a ]) crank(get(L, "crank"));
     color("mediumseagreen") translate([ px, 0, z ]) rotate([ 0, 0, atan2(cp[1], cp[0] - px) ]) rod(get(L, "rod"));
-    color("royalblue") translate([ px - get(get(L, "clip"), "pin_x"), 0, z ]) clip(get(L, "clip"));
+    color("royalblue") translate([ button_x, 0, z ]) clip(get(L, "clip"));
     if (bought)
     {
-        syringe(L, px - get(get(L, "clip"), "pin_x"));
+        syringe(L, button_x);
         motor(L);
         screws(L, [ cp, [ px, 0 ] ]);
     }
@@ -59,7 +59,7 @@ module syringe(L, button_x)
 module motor(L)
 {
     m = get(L, "motor");
-    f = get(L, "face_z");
+    f = get(L, "pocket");
     gb = get(m, "gearbox_l");
     translate([ get(L, "crank_x"), 0, 0 ])
     {
@@ -88,9 +88,8 @@ module screws(L, pins)
         }
         screw(pin, get(L, "pin_l"), get(washer, "h"));
     }
-    ms_seat = get(L, "face_z") + get(L, "motor_screw_l") - get(L, "motor_thread");
     color("dimgray") for (y = [ -1, 1 ] * get(get(L, "motor"), "hole_pitch") / 2)
-        translate([ get(L, "crank_x"), y, ms_seat ]) screw(ms, get(L, "motor_screw_l"), 0);
+        translate([ get(L, "crank_x"), y, get(L, "motor_seat_z") ]) screw(ms, get(L, "motor_screw_l"), 0);
 }
 
 // A screw of length len whose head seats at z = seat.

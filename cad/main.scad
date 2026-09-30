@@ -44,7 +44,7 @@ else if (part == "crank")
 else if (part == "rod")
     rod(get(L, "rod"));
 else if (part == "clip")
-    translate([ 0, 0, -get(get(L, "clip"), "bottom") ]) clip(get(L, "clip"));
+    translate([ 0, 0, get(get(L, "clip"), "half_w") ]) clip(get(L, "clip"));
 else if (part == "report")
     report(L);
 else

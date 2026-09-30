@@ -14,9 +14,3 @@ function get(s, k) = let(i = search([k], s, 1, 0)[0],
                          who = let(n = search(["name"], s, 1, 0)[0]) n == [] ? "struct" : s[n][1])
     assert(i != [], str(who, " has no '", k, "'"))
         assert(!is_undef(s[i][1]), str(who, ": '", k, "' is not known yet, measure it")) s[i][1];
-
-// The value at key k, or undef if there is none: for keys that may legitimately be empty.
-function opt(s, k) = let(i = search([k], s, 1, 0)[0]) i == [] ? undef : s[i][1];
-
-// Struct s with key k set to v, replacing any value it had.
-function set(s, k, v) = concat([for (p = s) if (p[0] != k) p], [[k, v]]);
