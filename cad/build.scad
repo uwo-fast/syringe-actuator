@@ -24,7 +24,7 @@ include <parts/clip.scad>;
 // plate_t: stiff enough over the frame's length; pocket: the gearbox's depth into it, which locates
 // it square. gap: the hub over the plate. float: the clip's underside over the plate. arm_t: thread
 // for the crank pin. rod_l: at least three throws, so the rod leans at most asin(1/3) = 19.5 degrees.
-// margin: the stopper stops this short of the barrel's end, since exposed is NOMINAL. pin_l and
+// margin: the stopper stops this short of the barrel's end, for the error in exposed and the print. pin_l and
 // motor_screw_l: the screws' lengths.
 // clang-format off
 function layout(syringe, motor, pin, motor_screw, fit, press, wall,

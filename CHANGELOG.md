@@ -10,8 +10,7 @@ and [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Added
 
 - The printed crank-slider: frame, crank, rod and plunger clip (`cad/`), with an animated assembly
-  and a report of the screws to buy. The syringe's `exposed` and `plunger_span` are NOMINAL until
-  measured
+  and a report of the screws to buy
 - Design record: the crank-slider mechanism, the syringe and N20 gearmotor dimensions, and what is
   open (`docs/design.md`)
 - `just check` / `just test` gates for the OpenSCAD source, CI, and the pre-commit config

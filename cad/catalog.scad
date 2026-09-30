@@ -14,12 +14,12 @@ include <lib/struct.scad>;
 
 // Measured by hand 2026-09-29, except where NOMINAL. Barrel axis along x, nozzle towards -x.
 // flange: [width, height] in the plane across the axis, as it sits in the frame. exposed: the
-// flange's rear face to the push-button's front face with the stopper bottomed, NOMINAL: ISO 7886-1's
-// minimum for 2 to 5 mL is 9 (secondary source). plunger_span: the widest the plunger's ribs reach
-// across the axis, NOMINAL. barrel_l: flange to the nozzle's root, NOMINAL, drawn only.
+// flange's rear face to the push-button's front face with the stopper bottomed. plunger_span: the
+// widest the plunger's ribs reach across the axis. barrel_l: flange to the nozzle's root, NOMINAL,
+// drawn only.
 syringe_3ml = [
     [ "name", "3 mL luer syringe" ], [ "barrel_od", 10.0 ], [ "flange", [ 24.5, 12.6 ] ], [ "flange_t", 2.0 ],
-    [ "button_d", 12.6 ], [ "button_t", 1.6 ], [ "stroke", 58 ], [ "exposed", 9 ], [ "plunger_span", 9 ],
+    [ "button_d", 12.6 ], [ "button_t", 1.6 ], [ "stroke", 58 ], [ "exposed", 10.75 ], [ "plunger_span", 7.5 ],
     [ "barrel_l", 55 ]
 ];
 
