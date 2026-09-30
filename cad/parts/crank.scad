@@ -14,12 +14,13 @@
 include <../lib/struct.scad>;
 // clang-format on
 
-// throw: shaft axis to pin axis. press: per side, a printed bore round a steel shaft. h: underside
+// tap: the pin screw's hole, which it threads itself into. throw: shaft axis to pin axis. press: per
+// side, a printed bore round a steel shaft. h: underside
 // to the top face the rod lies on. boss: [d, h] of the pin's boss. bore: the blind bore's depth, the
 // shaft's reach into the crank. end_d: the pin end, the rod's width.
 // clang-format off
-function crank_spec(motor, pin, press, throw, h, boss, bore, end_d, hub_d = 12) = [
-    ["name", "crank"], ["motor", motor], ["pin", pin], ["press", press], ["throw", throw],
+function crank_spec(motor, tap, press, throw, h, boss, bore, end_d, hub_d = 12) = [
+    ["name", "crank"], ["motor", motor], ["tap", tap], ["press", press], ["throw", throw],
     ["h", h], ["boss", boss], ["bore", bore], ["hub_d", hub_d], ["end_d", end_d],
 ];
 // clang-format on
@@ -53,6 +54,6 @@ module crank(s)
             translate([ throw, 0, h - 1 ]) cylinder(d = boss[0], h = boss[1] + 1);
         }
         translate([ 0, 0, -1 ]) linear_extrude(get(s, "bore") + 1) d_shaft(get(s, "motor"), get(s, "press"));
-        translate([ throw, 0, -1 ]) cylinder(d = get(get(s, "pin"), "tap"), h = h + boss[1] + 2);
+        translate([ throw, 0, -1 ]) cylinder(d = get(s, "tap"), h = h + boss[1] + 2);
     }
 }

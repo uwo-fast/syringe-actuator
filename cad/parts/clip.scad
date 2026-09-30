@@ -15,14 +15,14 @@
 include <../lib/struct.scad>;
 // clang-format on
 
-// boss: [d, h] of the pin's boss. end_d: the tongue's round end, the rod's width. sled: [its reach
-// past the pin, which sets how long the rails hold it square; its top's depth under the rod].
-// clear: back wall to the rod's end.
+// tap: the pin screw's hole, which it threads itself into. boss: [d, h] of the pin's boss. end_d: the tongue's round
+// end, the rod's width. sled: [its reach past the pin, which sets how long the rails hold it square; its top's depth
+// under the rod]. clear: back wall to the rod's end.
 // clang-format off
-function clip_spec(syringe, pin, fit, wall, boss, end_d, sled, clear = 1) =
+function clip_spec(syringe, tap, fit, wall, boss, end_d, sled, clear = 1) =
     let (r = get(syringe, "button_d") / 2 + fit, back = get(syringe, "button_t") + fit + wall,
          pin_x = back + clear + end_d / 2) [
-        ["name", "plunger clip"], ["syringe", syringe], ["pin", pin], ["fit", fit],
+        ["name", "plunger clip"], ["syringe", syringe], ["tap", tap], ["fit", fit],
         ["boss", boss], ["end_d", end_d], ["back", back], ["pin_x", pin_x], ["front", -fit - wall],
         ["sled", sled], ["sled_end", pin_x + sled[0]],
         ["half_w", r + wall], ["top", r],
@@ -56,6 +56,6 @@ module clip(s)
         }
         translate([ -fit, -top, -top ]) cube([ get(sy, "button_t") + 2 * fit, 2 * top, 2 * top + 1 ]);
         translate([ front - 1, -span, -span ]) cube([ -front - fit + 2, 2 * span, top + span + 1 ]);
-        translate([ pin_x, 0, bottom - 1 ]) cylinder(d = get(get(s, "pin"), "tap"), h = -bottom + boss[1] + 2);
+        translate([ pin_x, 0, bottom - 1 ]) cylinder(d = get(s, "tap"), h = -bottom + boss[1] + 2);
     }
 }

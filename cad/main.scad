@@ -39,6 +39,7 @@ show_bought = true;
 /* [Print] */
 fit = 0.2;   // per side: a printed pocket round bought stock
 press = 0.05; // per side: the crank's bore on the steel shaft
+hole = 0.1;   // per side: a small hole a screw threads itself into, which prints undersize
 wall = 3;
 // clang-format on
 
@@ -46,7 +47,7 @@ wall = 3;
 $fn = 48;
 
 L = layout(syringe = syringe_3ml, motor = n20_1000, pin = m3_shcs, pin_washer = m3_washer, motor_screw = m1_6_pan,
-           fit = fit, press = press, wall = wall);
+           fit = fit, press = press, hole = hole, wall = wall);
 
 // Each printed part, turned to how it prints.
 if (part == "assembly")
@@ -77,20 +78,21 @@ else
 // plate's top. margin: the stopper stops this short of the barrel's end, for the error in exposed and
 // the print. pin_l and motor_screw_l: the screws' lengths.
 // clang-format off
-function layout(syringe, motor, pin, pin_washer, motor_screw, fit, press, wall,
+function layout(syringe, motor, pin, pin_washer, motor_screw, fit, press, hole, wall,
                 plate_t = 5, pocket = 2, gap = 1, float = 1.5, clip_wall = 2, rod_t = 4, rod_l = 90,
                 rod_w = 10, boss_d = 5.6, play = 0.3, sled = [20, 2], slide = 0.3, recess = 0.2,
                 margin = 1, pin_l = 10, motor_screw_l = 3) =
     let (
         throw = get(syringe, "stroke") / 2,
         boss = [boss_d, rod_t + play],
-        hole = boss_d + 2 * fit,
-        clip = clip_spec(syringe, pin, fit, clip_wall, boss, rod_w, sled),
+        rod_bore = boss_d + 2 * fit,
+        tap = get(pin, "tap") + 2 * hole,
+        clip = clip_spec(syringe, tap, fit, clip_wall, boss, rod_w, sled),
         axis_z = plate_t + float + get(clip, "half_w"),
         hub_z = plate_t + gap,
         bore = pocket + get(motor, "shaft_l") - hub_z,
-        crank = crank_spec(motor, pin, press, throw, axis_z - hub_z, boss, bore, rod_w),
-        rod = rod_spec(hole, rod_l, rod_t, rod_w),
+        crank = crank_spec(motor, tap, press, throw, axis_z - hub_z, boss, bore, rod_w),
+        rod = rod_spec(rod_bore, rod_l, rod_t, rod_w),
         button_in = get(syringe, "exposed") + margin,
         crank_x = button_in + get(clip, "pin_x") + rod_l + throw,
         rails = [button_in + 2 * throw + get(clip, "sled_end") + 1, get(clip, "half_w") + slide, axis_z - sled[1]],
@@ -103,8 +105,8 @@ function layout(syringe, motor, pin, pin_washer, motor_screw, fit, press, wall,
     assert(axis_z - hub_z - bore >= 1.5, "the crank's blind bore leaves under 1.5 over the shaft's tip")
     assert(pin_tip >= hub_z, str("the pin screws reach ", hub_z - pin_tip, " too low: they would drag on the plate"))
     assert(pin_l - stack >= 4, "the pin screws have under 4 of thread")
-    assert(get(pin_washer, "od") - hole >= 1, "the washers barely overlap the rod's bores")
-    assert(rod_w - hole >= 4, "the rod has under 2 of wall round its bores")
+    assert(get(pin_washer, "od") - rod_bore >= 1, "the washers barely overlap the rod's bores")
+    assert(rod_w - rod_bore >= 4, "the rod has under 2 of wall round its bores")
     assert(rod_l >= 3 * throw, "the rod is under three throws long")
     assert(sweep_x - rails[0] >= 1, str("the rails reach ", rails[0] - sweep_x + 1, " into the crank's sweep"))
     assert(sled[1] >= 1, "the sled and the rails are under 1 below the rod")
