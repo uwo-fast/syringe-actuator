@@ -1,205 +1,242 @@
 /**
  * @file body.scad
- * @brief The body: an octagonal tube the frame slides into, and the cap that closes its back end
+ * @brief The body: a shell fitted round what the frame carries, a lid on its roof, and the cap on its back end
  * @author Cameron K. Brooks
  * @copyright 2026
  *
  * The frame slides in from the back on two rails that take its dovetailed edges, up to the front wall, and the cap's
  * post holds it there. The syringe goes in and out through a window in the roof over its barrel and the clip's travel;
- * the barrel passes the front wall through a slot. A lid inside the roof closes the window: it rides on two ledges and
- * slides back under the roof to open, up to the cap. Its front end hangs down to close the slot over the barrel, and a
- * wedge on it, tapered to fit the slot tight only in the last few millimetres, holds it shut.
+ * the barrel passes the front wall through a slot. A lid slides along rails on the roof, between a lip on the front
+ * wall and the cap, to close the window, its edges resting on the roof either side of it. A bump under the middle of
+ * its back end drops into a notch at the window's back edge when it is shut, and runs in a groove along the roof's
+ * middle the rest of its travel so it never drags.
  *
- * Coordinates are the frame's: x along the syringe axis, z = 0 at the frame's underside. The body
- * prints on its bottom flat; the cap prints outer face down.
+ * The shell is a loft of sections along x: narrow and shallow at the front, where there is only the syringe, the plate
+ * and the clip, tapering out to full width and the motor's depth where the crank turns. Each section is symmetric
+ * about the syringe axis's vertical plane, square at the top, where the lid's rails run, and chamfered at the bottom as
+ * far as its contents allow. Neighbouring sections are hulled pairwise, so equal ones make a prism and unequal ones a
+ * taper; the outside's sections are the inside's grown by the wall, edge for edge, so the hulls' faces stay parallel
+ * and the wall its thickness.
+ *
+ * Coordinates are the frame's: x along the syringe axis, z = 0 at the frame's underside. The body prints standing on
+ * its open back end, its walls near vertical; the lid prints top down; the cap outer face down.
  */
 
 // clang-format off
 include <../lib/struct.scad>;
+include <frame.scad>;
 // clang-format on
 
-// Half the width across flats a regular octagon, flats on y and z, centred at z = zc, needs to hold
-// every [y, z] in pts.
-function octagon_need(pts,
-                      zc) = max([for (p = pts) max(abs(p[0]), abs(p[1] - zc), (abs(p[0]) + abs(p[1] - zc)) / sqrt(2))]);
+// A section's [W, B, c] for the [y, z] points pts: half-width, bottom, and the biggest bottom chamfer that keeps clr
+// off every point, under a top at T.
+function section_fit(pts, T, clr) = let(W = max([for (p = pts) p[0]]) + clr, B = min([for (p = pts) p[1]]) - clr,
+                                        c = min([for (p = pts) W - B - (p[0] - p[1])]) -
+                                            clr * sqrt(2))[W, B, max(0, min(c, W, T - B))];
 
-// pts: [y, z] of what the frame carries, at its extremes over a turn. x: [front, back] of the inside, the back at
-// least; it grows to take the lid open. window: [its end's x, its width]. plate: [w, dovetail, t] of the frame's plate.
-// frame_end: the plate's back end's x. screw: the cap's screws; tap: their holes in the bosses. wire_z: the wires' hole
-// in the cap. clr: round the frame's contents. slide: per side, the dovetails in the rails, and the lid between the
-// roof and its ledges. wall, end_t: the tube's wall and its front wall's and cap's thickness. lid: [thickness, its
-// reach past the window's sides, its reach past the window's end when shut]. lid_grip: per side, how much wider than
-// the barrel's slot the lid's wedge ends, for friction that holds it shut.
+// The half-width at x of the loft through stations [[x, [W, B, c]], ...], interpolated.
+function loft_w(st, x) = let(i = max([for (k = [0:len(st) - 2]) if (st[k][0] <= x) k]), a = st[i],
+                             b = st[i + 1]) a[1][0] +
+                         (b[1][0] - a[1][0]) * (x - a[0]) / (b[0] - a[0]);
+
+// front_pts, back_pts: [y, z] of what the frame carries, at its extremes over a turn, in front of the rod's spread and
+// everywhere. rod: [x, y] of the rod's edge at its widest over a turn, sampled along x from the front. sweep_x: where
+// the crank's sweep starts. x: [front, back] of the inside, the back at least; it grows to take the lid open. window:
+// [its end's x, its width]. plate: [w, dovetail, t] of the frame's plate. frame_end: the plate's back end's x. screw:
+// the cap's screws; tap: their holes in the bosses. wire_z: the wires' hole in the cap. clr: round the frame's
+// contents. slide: per side, the dovetails in the rails, and the lid in its rails. wall, end_t: the shell's wall and
+// its front wall's and cap's thickness. lid: [thickness, its reach past the window's sides, its reach past the
+// window's end when shut]. lid_grip: how far the lid flexes to pass the ridge behind its notch.
 // clang-format off
-function body_spec(pts, x, window, axis_z, barrel_d, plate, frame_end, screw, tap, wire_z, fit,
-                   clr = 2, slide = 0.3, wall = 2.5, end_t = 3, boss_d = 8, boss_l = 12, wire_d = 6,
-                   lid = [2, 4, 3], lid_grip = 0.1) =
-    let (zcs = [for (z = [-40:0.25:40]) z],
-         needs = [for (z = zcs) octagon_need(pts, z)],
-         least = min(needs),
-         zc = [for (i = [0:len(zcs) - 1]) if (needs[i] == least) zcs[i]][0],
-         a = least + clr,
-         // the lid, shut, from just behind the front wall to past the window's end; open, all of it
-         // behind the window, under the roof
+function body_spec(front_pts, back_pts, rod, sweep_x, x, window, axis_z, barrel_d, plate, frame_end, screw, tap,
+                   wire_z, fit, clr = 2, slide = 0.3, wall = 2.5, end_t = 3, boss_d = 8, boss_l = 12, wire_d = 6,
+                   lid = [2, 3, 3], lid_grip = 0.2) =
+    let (T = max([for (p = back_pts) p[1]]) + clr,
+         front = section_fit(front_pts, T, clr),
+         back = section_fit(back_pts, T, clr),
+         // the narrow front runs as far as the rod's edge keeps clr inside it; the full section starts clr before the
+         // crank's sweep
+         x1 = max([for (r = rod) if (r[1] + clr <= front[0]) r[0]]),
+         x2 = sweep_x - clr,
          lid_x = [x[0] + slide, window[0] + lid[2]],
-         back = max(x[1], window[0] + lid_x[1] - lid_x[0] + slide + 1),
-         // the lid's edges, and the ledges' tops under them
-         lid_z = zc + (a - slide) * sqrt(2) - (window[1] / 2 + lid[1]),
-         ledge_in = max(window[1] / 2 + 0.5, (a - slide - lid[0]) * sqrt(2) - (lid_z - zc) - 0.5)) [
-        ["name", "body"], ["a", a], ["zc", zc], ["x", [x[0], back]], ["window", window], ["axis_z", axis_z],
-        ["barrel_d", barrel_d + 2 * clr], ["plate", plate], ["frame_end", frame_end], ["screw", screw],
-        ["tap", tap], ["wire_z", wire_z], ["fit", fit], ["slide", slide], ["wall", wall], ["end_t", end_t],
-        ["boss_d", boss_d], ["boss_l", boss_l], ["wire_d", wire_d],
-        ["lid", lid], ["lid_x", lid_x], ["lid_z", lid_z], ["ledge_in", ledge_in], ["lid_grip", lid_grip],
-        // the lid's front end hangs down to here, clear of the tallest thing it slides back over
-        ["plug_z", max([for (p = pts) p[1]]) + 1],
-        // the cap's screws, in the tube's lower diagonal corners, their bosses merging into its walls
-        ["bosses", [for (side = [-1, 1]) [side, -1] * (a - boss_d / 2 + 0.5) / sqrt(2) + [0, zc]]],
+         x_back = max(x[1], window[0] + lid_x[1] - lid_x[0] + slide + 1),
+         stations = [[x[0] - end_t, front], [x1, front], [x2, back], [x_back, back]],
+         // the cap's screws, on the back section's bottom chamfers, their bosses merging into the walls
+         m = [back[0] - back[2] / 2, back[1] + back[2] / 2],
+         k = (boss_d / 2 - 0.5) / sqrt(2))
+    assert(x1 < x2, "the rod spreads past the narrow front only after the crank's sweep starts")
+    assert(min([for (r = rod) if (r[0] >= x1 && r[0] <= x2) loft_w(stations, r[0]) - r[1]]) >= clr,
+           "the taper does not clear the rod's swing")
+    [
+        ["name", "body"], ["T", T], ["stations", stations], ["front", front], ["back", back],
+        ["x", [x[0], x_back]], ["window", window], ["axis_z", axis_z], ["barrel_d", barrel_d + 2 * clr],
+        ["plate", plate], ["frame_end", frame_end], ["screw", screw], ["tap", tap], ["wire_z", wire_z], ["fit", fit],
+        ["slide", slide], ["wall", wall], ["end_t", end_t], ["boss_d", boss_d], ["boss_l", boss_l], ["wire_d", wire_d],
+        ["lid", lid], ["lid_x", lid_x], ["lid_grip", lid_grip],
+        ["bosses", [for (side = [-1, 1]) [side * (m[0] - k), m[1] + k]]],
     ];
 // clang-format on
 
-// The octagon, half a across flats, centred at z = zc, in the [y, z] plane.
-module octagon(a, zc) translate([ 0, zc ]) rotate(22.5) circle(r = a / cos(22.5), $fn = 8);
+// A section [W, B, c] under a top at T, grown by g all round: square at the top, chamfered c at the bottom corners.
+module section_shape(sec, T, g = 0) offset(delta = g) polygon([
+    [ -sec[0], T ], [ sec[0], T ], [ sec[0], sec[1] + sec[2] ], [ sec[0] - sec[2], sec[1] ],
+    [ -sec[0] + sec[2], sec[1] ], [ -sec[0], sec[1] + sec[2] ]
+]);
 
 // A 2D section in [y, z], extruded along x from x0 for len.
 module along_x(x0, len) translate([ x0, 0, 0 ]) rotate([ 90, 0, 90 ]) linear_extrude(len) children();
 
-// One rail's section, the +y one: it stands on the tube's floor, holds the plate's edge from below,
-// and hooks over its dovetailed foot; the plate's section, grown by slide, is cut from it.
+// The loft through the spec's stations, grown by g, its end stations moved to x0 and x1.
+module loft(s, g, x0, x1)
+{
+    st = get(s, "stations");
+    n = len(st);
+    ends = [for (i = [0:n - 1]) i == 0 ? [ x0, st[i][1] ] : i == n - 1 ? [ x1, st[i][1] ] : st[i]];
+    for (i = [0:n - 2])
+        hull() for (e = [ ends[i], ends[i + 1] ]) along_x(e[0], 0.01) section_shape(e[1], get(s, "T"), g);
+}
+
+// One rail's section, the +y one: it stands on the floor, holds the plate's edge from below, and hooks over its
+// dovetailed foot; the plate's section, grown by slide, is cut from it. It reaches well down and is clipped to the
+// shell; the lip's outer face slopes out at 45 degrees, so where the wall moves out the two meet at a corner rather
+// than running side by side a sliver apart.
 module rail_section(s)
 {
     p = get(s, "plate");
     w = p[0];
     d = p[1];
     t = p[2];
-    floor_z = get(s, "zc") - get(s, "a") - 1;
     difference()
     {
-        polygon([[w / 2 - 1, floor_z], [w / 2 + 1, floor_z], [w / 2 + 1, -d - 5], [w / 2 + d + 3, -3],
-                 [w / 2 + d + 3, t], [w / 2 - 1, t]]);
-        offset(delta = get(s, "slide")) polygon(
-            [ [ -w / 2 - d, 0 ], [ w / 2 + d, 0 ], [ w / 2, d ], [ w / 2, t + 1 ], [ -w / 2, t + 1 ], [ -w / 2, d ] ]);
+        // the lower wall's outer face flares out at 45 degrees going down, square to the back's chamfered wall
+        polygon([[w / 2 - 1, -100], [w / 2 + 1 + 100 - d - 5, -100], [w / 2 + 1, -d - 5], [w / 2 + d + 3, -3],
+                 [w / 2 + d + 3 + t + 3, t], [w / 2 - 1, t]]);
+        offset(delta = get(s, "slide")) polygon(plate_profile(w, d, t + 1));
     }
 }
 
-// One ledge's section, the +y one: a shelf on the roof's diagonal under the lid's edge, its
-// underside at 45 degrees so it prints.
-module ledge_section(s)
-{
-    a = get(s, "a");
-    zc = get(s, "zc");
-    top = get(s, "lid_z") - get(s, "slide");
-    y_in = get(s, "ledge_in");
-    y_out = a * sqrt(2) - (top - zc) + 2;
-    intersection()
-    {
-        polygon([[y_in, top], [y_out, top], [y_out, top - (y_out - y_in)]]);
-        octagon(a + get(s, "wall") / 2, zc);
-    }
-}
+// The lid's edge, and the rail's face against it, from the roof up: a land of a, a 45 degree bevel rising b, and a land
+// to the top, so neither the lid's edge nor the rail's lip comes to a knife edge.
+function lid_edge(t) = let(a = t / 4)[a, t - 2 * a];
 
-// The lid's section: a channel following the roof's top flat and upper diagonals inside it, its edges
-// at lid_z.
+// The lid's section: a plate on the roof, its edges bevelled under the rails' lips.
 module lid_section(s)
 {
-    a = get(s, "a") - get(s, "slide");
-    zc = get(s, "zc");
-    intersection()
-    {
-        difference()
-        {
-            octagon(a, zc);
-            octagon(a - get(s, "lid")[0], zc);
-        }
-        translate([ -2 * a, get(s, "lid_z") ]) square([ 4 * a, 2 * a ]);
-    }
+    top = get(s, "T") + get(s, "wall");
+    hb = get(s, "window")[1] / 2 + get(s, "lid")[1];
+    t = get(s, "lid")[0];
+    e = lid_edge(t);
+    polygon([
+        [ -hb, top ], [ hb, top ], [ hb, top + e[0] ], [ hb - e[1], top + e[0] + e[1] ], [ hb - e[1], top + t ],
+        [ -hb + e[1], top + t ], [ -hb + e[1], top + e[0] + e[1] ], [ -hb, top + e[0] ]
+    ]);
 }
 
-// The lid, shut: its front end hangs down to close the slot over the barrel, a wedge on it runs into the slot through
-// the front wall, and grooves across its top near the window's end give a fingertip purchase to slide it back.
+// The +y rail on the roof the lid slides in, from the lid's edge, with slide, out to the narrow front's side; its foot
+// sinks 1 into the roof outside the lid's edge.
+module lid_rail_section(s)
+{
+    top = get(s, "T") + get(s, "wall");
+    hb = get(s, "window")[1] / 2 + get(s, "lid")[1] + get(s, "slide");
+    t = get(s, "lid")[0];
+    out = get(s, "front")[0] + get(s, "wall");
+    e = lid_edge(t);
+    polygon([[hb, top - 1], [out, top - 1], [out, top + t], [hb - e [1], top + t], [hb - e [1], top + e [0] + e [1]],
+             [hb, top + e [0]]]);
+}
+
+// The detent bump's x when the lid is shut: under the middle of its back end, over the roof behind the window.
+function bump_x(s) = get(s, "lid_x")[1] - 1.5;
+
+// The lid, shut: a bump under the middle of its back end sits in a notch at the window's back edge, and grooves across
+// its top near the front give a thumb purchase to push it back.
 module lid(s)
 {
-    a = get(s, "a") - get(s, "slide");
-    zc = get(s, "zc");
     lx = get(s, "lid_x");
-    win = get(s, "window");
+    top = get(s, "T") + get(s, "wall");
+    t = get(s, "lid")[0];
+    h = get(s, "slide") + get(s, "lid_grip");
     difference()
     {
         union()
         {
             along_x(lx[0], lx[1] - lx[0]) lid_section(s);
-            along_x(lx[0], 2) intersection()
-            {
-                translate([ -get(s, "barrel_d") / 2 - 2, get(s, "plug_z") ])
-                    square([ get(s, "barrel_d") + 4, zc + a - get(s, "plug_z") ]);
-                octagon(a, zc);
-            }
-            // the wedge: narrower than the slot at the front face, lid_grip wider a side by its back
-            hull()
-            {
-                bd = get(s, "barrel_d");
-                h = zc + a - 0.5 - get(s, "plug_z"); // below the lid's top, so it merges, not meets
-                translate([ get(s, "x")[0] - get(s, "end_t") + 0.3, -bd / 2 + 0.3, get(s, "plug_z") ])
-                    cube([ 0.01, bd - 0.6, h ]);
-                // full width 0.5 inside the front wall's inner face, where the slot's sides grip it, and on
-                // into the hanging front end
-                for (wx = [ get(s, "x")[0] - 0.5, lx[0] + 1 ])
-                    translate([ wx, -bd / 2 - get(s, "lid_grip"), get(s, "plug_z") ])
-                        cube([ 0.01, bd + 2 * get(s, "lid_grip"), h ]);
-            }
+            translate([ bump_x(s), 0, top ]) rotate([ 90, 0, 0 ]) linear_extrude(2, center = true)
+                polygon([ [ -1.5, 0.5 ], [ 0, -h ], [ 1.5, 0.5 ] ]);
         }
         for (i = [0:3])
-            translate([ win[0] - 8 - 5 * i, -a * tan(22.5) + 3, zc + a - 0.8 ]) cube([ 1.5, 2 * a * tan(22.5) - 6, 1 ]);
+            translate([ lx[0] + 8 + 4 * i, -get(s, "window")[1] / 2 + 2, top + t - 0.8 ])
+                cube([ 1.5, get(s, "window")[1] - 4, 1 ]);
     }
 }
 
+// The body: the shell and its cuts, then the lid's rails, which go on after the cuts so no cutter reaches their lips.
 module body(s)
 {
-    a = get(s, "a");
-    zc = get(s, "zc");
     x = get(s, "x");
-    wall = get(s, "wall");
+    body_shell(s);
+    along_x(x[0] - get(s, "end_t"), x[1] - x[0] + get(s, "end_t")) for (side = [ 0, 1 ]) mirror([ side, 0 ])
+        lid_rail_section(s);
+}
+
+module body_shell(s)
+{
+    x = get(s, "x");
     end_t = get(s, "end_t");
+    wall = get(s, "wall");
     win = get(s, "window");
     z = get(s, "axis_z");
     bd = get(s, "barrel_d");
+    T = get(s, "T");
+    out = get(s, "front")[0] + wall;
     difference()
     {
         union()
         {
             difference()
             {
-                along_x(x[0] - end_t, x[1] - x[0] + end_t) octagon(a + wall, zc);
-                along_x(x[0], x[1] - x[0] + 1) octagon(a, zc);
+                loft(s, wall, x[0] - end_t, x[1]);
+                loft(s, 0, x[0], x[1] + 1);
             }
-            along_x(x[0] - 1, x[1] - x[0] + 1) for (side = [ 0, 1 ]) mirror([ side, 0 ])
+            intersection()
             {
-                rail_section(s);
-                ledge_section(s);
-            }
-            for (b = get(s, "bosses"))
-                along_x(x[1] - get(s, "boss_l"), get(s, "boss_l")) intersection()
+                union()
                 {
-                    hull()
-                    {
-                        translate(b) circle(d = get(s, "boss_d"));
-                        translate(b * 2 - [ 0, zc ] * 2 + [ 0, zc ]) circle(d = get(s, "boss_d"));
-                    }
-                    octagon(a + wall / 2, zc);
+                    along_x(x[0] - 1, x[1] - x[0] + 1) for (side = [ 0, 1 ]) mirror([ side, 0 ]) rail_section(s);
+                    for (b = get(s, "bosses"))
+                        along_x(x[1] - get(s, "boss_l"), get(s, "boss_l")) hull()
+                        {
+                            // a wide foot along the chamfered wall, so the boss's flanks meet it steeply
+                            translate(b) circle(d = get(s, "boss_d"));
+                            for (k = [ -1, 1 ])
+                                translate(b + ([ sign(b[0]), -1 ] * 5 + [ sign(b[0]), 1 ] * k * get(s, "boss_d")) /
+                                                  sqrt(2)) circle(d = 1);
+                        }
                 }
+                loft(s, wall / 2, x[0] - end_t, x[1]);
+            }
+            // the front wall's lip the lid stops against; the barrel's slot cuts through it
+            translate([ x[0] - end_t, -out, T + wall - 1 ]) cube([ end_t, 2 * out, get(s, "lid")[0] + 1 ]);
         }
-        // the window in the roof over the barrel and the clip's travel, and the barrel's slot through the
-        // front wall
-        translate([ x[0], -win[1] / 2, z ]) cube([ win[0] - x[0], win[1], 100 ]);
+        // the window in the roof over the barrel and the clip's travel, and the barrel's slot through the front wall
+        translate([ x[0], -win[1] / 2, T - 1 ]) cube([ win[0] - x[0], win[1], 100 ]);
         along_x(x[0] - end_t - 1, end_t + 2) translate([ 0, z ]) circle(d = bd);
         translate([ x[0] - end_t - 1, -bd / 2, z ]) cube([ end_t + 2, bd, 100 ]);
+        // the detent: a notch under the bump when shut, running into the window's back edge, a ridge behind it, then
+        // a groove along the roof's middle the bump runs free in
+        d = get(s, "slide") + get(s, "lid_grip") + 0.3;
+        translate([ 0, -1.5, T + wall - d ])
+        {
+            translate([ bump_x(s) - 2, 0, 0 ]) cube([ 4, 3, d + 1 ]);
+            translate([ bump_x(s) + 3.5, 0, 0 ]) cube([ x[1] - bump_x(s), 3, d + 1 ]);
+        }
+        // the cap screws' holes, blind, a millimetre short of the bosses' far ends
         for (b = get(s, "bosses"))
-            along_x(x[1] - get(s, "boss_l") - 1, get(s, "boss_l") + 2) translate(b) circle(d = get(s, "tap"));
+            along_x(x[1] - get(s, "boss_l") + 1, get(s, "boss_l")) translate(b) circle(d = get(s, "tap"));
     }
 }
 
-// The cap, in place on the tube's back end: screwed to the bosses, its post holding the plate's
-// back end against the front wall, the wires out through its hole.
+// The cap, in place on the back end: screwed to the bosses, its post holding the plate's back end against the front
+// wall, the wires out through its hole. It closes the lid's rails too, so the lid stops against it.
 module cap(s)
 {
     x = get(s, "x");
@@ -207,11 +244,18 @@ module cap(s)
     p = get(s, "plate");
     fit = get(s, "fit");
     sc = get(s, "screw");
+    T = get(s, "T");
+    wall = get(s, "wall");
+    out = get(s, "front")[0] + wall;
     difference()
     {
         union()
         {
-            along_x(x[1], end_t) octagon(get(s, "a") + get(s, "wall"), get(s, "zc"));
+            along_x(x[1], end_t)
+            {
+                section_shape(get(s, "back"), T, wall);
+                translate([ -out, T + wall - 1 ]) square([ 2 * out, get(s, "lid")[0] + 1 ]);
+            }
             post = get(s, "frame_end") + get(s, "slide");
             translate([ post, -p[0] / 4, 0.5 ]) cube([ x[1] - post + 1, p[0] / 2, p[2] - 1 ]);
         }

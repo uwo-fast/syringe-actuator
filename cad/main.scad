@@ -67,10 +67,10 @@ section(section, section_at)
     else if (part == "clip")
         translate([ 0, 0, get(get(L, "clip"), "half_w") ]) clip(get(L, "clip"));
     else if (part == "body")
-        let(b = get(L, "body")) translate([ 0, 0, get(b, "a") + get(b, "wall") - get(b, "zc") ]) body(b);
+        let(b = get(L, "body")) rotate([ 0, 90, 0 ]) translate([ -get(b, "x")[1], 0, 0 ]) body(b);
     else if (part == "lid")
-        let(b = get(L, "body")) translate([ 0, 0, get(b, "zc") + get(b, "a") - get(b, "slide") ]) rotate([ 180, 0, 0 ])
-            lid(b);
+        let(b = get(L, "body")) translate([ 0, 0, get(b, "T") + get(b, "wall") + get(b, "lid")[0] ])
+            rotate([ 180, 0, 0 ]) lid(b);
     else if (part == "cap")
         let(b = get(L, "body")) rotate([ 0, 90, 0 ]) translate([ -get(b, "x")[1] - get(b, "end_t"), 0, 0 ]) cap(b);
     else if (part == "report")
@@ -91,12 +91,12 @@ section(section, section_at)
 // rod]. slide: per side, the sled between the rails. recess: the motor screws' heads under the
 // plate's top. margin: the stopper stops this short of the barrel's end, for the error in exposed and
 // the print. pin_l and motor_screw_l: the screws' lengths. window: the body's window's width, room
-// for fingers round the barrel and the push-button.
+// for the barrel's flanges and fingers round them.
 // clang-format off
 function layout(syringe, motor, pin, pin_washer, motor_screw, fit, press, hole, wall,
                 plate_t = 5, pocket = 2, gap = 1, float = 1.5, clip_wall = 2, rod_t = 4, rod_l = 90,
                 rod_w = 10, boss_d = 5.6, play = 0.3, sled = [20, 2], slide = 0.3, recess = 0.2,
-                margin = 1, pin_l = 10, motor_screw_l = 3, window = 36) =
+                margin = 1, pin_l = 10, motor_screw_l = 3, window = 28) =
     let (
         throw = get(syringe, "stroke") / 2,
         boss = [boss_d, rod_t + play],
@@ -127,7 +127,16 @@ function layout(syringe, motor, pin, pin_washer, motor_screw, fit, press, hole, 
             [get(syringe, "flange")[0] / 2, axis_z + get(syringe, "flange")[1] / 2],
             [get(clip, "half_w"), axis_z + get(clip, "top")],
         ],
-        body = body_spec(envelope, [get(frame, "x")[0], max(crank_x + reach, get(frame, "x")[1]) + 2],
+        // the same in front of where the rod spreads, which it is checked against separately
+        front = [
+            [get(frame, "w") / 2 + get(frame, "dovetail"), 0],
+            [get(syringe, "flange")[0] / 2, axis_z + get(syringe, "flange")[1] / 2],
+            [get(clip, "half_w"), axis_z + get(clip, "top")],
+            [get(pin_washer, "od") / 2, axis_z + stack + get(pin, "head_h")],
+        ],
+        rod_edges = [for (x = [get(frame, "x")[0]:1:crank_x]) [x, rod_edge(x, crank_x, throw, rod_l, rod_w / 2)]],
+        body = body_spec(front, concat(envelope, front), rod_edges, crank_x - reach,
+                         [get(frame, "x")[0], max(crank_x + reach, get(frame, "x")[1]) + 2],
                          [button_in + 2 * throw + get(clip, "back") + 5, window], axis_z, get(syringe, "barrel_od"),
                          [get(frame, "w"), get(frame, "dovetail"), plate_t], get(frame, "x")[1], pin, tap,
                          motor_z + 5, fit)
@@ -150,6 +159,15 @@ function layout(syringe, motor, pin, pin_washer, motor_screw, fit, press, hole, 
         ["frame", frame], ["crank", crank], ["rod", rod], ["clip", clip], ["body", body],
     ];
 // clang-format on
+
+// The rod's edge at x, at its widest over a turn: how far it swings off the axis there, plus half its width.
+function rod_edge(x, crank_x, throw, rod_l,
+                  half_w) = half_w +
+                            max([for (a = [0:2:358]) let(p = [ crank_x + throw *cos(a), throw *sin(a) ],
+                                                         c = p[0] - sqrt(rod_l * rod_l - p[1] * p[1])) x >= c &&
+                                         x <= p[0]
+                                     ? abs(p[1]) * (x - c) / (p[0] - c)
+                                     : 0]);
 
 // The crank pin's [x, y] at crank angle a.
 function crank_pin(L, a) = [ get(L, "crank_x"), 0 ] + get(L, "throw") * [ cos(a), sin(a) ];
@@ -263,9 +281,11 @@ module report(L)
     echo(str("frame ", get(f, "x")[1] - get(f, "x")[0], " x ", get(f, "w"), ", syringe axis ", get(L, "axis_z"),
              " above its underside"));
     b = get(L, "body");
-    echo(str("body ", get(b, "x")[1] - get(b, "x")[0] + 2 * get(b, "end_t"), " long x ",
-             2 * (get(b, "a") + get(b, "wall")), " across flats, the syringe axis ", get(L, "axis_z") - get(b, "zc"),
-             " above its centre"));
+    echo(str(
+        "body ", get(b, "x")[1] - get(b, "x")[0] + 2 * get(b, "end_t"), " long; ",
+        [for (sec = [ get(b, "front"), get(b, "back") ])[2 * (sec[0] + get(b, "wall")),
+                                                         get(b, "T") + get(b, "lid")[0] - sec[1] + 2 * get(b, "wall")]],
+        " wide x high at the front and the back, outside, with the lid"));
     echo(str("screws: 2 x M3 x ", get(L, "pin_l"), " with 2 x M3 washer (crank pin, clip pin), ", get(L, "pin_thread"),
              " of thread; 2 x M1.6 x ", get(L, "motor_screw_l"), " pan head (motor), ", get(L, "motor_thread"),
              " of it into the gearbox; 2 x M3 x 10 (cap)"));
