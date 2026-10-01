@@ -34,20 +34,27 @@ crank, the rod and the plunger all move in one horizontal plane:
   wall. A sled under the clip runs 20 mm past the rod's pin, between the frame's rails with 0.3 mm
   a side. It stays 2 mm below the rod and clear of the plate.
 
-- **Body.** An octagonal tube the frame slides into from the back, on two rails that take the
-  plate's dovetailed long edges, up to a front wall at the snap ring. A cap screwed to the back end
-  (2 × M3 × 10) holds the frame there with a post and lets the motor's wires out through a hole. The
-  syringe goes in and out through a 36 mm window in the roof over the barrel and the clip's travel,
-  at any clip position; the barrel passes the front wall through a slot. A lid inside the roof
-  closes the window: a channel following the roof's inside, riding on two ledges, which slides back
-  under the roof to open as far as the cap. Its front end hangs down to close the slot over the
-  barrel, and a wedge on it fits the slot tight only in the last few millimetres, holding it shut
-  whichever way up the unit is. The octagon is sized in `layout()` to clear everything the frame
-  carries over a whole turn, centred where that is least, and lengthened so the lid opens fully:
-  about 220 long × 79 across flats, the syringe axis 9.5 mm above its centre. It lies on a flat on a
-  desk, and a bracket can grip its lower faces upright. The push-button snaps into the clip's cup
-  past two small lips, so the syringe stays in whichever way up the unit is. Assembly: lid into the
-  tube from the back, then the frame, then the cap.
+- **Body.** A shell fitted round what the frame carries: narrow and shallow at the front, where
+  there is only the syringe, the plate and the clip (about 39 wide × 34 high outside), tapering from
+  where the rod starts to swing out to full width and the motor's depth where the crank turns (about
+  77 × 64), about 220 long. Each section is symmetric about the syringe axis's vertical plane,
+  square at the top and chamfered at the bottom as far as its contents allow; `layout()` sizes them
+  from the extremes of what the frame carries over a whole turn, and checks the taper clears the
+  rod's swing. The frame slides in from the back on two rails that take the plate's dovetailed long
+  edges, up to the front wall at the snap ring; a cap screwed to the back end (2 × M3 × 10) holds it
+  there with a post and lets the motor's wires out through a hole. The syringe goes in and out
+  through a 28 mm window in the roof, at any clip position, and the barrel passes the front wall
+  through a slot. A lid slides on rails along the roof, between a lip on the front wall and the cap:
+  its edges rest on the roof either side of the window; a bump under the middle of its back end
+  drops into a notch at the window's back edge when it is shut, and runs in a groove along the
+  roof's middle the rest of its travel. The bottom is not flat, so a desk stand is an add-on; the
+  narrow front is a constant section a bracket can grip. The push-button snaps into the clip's cup
+  past two small lips, so the syringe stays in whichever way up the unit is. The body prints
+  standing on its back end, 217 mm tall, with no supports: its walls lean in at most 43 degrees, and
+  the front wall bridges about 27 mm. Its rails start at the bed, so turn on the slicer's
+  elephant-foot compensation, and use a brim. No edge on it, the lid or the frame's plate comes to a
+  knife edge: the dovetails and the lid's bevels stand on short lands. Assembly: frame into the body
+  from the back, lid onto its rails from the back, then the cap.
 
 The motor never reverses: each revolution is one pull and one push. At a = 180° the plunger is in,
 stopping 1 mm short of the barrel's end, and at 0° it is out 58 mm.
