@@ -29,7 +29,7 @@ cad/main.scad       THE ENTRY POINT and the only file that draws: settings, layo
                     spec and position), the assembly (View > Animate turns it), `report`, and the
                     part to draw
 cad/catalog.scad    bought parts (syringe, N20, screws), each figure with its source
-cad/parts/          one printed part per file: frame, crank, rod, clip
+cad/parts/          one printed part per file: frame, crank, rod, clip, and the body with its cap
 docs/design.md      mechanism, part dimensions and their sources, open questions
 tools/stl_edges.py  counts STL edges that do not join exactly two facets
 output/             generated exports (gitignored)

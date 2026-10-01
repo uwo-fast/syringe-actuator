@@ -8,7 +8,7 @@ OPENSCAD := env("OPENSCAD", "openscad")
 MAIN := "cad/main.scad"
 
 # Printed parts, by main.scad's `part` names. `test` checks each; `export` writes each to output/.
-PARTS := "frame crank rod clip"
+PARTS := "frame crank rod clip body cap"
 
 default:
     @just --list
