@@ -47,14 +47,15 @@ module u_cut(s, w, len)
     translate([ 0, -w / 2, get(s, "axis_z") ]) cube([ len, w, 100 ]);
 }
 
-// The plate's section across the axis: w wide at the top, its long edges' feet dovetailed out.
-module plate_section(s)
-{
-    w = get(s, "w");
-    d = get(s, "dovetail");
-    t = get(s, "plate_t");
-    polygon([ [ -w / 2 - d, 0 ], [ w / 2 + d, 0 ], [ w / 2, d ], [ w / 2, t ], [ -w / 2, t ], [ -w / 2, d ] ]);
-}
+// The plate's section across the axis, as points: w wide at the top, t thick, its long edges' feet dovetailed out d
+// at 45 degrees, each foot standing on a land so its edge is square, not a knife edge. The body's rails take their
+// channel from the same points.
+function plate_profile(w, d, t, land = 0.6) = [
+    [ -w / 2 - d, 0 ], [ w / 2 + d, 0 ], [ w / 2 + d, land ], [ w / 2, d + land ], [ w / 2, t ], [ -w / 2, t ],
+    [ -w / 2, d + land ], [ -w / 2 - d, land ]
+];
+
+module plate_section(s) polygon(plate_profile(get(s, "w"), get(s, "dovetail"), get(s, "plate_t")));
 
 module frame(s)
 {
