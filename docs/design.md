@@ -35,14 +35,19 @@ crank, the rod and the plunger all move in one horizontal plane:
   a side. It stays 2 mm below the rod and clear of the plate.
 
 - **Body.** An octagonal tube the frame slides into from the back, on two rails that take the
-  plate's dovetailed long edges, up to a front wall at the snap ring; a cap screwed to the back end
-  (2 × M3 × 10) holds it there with a post and lets the motor's wires out through a hole. The
-  syringe goes in and out through a 36 mm window over the barrel and the clip's travel, at any clip
-  position, and the barrel passes the front wall through a slot open to the window. The octagon is
-  sized in `layout()` to clear everything the frame carries over a whole turn, and centred where
-  that is least: about 209 long × 79 across flats, the syringe axis 9.5 mm above its centre. It lies
-  on a flat on a desk, and a bracket can grip it upright. The push-button snaps into the clip's cup
-  past two small lips, so the syringe stays in whichever way up the unit is.
+  plate's dovetailed long edges, up to a front wall at the snap ring. A cap screwed to the back end
+  (2 × M3 × 10) holds the frame there with a post and lets the motor's wires out through a hole. The
+  syringe goes in and out through a 36 mm window in the roof over the barrel and the clip's travel,
+  at any clip position; the barrel passes the front wall through a slot. A lid inside the roof
+  closes the window: a channel following the roof's inside, riding on two ledges, which slides back
+  under the roof to open as far as the cap. Its front end hangs down to close the slot over the
+  barrel, and a wedge on it fits the slot tight only in the last few millimetres, holding it shut
+  whichever way up the unit is. The octagon is sized in `layout()` to clear everything the frame
+  carries over a whole turn, centred where that is least, and lengthened so the lid opens fully:
+  about 220 long × 79 across flats, the syringe axis 9.5 mm above its centre. It lies on a flat on a
+  desk, and a bracket can grip its lower faces upright. The push-button snaps into the clip's cup
+  past two small lips, so the syringe stays in whichever way up the unit is. Assembly: lid into the
+  tube from the back, then the frame, then the cap.
 
 The motor never reverses: each revolution is one pull and one push. At a = 180° the plunger is in,
 stopping 1 mm short of the barrel's end, and at 0° it is out 58 mm.

@@ -34,7 +34,7 @@ include <lib/section.scad>;
 // Customizer: one line per setting, so clang-format must leave the dropdown comments whole.
 // clang-format off
 /* [View] */
-part = "assembly"; // [assembly, housed, frame, crank, rod, clip, body, cap, report]
+part = "assembly"; // [assembly, housed, frame, crank, rod, clip, body, lid, cap, report]
 angle = 180;       // [0:5:355]
 show_bought = true;
 section = "none";  // [none, x, y, z]
@@ -68,6 +68,9 @@ section(section, section_at)
         translate([ 0, 0, get(get(L, "clip"), "half_w") ]) clip(get(L, "clip"));
     else if (part == "body")
         let(b = get(L, "body")) translate([ 0, 0, get(b, "a") + get(b, "wall") - get(b, "zc") ]) body(b);
+    else if (part == "lid")
+        let(b = get(L, "body")) translate([ 0, 0, get(b, "zc") + get(b, "a") - get(b, "slide") ]) rotate([ 180, 0, 0 ])
+            lid(b);
     else if (part == "cap")
         let(b = get(L, "body")) rotate([ 0, 90, 0 ]) translate([ -get(b, "x")[1] - get(b, "end_t"), 0, 0 ]) cap(b);
     else if (part == "report")
@@ -170,6 +173,7 @@ module assembly(L, a, bought = true, body = false)
         color("lightsteelblue", 0.35)
         {
             body(get(L, "body"));
+            lid(get(L, "body"));
             cap(get(L, "body"));
         }
     if (bought)
