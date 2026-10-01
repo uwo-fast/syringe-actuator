@@ -34,6 +34,16 @@ crank, the rod and the plunger all move in one horizontal plane:
   wall. A sled under the clip runs 20 mm past the rod's pin, between the frame's rails with 0.3 mm
   a side. It stays 2 mm below the rod and clear of the plate.
 
+- **Body.** An octagonal tube the frame slides into from the back, on two rails that take the
+  plate's dovetailed long edges, up to a front wall at the snap ring; a cap screwed to the back end
+  (2 × M3 × 10) holds it there with a post and lets the motor's wires out through a hole. The
+  syringe goes in and out through a 36 mm window over the barrel and the clip's travel, at any clip
+  position, and the barrel passes the front wall through a slot open to the window. The octagon is
+  sized in `layout()` to clear everything the frame carries over a whole turn, and centred where
+  that is least: about 209 long × 79 across flats, the syringe axis 9.5 mm above its centre. It lies
+  on a flat on a desk, and a bracket can grip it upright. The push-button snaps into the clip's cup
+  past two small lips, so the syringe stays in whichever way up the unit is.
+
 The motor never reverses: each revolution is one pull and one push. At a = 180° the plunger is in,
 stopping 1 mm short of the barrel's end, and at 0° it is out 58 mm.
 
@@ -113,3 +123,5 @@ draws the inline one, simplified, from the figures above.
    with clearance, and 24.5 sets only the frame's width. For the worm motor, if it is ever used,
    measure its shaft length and boss.
 2. **Mounting:** deferred until the prototype works.
+3. **Measure** the barrel's length, flange to luer tip, and the motor's end boss and terminals past
+   its can. The body is sized with 3 mm nominal for the terminals.

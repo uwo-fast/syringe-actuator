@@ -7,7 +7,8 @@
  * The barrel's flange drops into a slot, whose walls take the push and the pull, and the barrel
  * snaps into a ring in front of it. Two rails either side of the clip's travel guide its sled. The
  * motor's gearbox goes up into a pocket under the plate, located by its bushing and held by two M1.6
- * screws from above, counterbored under the crank's hub; the motor hangs below the plate.
+ * screws from above, counterbored under the crank's hub; the motor hangs below the plate. The plate's
+ * long edges are dovetails, which the body's rails take when the frame slides in.
  *
  * x along the syringe axis, 0 at the flange's rear face, the nozzle towards -x; z = 0 at the plate's
  * underside. Prints as it stands.
@@ -21,16 +22,16 @@ include <../lib/struct.scad>;
 // block, length, wall] of the snap ring; snap: its opening, as a fraction of the barrel's diameter.
 // chamfer: the motor pocket's mouth. rails: [x of their end, half the gap between them, their top's
 // z]; they start at the flange block and reach out to the plate's edges. seat_z: the motor screws'
-// heads' seat.
+// heads' seat. dovetail: how far each long edge's foot reaches out, at 45 degrees.
 // clang-format off
 function frame_spec(syringe, motor, screw, fit, wall, plate_t, pocket, axis_z, crank_x, rails, seat_z,
-                    ring = [15, 6, 2], snap = 0.8, chamfer = 0.5) =
+                    ring = [15, 6, 2], snap = 0.8, chamfer = 0.5, dovetail = 2.5) =
     let (block = [-get(syringe, "flange_t") - fit - wall, fit + wall],
          ring_x = block[0] - ring[0] - ring[1]) [
         ["name", "frame"], ["syringe", syringe], ["motor", motor], ["screw", screw], ["fit", fit],
         ["plate_t", plate_t], ["pocket", pocket], ["axis_z", axis_z], ["crank_x", crank_x],
         ["ring", ring], ["snap", snap], ["chamfer", chamfer], ["block", block], ["ring_x", ring_x],
-        ["rail_end", rails[0]], ["rail_gap", rails[1]], ["rail_top", rails[2]], ["seat_z", seat_z],
+        ["rail_end", rails[0]], ["rail_gap", rails[1]], ["rail_top", rails[2]], ["seat_z", seat_z], ["dovetail", dovetail],
         ["w", get(syringe, "flange")[0] + 2 * fit],
         ["x", [ring_x, crank_x + get(motor, "h") / 2 + fit + wall]],
     ];
@@ -44,6 +45,15 @@ module u_cut(s, w, len)
 {
     on_axis(s, w, len);
     translate([ 0, -w / 2, get(s, "axis_z") ]) cube([ len, w, 100 ]);
+}
+
+// The plate's section across the axis: w wide at the top, its long edges' feet dovetailed out.
+module plate_section(s)
+{
+    w = get(s, "w");
+    d = get(s, "dovetail");
+    t = get(s, "plate_t");
+    polygon([ [ -w / 2 - d, 0 ], [ w / 2 + d, 0 ], [ w / 2, d ], [ w / 2, t ], [ -w / 2, t ], [ -w / 2, d ] ]);
 }
 
 module frame(s)
@@ -69,7 +79,7 @@ module frame(s)
     {
         union()
         {
-            translate([ x[0], -w / 2, 0 ]) cube([ x[1] - x[0], w, t ]);
+            translate([ x[0], 0, 0 ]) rotate([ 90, 0, 90 ]) linear_extrude(x[1] - x[0]) plate_section(s);
             translate([ block[0], -w / 2, t - 1 ]) cube([ block[1] - block[0], w, z - t + 3 ]);
             translate([ ring_x, 0, 0 ]) on_axis(s, ring_d, ring[1]);
             // under the ring, a base that flares from its sides at the axis's height down to the plate's
