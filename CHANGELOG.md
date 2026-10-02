@@ -11,6 +11,8 @@ and [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 - The printed crank-slider: frame, crank, rod and plunger clip (`cad/`), with an animated assembly
   and a report of the screws to buy
+- The body: a shell fitted round the mechanism, with a sliding lid over the syringe's window and a
+  cap the motor's wires leave through; `part="housed"` shows it, and `section()` cuts any view open
 - Design record: the crank-slider mechanism, the syringe and N20 gearmotor dimensions, and what is
   open (`docs/design.md`)
 - `just check` / `just test` gates for the OpenSCAD source, CI, and the pre-commit config
