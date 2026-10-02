@@ -235,8 +235,9 @@ module body_shell(s)
     }
 }
 
-// The cap, in place on the back end: screwed to the bosses, its post holding the plate's back end against the front
-// wall, the wires out through its hole. It closes the lid's rails too, so the lid stops against it.
+// The cap, in place on the back end: screwed to the bosses, the wires out through its hole. Its post is the plate's own
+// section, so it slides into the same rails, squares the cap onto the body and bears on the plate's whole back edge,
+// holding it against the front wall. It closes the lid's rails too, so the lid stops against it.
 module cap(s)
 {
     x = get(s, "x");
@@ -257,7 +258,7 @@ module cap(s)
                 translate([ -out, T + wall - 1 ]) square([ 2 * out, get(s, "lid")[0] + 1 ]);
             }
             post = get(s, "frame_end") + get(s, "slide");
-            translate([ post, -p[0] / 4, 0.5 ]) cube([ x[1] - post + 1, p[0] / 2, p[2] - 1 ]);
+            along_x(post, x[1] - post + 1) polygon(plate_profile(p[0], p[1], p[2]));
         }
         along_x(x[1] - 1, end_t + 2)
         {
