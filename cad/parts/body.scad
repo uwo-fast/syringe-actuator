@@ -92,7 +92,9 @@ module loft(s, g, x0, x1)
     n = len(st);
     ends = [for (i = [0:n - 1]) i == 0 ? [ x0, st[i][1] ] : i == n - 1 ? [ x1, st[i][1] ] : st[i]];
     for (i = [0:n - 2])
-        hull() for (e = [ ends[i], ends[i + 1] ]) along_x(e[0], 0.01) section_shape(e[1], get(s, "T"), g);
+        // each station a 0.01 slab, the last one ending at its station rather than starting there
+        hull() for (e = [ ends[i], ends[i + 1] ]) along_x(e[0] - (e == ends[n - 1] ? 0.01 : 0), 0.01)
+            section_shape(e[1], get(s, "T"), g);
 }
 
 // One rail's section, the +y one: it stands on the floor, holds the plate's edge from below, and hooks over its
