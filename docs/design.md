@@ -78,6 +78,19 @@ recommends keeping instantaneous torque under 2.5 kg·cm on this gearbox
 of that limit, and a blocked line reaches about the limit. 35 rpm gives a 1.7 s cycle and a peak
 plunger speed of about 106 mm/s. A lower supply voltage slows the motor roughly in proportion.
 
+**Motor for the larger syringes.** A 20 mL plunger, pushed by hand on a kitchen scale with the tip
+open (2026-10-02, rough), slides at about 250 g (2.5 N) and about 500 g (4.9 N) pushed hard and
+fast. On a crank of about 35 mm throw, for a stroke of about 70 mm (not yet measured), that is about
+0.9 kg·cm running and 1.8 kg·cm at the hard push; a fully blocked line would add about 29 N of
+vacuum on the 19.1 mm bore and stall any motor considered here. The motor chosen is a 25 mm
+GA25YN370 at 12 V and 30 rpm (Parts, below): its seller gives a 12 kgf·cm stall, and Pololu
+recommends at most 4 kg·cm continuous on its 25 mm metal gearboxes, so it runs at under a tenth of
+its stall and well within what a gearbox of its size takes continuously. Rejected: the yellow
+plastic "TT" gearmotor (about 0.8 kg·cm stall at 6 V, 1:48, about 200 rpm: Adafruit's datasheet for
+product 3777), and a 20 mm "turbo worm" motor whose listing's 8 kg·cm a buyer measured at under 1.
+A 37 mm JGB37-520 has more margin but costs about three times as much, and the measured load does
+not need it.
+
 ## Parts
 
 ### Syringe (measured, 2026-09-29)
@@ -113,6 +126,22 @@ shaft's length, measured on the motor in hand (2026-09-29):
 | Bushing | Ø4.0, 0.7 proud |
 | Mounting | 2 × M1.6 tapped, 9.0 apart, either side of the shaft |
 
+### GA25YN370 gearmotor, 12 V 30 rpm (for the larger syringes)
+
+Ordered 2026-10-02: HERCHR, Amazon.ca B0BX6B91L9; the same part is sold by aqxreight (B0BSC9CK13)
+and as the JGA25-370 and 25GA-370. Outline from Seeed's JGA25-370 drawing
+(<https://media.digikey.com/pdf/Data%20Sheets/Seeed%20Technology/114090046_Web.pdf>), the same 25 mm
+form factor; ratings from the HERCHR listing.
+
+| Feature | Size |
+| --- | --- |
+| Gearbox | Ø25 × L; L grows with the ratio (21 on Seeed's 350 rpm part) and is not given for this one: measure |
+| Can | Ø24.4 × 30.8 |
+| Shaft | Ø4.0, 3.5 across the flat, the flat 8 long from the tip; 10 long (listing) or 11.5 ± 0.5 (Seeed) from the gearbox face: measure |
+| Boss | Ø7 × 2.5 |
+| Mounting | 2 × M3 tapped, 17 apart across the shaft, at most 3.5 deep. The face's other two screws hold the gearbox together: leave them in |
+| Rating (listing) | 12 V, 30 rpm no load; 25 rpm at 770 gf·cm; stall 12 kgf·cm at up to 2.1 A |
+
 ### N20 worm (90°) gearmotor
 
 From a vendor outline drawing that is not to scale
@@ -139,3 +168,5 @@ draws the inline one, simplified, from the figures above.
 2. **Mounting:** the desk stand and the vertical mount are add-ons still to design.
 3. **Measure** the barrel's length, flange to luer tip, and the motor's end boss and terminals past
    its can. The body is sized with 3 mm nominal for the terminals.
+4. **Measure the GA25YN370 when it arrives:** its gearbox length, the shaft's length from the gearbox
+   face, where its two M3 holes sit relative to the D-flat, and its end boss and terminals.
