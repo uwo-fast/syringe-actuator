@@ -1,7 +1,9 @@
 # Design
 
-**Status:** prototype. Nothing has been printed. The syringe figures below were measured by hand;
-the motor figures come from published drawings and are labelled with their source.
+**Status:** working prototype. The third print (2026-10-02) runs as designed at the default
+settings: the frame slides into the body, the cap's post squares it, the push-button snaps into the
+clip, and the lid slides and clicks shut. The syringe figures below were measured by hand; the motor
+figures come from published drawings and are labelled with their source.
 
 ## Scope
 
@@ -134,6 +136,6 @@ draws the inline one, simplified, from the figures above.
 1. **Measure** the plan shape of the barrel flanges; the slot is open at the sides and 12.6 tall
    with clearance, and 24.5 sets only the frame's width. For the worm motor, if it is ever used,
    measure its shaft length and boss.
-2. **Mounting:** deferred until the prototype works.
+2. **Mounting:** the desk stand and the vertical mount are add-ons still to design.
 3. **Measure** the barrel's length, flange to luer tip, and the motor's end boss and terminals past
    its can. The body is sized with 3 mm nominal for the terminals.
