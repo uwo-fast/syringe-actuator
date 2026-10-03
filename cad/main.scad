@@ -22,7 +22,9 @@
  */
 
 // clang-format off
-include <catalog.scad>;
+include <purchased/syringes.scad>;
+include <purchased/motors.scad>;
+include <purchased/fasteners.scad>;
 include <parts/frame.scad>;
 include <parts/crank.scad>;
 include <parts/rod.scad>;
@@ -52,11 +54,7 @@ grip = 0.15;  // per side: how far the clip's lips reach over the push-button; m
 /* [Hidden] */
 $fn = 48;
 
-chosen = syringe == "1ml"    ? syringe_1ml
-         : syringe == "3ml"  ? syringe_3ml
-         : syringe == "5ml"  ? syringe_5ml
-         : syringe == "10ml" ? syringe_10ml
-                             : undef;
+chosen = syringe_by_name(syringe);
 L = assert(!is_undef(chosen), str("no syringe '", syringe, "'"))
     layout(syringe = chosen, motor = n20_1000, pin = m3_shcs, pin_washer = m3_washer, motor_screw = m1_6_flat,
            fit = fit, press = press, hole = hole, wall = wall, grip = grip);
@@ -211,58 +209,9 @@ module assembly(L, a, bought = true, body = false)
         }
     if (bought)
     {
-        syringe(L, button_x);
-        motor(L);
+        translate([ 0, 0, z ]) syringe(get(L, "syringe"), button_x);
+        translate([ get(L, "crank_x"), 0, get(L, "pocket") ]) motor(get(L, "motor"));
         screws(L, [ cp, [ px, 0 ] ]);
-    }
-}
-
-// The syringe with its push-button's front face at x = button_x. Its bore is cut through the barrel and the flanges,
-// drawn as one solid so no two faces lie on each other, with a nominal wall (unmeasured, drawing only); the stopper is
-// a hair smaller than the bore, and nominally 5 long.
-module syringe(L, button_x)
-{
-    s = get(L, "syringe");
-    z = get(L, "axis_z");
-    ft = get(s, "flange_t");
-    front = -ft - get(s, "barrel_l");
-    stopper = front + button_x - get(s, "exposed");
-    span = get(s, "plunger_span");
-    bore = get(s, "barrel_od") - 2 * 0.8;
-    translate([ 0, 0, z ])
-    {
-        color("white", 0.4) difference()
-        {
-            union()
-            {
-                translate([ front, 0, 0 ]) rotate([ 0, 90, 0 ]) cylinder(d = get(s, "barrel_od"), h = -front);
-                translate([ -ft, -get(s, "flange")[0] / 2, -get(s, "flange")[1] / 2 ])
-                    cube([ ft, get(s, "flange")[0], get(s, "flange")[1] ]);
-            }
-            translate([ front - 1, 0, 0 ]) rotate([ 0, 90, 0 ]) cylinder(d = bore, h = -front + 2);
-        }
-        color("white")
-        {
-            translate([ button_x, 0, 0 ]) rotate([ 0, 90, 0 ]) cylinder(d = get(s, "button_d"), h = get(s, "button_t"));
-            for (r = [ 0, 90 ])
-                rotate([ r, 0, 0 ]) translate([ stopper, -span / 2, -0.6 ]) cube([ button_x - stopper, span, 1.2 ]);
-        }
-        color("dimgray") translate([ stopper, 0, 0 ]) rotate([ 0, 90, 0 ]) cylinder(d = bore - 0.2, h = 5);
-    }
-}
-
-module motor(L)
-{
-    m = get(L, "motor");
-    f = get(L, "pocket");
-    gb = get(m, "gearbox_l");
-    translate([ get(L, "crank_x"), 0, 0 ])
-    {
-        color("goldenrod") translate([ -get(m, "h") / 2, -get(m, "w") / 2, f - gb ])
-            cube([ get(m, "h"), get(m, "w"), gb ]);
-        color("silver") translate([ -get(m, "h") / 2, -get(m, "w") / 2, f - gb - get(m, "can_l") ])
-            cube([ get(m, "h"), get(m, "w"), get(m, "can_l") ]);
-        color("silver") translate([ 0, 0, f ]) cylinder(d = get(m, "shaft_d"), h = get(m, "shaft_l"));
     }
 }
 
@@ -276,30 +225,11 @@ module screws(L, pins)
     seat = get(L, "axis_z") + get(get(L, "crank"), "boss")[1];
     color("silver") for (p = pins) translate([ p[0], p[1], seat ])
     {
-        difference()
-        {
-            cylinder(d = get(washer, "od"), h = get(washer, "h"));
-            translate([ 0, 0, -1 ]) cylinder(d = get(washer, "id"), h = get(washer, "h") + 2);
-        }
+        washer(washer);
         screw(pin, get(L, "pin_l"), get(washer, "h"));
     }
     color("dimgray") for (y = [ -1, 1 ] * get(get(L, "motor"), "hole_pitch") / 2)
         translate([ get(L, "crank_x"), y, get(L, "motor_head_z") ]) flat_screw(ms, get(L, "motor_screw_l"));
-}
-
-// A screw of length len whose head seats at z = seat.
-module screw(s, len, seat)
-{
-    translate([ 0, 0, seat ]) cylinder(d = get(s, "head_d"), h = get(s, "head_h"));
-    translate([ 0, 0, seat - len ]) cylinder(d = get(s, "d"), h = len);
-}
-
-// A flat head screw of overall length len, its head's top at z = 0.
-module flat_screw(s, len)
-{
-    hd = get(s, "head_d");
-    translate([ 0, 0, -(hd - get(s, "d")) / 2 ]) cylinder(d1 = get(s, "d"), d2 = hd, h = (hd - get(s, "d")) / 2);
-    translate([ 0, 0, -len ]) cylinder(d = get(s, "d"), h = len);
 }
 
 // Echoes what to buy and the derived figures.

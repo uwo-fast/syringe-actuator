@@ -28,7 +28,8 @@ hardware has to say why a printed part cannot do the job.
 cad/main.scad       THE ENTRY POINT and the only file that draws: settings, layout() (every part's
                     spec and position), the assembly (View > Animate turns it), `report`, and the
                     part to draw
-cad/catalog.scad    bought parts (syringe, N20, screws), each figure with its source
+cad/purchased/      bought parts: syringes, motors, fasteners hold the rows, each figure with its
+                    source; syringe, motor, fastener draw one
 cad/parts/          one printed part per file: frame, crank, rod, clip, and the body with its cap
 docs/design.md      mechanism, part dimensions and their sources, open questions
 tools/stl_edges.py  checks an STL is one closed shell, every edge joining two facets
@@ -54,7 +55,8 @@ derived figures.
 ## Conventions
 
 - **Bought parts are data, printed parts are specs.** Purchased parts are key-value structs in
-  `cad/catalog.scad`, read with `get(row, "key")`, which stops the build on a missing or unmeasured
+  `cad/purchased/`, one file of rows per kind (`syringes.scad`) and one that draws one
+  (`syringe.scad`), read with `get(row, "key")`, which stops the build on a missing or unmeasured
   value. A printed part is a `*_spec()` function and a module that takes the spec, in its own file
   under `cad/parts/`. `layout()` in `main.scad` is the one place they are sized and arranged.
   Nothing outside `main.scad` reads a global.
@@ -62,7 +64,8 @@ derived figures.
   another project's structure.
 - **Libraries draw nothing.** Only `cad/main.scad` has top-level geometry; `check-scad` fails any
   other file that does. Every printed part is a `part` choice in `main.scad`, added to `PARTS` in
-  the justfile, and every syringe built for is a `syringe` choice there, added to `SYRINGES`.
+  the justfile, and every syringe built for is in `syringes` in `cad/purchased/syringes.scad`, a
+  `syringe` choice in `main.scad`, and in `SYRINGES`.
 - **OpenSCAD exits 0 on a failed assert.** Gates grep stderr for `ERROR` and `WARNING`; never trust
   `$?`.
 - **Overshoot every cutter, overlap every union.** Solids that meet only along an edge or at a point
