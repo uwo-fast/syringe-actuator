@@ -9,7 +9,7 @@
 ## Overview
 
 An N20 gearmotor runs in one direction straight off a supply. A printed crank and connecting rod
-turn that into a continuous pull and push over nearly the whole stroke of a 1, 3 or 5 mL luer
+turn that into a continuous pull and push over nearly the whole stroke of a 1, 3, 5 or 10 mL luer
 syringe, the plunger's clip guided on rails. The mechanism sits in a printed body: the syringe loads
 through a lidded window in the roof, and the motor's two wires come out the back. The bought
 hardware is the syringe, the motor and a few screws.

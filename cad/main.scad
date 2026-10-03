@@ -35,7 +35,7 @@ include <lib/section.scad>;
 // clang-format off
 /* [View] */
 part = "assembly"; // [assembly, housed, frame, crank, rod, clip, body, lid, cap, report]
-syringe = "3ml";   // [1ml, 3ml, 5ml]
+syringe = "3ml";   // [1ml, 3ml, 5ml, 10ml]
 angle = 180;       // [0:5:355]
 show_bought = true;
 section = "none";  // [none, x, y, z]
@@ -52,7 +52,11 @@ grip = 0.15;  // per side: how far the clip's lips reach over the push-button; m
 /* [Hidden] */
 $fn = 48;
 
-chosen = syringe == "1ml" ? syringe_1ml : syringe == "3ml" ? syringe_3ml : syringe == "5ml" ? syringe_5ml : undef;
+chosen = syringe == "1ml"    ? syringe_1ml
+         : syringe == "3ml"  ? syringe_3ml
+         : syringe == "5ml"  ? syringe_5ml
+         : syringe == "10ml" ? syringe_10ml
+                             : undef;
 L = assert(!is_undef(chosen), str("no syringe '", syringe, "'"))
     layout(syringe = chosen, motor = n20_1000, pin = m3_shcs, pin_washer = m3_washer, motor_screw = m1_6_pan, fit = fit,
            press = press, hole = hole, wall = wall, grip = grip);
