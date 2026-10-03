@@ -35,6 +35,7 @@ include <lib/section.scad>;
 // clang-format off
 /* [View] */
 part = "assembly"; // [assembly, housed, frame, crank, rod, clip, body, lid, cap, report]
+syringe = "3ml";   // [1ml, 3ml, 5ml]
 angle = 180;       // [0:5:355]
 show_bought = true;
 section = "none";  // [none, x, y, z]
@@ -50,8 +51,10 @@ wall = 3;
 /* [Hidden] */
 $fn = 48;
 
-L = layout(syringe = syringe_3ml, motor = n20_1000, pin = m3_shcs, pin_washer = m3_washer, motor_screw = m1_6_pan,
-           fit = fit, press = press, hole = hole, wall = wall);
+chosen = syringe == "1ml" ? syringe_1ml : syringe == "3ml" ? syringe_3ml : syringe == "5ml" ? syringe_5ml : undef;
+L = assert(!is_undef(chosen), str("no syringe '", syringe, "'"))
+    layout(syringe = chosen, motor = n20_1000, pin = m3_shcs, pin_washer = m3_washer, motor_screw = m1_6_pan, fit = fit,
+           press = press, hole = hole, wall = wall);
 
 // The assembly bare or in its body, or each printed part turned to how it prints; cut open if asked.
 section(section, section_at)
@@ -84,21 +87,22 @@ section(section, section_at)
 // plate_t: stiff enough over the frame's length; pocket: the gearbox's depth into it, which locates
 // it square. gap: the crank's underside over the plate, set by the shaft's tip bottoming in the
 // crank's blind bore. float: the clip's underside over the plate. clip_wall: the clip's cup, which
-// bears only the stroke on the push-button's rim. rod_l: at least three throws, so the rod leans at
-// most asin(1/3) = 19.5 degrees. rod_w: wide enough for 2 of wall round a boss's bore. boss_d: the
+// bears only the stroke on the push-button's rim. rod_min: the rod's shortest; it is at least three throws long,
+// so it leans at most asin(1/3) = 19.5 degrees. rod_w: wide enough for 2 of wall round a boss's bore. boss_d: the
 // washer overlaps the rod's bore round it by at least 0.5 a side. play: the rod's end float between
 // its seat and the washer. sled: [reach past the clip's pin, depth of its top and the rails' under the
 // rod]. slide: per side, the sled between the rails. recess: the motor screws' heads under the
 // plate's top. margin: the stopper stops this short of the barrel's end, for the error in exposed and
-// the print. pin_l and motor_screw_l: the screws' lengths. window: the body's window's width, room
-// for the barrel's flanges and fingers round them.
+// the print. pin_l and motor_screw_l: the screws' lengths. window: how much wider the body's window is
+// than the barrel's flanges, room for fingers round them.
 // clang-format off
 function layout(syringe, motor, pin, pin_washer, motor_screw, fit, press, hole, wall,
-                plate_t = 5, pocket = 2, gap = 1, float = 1.5, clip_wall = 2, rod_t = 4, rod_l = 90,
+                plate_t = 5, pocket = 2, gap = 1, float = 1.5, clip_wall = 2, rod_t = 4, rod_min = 90,
                 rod_w = 10, boss_d = 5.6, play = 0.3, sled = [20, 2], slide = 0.3, recess = 0.2,
-                margin = 1, pin_l = 10, motor_screw_l = 3, window = 28) =
+                margin = 1, pin_l = 10, motor_screw_l = 3, window = 3.5) =
     let (
         throw = get(syringe, "stroke") / 2,
+        rod_l = max(rod_min, ceil(3 * throw)),
         boss = [boss_d, rod_t + play],
         rod_bore = boss_d + 2 * fit,
         tap = get(pin, "tap") + 2 * hole,
@@ -137,7 +141,7 @@ function layout(syringe, motor, pin, pin_washer, motor_screw, fit, press, hole, 
         rod_edges = [for (x = [get(frame, "x")[0]:1:crank_x]) [x, rod_edge(x, crank_x, throw, rod_l, rod_w / 2)]],
         body = body_spec(front, concat(envelope, front), rod_edges, crank_x - reach,
                          [get(frame, "x")[0], max(crank_x + reach, get(frame, "x")[1]) + 2],
-                         [button_in + 2 * throw + get(clip, "back") + 5, window], axis_z, get(syringe, "barrel_od"),
+                         [button_in + 2 * throw + get(clip, "back") + 5, get(syringe, "flange")[0] + window], axis_z, get(syringe, "barrel_od"),
                          [get(frame, "w"), get(frame, "dovetail"), plate_t], get(frame, "x")[1], pin, tap,
                          motor_z + 5, fit)
     )
@@ -147,7 +151,7 @@ function layout(syringe, motor, pin, pin_washer, motor_screw, fit, press, hole, 
     assert(pin_l - stack >= 4, "the pin screws have under 4 of thread")
     assert(get(pin_washer, "od") - rod_bore >= 1, "the washers barely overlap the rod's bores")
     assert(rod_w - rod_bore >= 4, "the rod has under 2 of wall round its bores")
-    assert(rod_l >= 3 * throw, "the rod is under three throws long")
+    assert(get(syringe, "barrel_l") > margin + 2 * throw, "the stroke pulls the stopper's face out of the barrel")
     assert(sweep_x - rails[0] >= 1, str("the rails reach ", rails[0] - sweep_x + 1, " into the crank's sweep"))
     assert(sled[1] >= 1, "the sled and the rails are under 1 below the rod")
     [
@@ -202,7 +206,9 @@ module assembly(L, a, bought = true, body = false)
     }
 }
 
-// The syringe with its push-button's front face at x = button_x.
+// The syringe with its push-button's front face at x = button_x. Its bore is cut through the barrel and the flanges,
+// drawn as one solid so no two faces lie on each other, with a nominal wall (unmeasured, drawing only); the stopper is
+// a hair smaller than the bore, and nominally 5 long.
 module syringe(L, button_x)
 {
     s = get(L, "syringe");
@@ -211,20 +217,26 @@ module syringe(L, button_x)
     front = -ft - get(s, "barrel_l");
     stopper = front + button_x - get(s, "exposed");
     span = get(s, "plunger_span");
+    bore = get(s, "barrel_od") - 2 * 0.8;
     translate([ 0, 0, z ])
     {
-        color("white", 0.4) translate([ front, 0, 0 ]) rotate([ 0, 90, 0 ])
-            cylinder(d = get(s, "barrel_od"), h = get(s, "barrel_l"));
-        color("white", 0.6) translate([ -ft, -get(s, "flange")[0] / 2, -get(s, "flange")[1] / 2 ])
-            cube([ ft, get(s, "flange")[0], get(s, "flange")[1] ]);
+        color("white", 0.4) difference()
+        {
+            union()
+            {
+                translate([ front, 0, 0 ]) rotate([ 0, 90, 0 ]) cylinder(d = get(s, "barrel_od"), h = -front);
+                translate([ -ft, -get(s, "flange")[0] / 2, -get(s, "flange")[1] / 2 ])
+                    cube([ ft, get(s, "flange")[0], get(s, "flange")[1] ]);
+            }
+            translate([ front - 1, 0, 0 ]) rotate([ 0, 90, 0 ]) cylinder(d = bore, h = -front + 2);
+        }
         color("white")
         {
             translate([ button_x, 0, 0 ]) rotate([ 0, 90, 0 ]) cylinder(d = get(s, "button_d"), h = get(s, "button_t"));
             for (r = [ 0, 90 ])
                 rotate([ r, 0, 0 ]) translate([ stopper, -span / 2, -0.6 ]) cube([ button_x - stopper, span, 1.2 ]);
         }
-        color("dimgray") translate([ stopper, 0, 0 ]) rotate([ 0, 90, 0 ])
-            cylinder(d = get(s, "barrel_od") - 1.2, h = 5);
+        color("dimgray") translate([ stopper, 0, 0 ]) rotate([ 0, 90, 0 ]) cylinder(d = bore - 0.2, h = 5);
     }
 }
 
