@@ -53,10 +53,12 @@ function body_spec(front_pts, back_pts, rod, sweep_x, x, window, axis_z, barrel_
     let (T = max([for (p = back_pts) p[1]]) + clr,
          front = section_fit(front_pts, T, clr),
          back = section_fit(back_pts, T, clr),
-         // the narrow front runs as far as the rod's edge keeps clr inside it; the full section starts clr before the
-         // crank's sweep
-         x1 = max([for (r = rod) if (r[1] + clr <= front[0]) r[0]]),
+         // the narrow front runs as far as the rod's edge keeps clr inside it, but no further than keeps the taper
+         // within 45 degrees of the body's axis, which is upright as it prints; the full section starts clr before
+         // the crank's sweep
          x2 = sweep_x - clr,
+         x1 = min(max([for (r = rod) if (r[1] + clr <= front[0]) r[0]]),
+                  x2 - max(back[0] - front[0], front[1] - back[1])),
          lid_x = [x[0] + slide, window[0] + lid[2]],
          x_back = max(x[1], window[0] + lid_x[1] - lid_x[0] + slide + 1),
          stations = [[x[0] - end_t, front], [x1, front], [x2, back], [x_back, back]],
