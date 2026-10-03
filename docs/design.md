@@ -98,11 +98,11 @@ costs about three times as much, and the measured load does not need it.
 ### Syringes (measured)
 
 The 3 mL measured 2026-09-29 (its barrel length and stroke 2026-10-02), the 1, 5 and 20 mL
-2026-10-02. `syringe` in the Customizer picks which one the parts are built for: the 1, 3 or 5 mL.
-The 20 mL waits on the round 25 mm motor, which the frame does not take yet. They are not BD's: the
-3 and 5 mL carry no maker's mark (BD prints its logo at the scale's end), and another maker's
-syringe of the same volume can differ by most of a millimetre, so a syringe from elsewhere is
-measured and added as its own entry ([`measuring.md`](measuring.md)).
+2026-10-02. `syringe` in the Customizer picks which one the parts are built for: the 1, 3 or 5 mL,
+or BD's 10 mL below. The 20 mL waits on the round 25 mm motor, which the frame does not take yet.
+They are not BD's: the 3 and 5 mL carry no maker's mark (BD prints its logo at the scale's end), and
+another maker's syringe of the same volume can differ by most of a millimetre, so a syringe from
+elsewhere is measured and added as its own entry ([`measuring.md`](measuring.md)).
 
 | Feature | 1 mL | 3 mL | 5 mL | 20 mL |
 | --- | --- | --- | --- | --- |
@@ -113,6 +113,24 @@ measured and added as its own entry ([`measuring.md`](measuring.md)).
 | Working stroke | 64.25 mm | 57.25 mm | 52.5 mm | 80.0 mm |
 | Plunger exposed, stopper bottomed (flange rear face to push-button front face) | 10.75 mm | 10.75 mm | 14.3 mm | 11.75 mm |
 | Plunger, widest across (each narrows a little towards the push-button) | 3.8 mm, a solid rod | 7.5 mm, ribs about 1 mm thick; the last 9 mm before the push-button tapers to 6.6 mm | 11.5 mm | 18.3 mm |
+
+### Syringes (BD, estimated)
+
+BD Plastipak luer-lock syringes, estimated and not measured: from BD's photo of its range, scaled
+against the 5 and 20 mL above, with outside diameters from published figures (Fisher's 16.21 mm
+for the 10 mL, 23.77 and 29.5 mm for the 30 and 50 mL) and exposed lengths from a Terumo pump
+manual's flange-to-plunger-end figures less the push-button. Good to about a millimetre; measure one
+in hand and replace them. The 10 mL builds on the N20; the 30 and 50 mL need the round motor too.
+
+| Feature | 10 mL | 30 mL | 50 mL |
+| --- | --- | --- | --- |
+| Barrel OD | 16.2 mm | 23.8 mm | 29.4 mm |
+| Barrel, flange front face to the shoulder at the nozzle's root | 82.5 mm | 104.5 mm | 130.0 mm |
+| Barrel flanges | 30.0 × 19.0 mm, 1.5 mm thick | 44.0 × 27.5 mm, 1.8 mm thick | 53.0 × 33.2 mm, 2.2 mm thick |
+| Push-button | Ø18.0 mm, 1.6 mm thick | Ø26.0 mm, 1.8 mm thick | Ø31.0 mm, 2.0 mm thick |
+| Working stroke | 71.0 mm | 92.5 mm | 117.0 mm |
+| Plunger exposed, stopper bottomed | 11.5 mm | 14.5 mm | 15.0 mm |
+| Plunger, widest across | 13.7 mm | 20.8 mm | 25.7 mm |
 
 The parts drive 2 mm less than the working stroke, stopping 1 mm short of each end. The barrel must
 be longer than the stroke plus that margin, or the stroke pulls the stopper out; `layout()` asserts

@@ -44,6 +44,28 @@ syringe_20ml = [
     [ "barrel_l", 91.75 ]
 ];
 
+// BD Plastipak luer-lock syringes, estimated, not measured: from BD's photo of its range, scaled against the 5 and
+// 20 mL above, with outside diameters from published figures (Fisher's 16.21 for the 10 mL; 23.77 and 29.5 for the 30
+// and 50 mL) and exposed from a Terumo pump manual's flange-to-plunger-end figures less the push-button. Good to about
+// a millimetre; measure one in hand and replace these (docs/measuring.md). The 30 and 50 mL need the round motor too.
+syringe_10ml = [
+    [ "name", "10 mL BD luer-lock syringe (estimated)" ], [ "barrel_od", 16.2 ], [ "flange", [ 30.0, 19.0 ] ],
+    [ "flange_t", 1.5 ], [ "button_d", 18.0 ], [ "button_t", 1.6 ], [ "stroke", 71.0 ], [ "exposed", 11.5 ],
+    [ "plunger_span", 13.7 ], [ "barrel_l", 82.5 ]
+];
+
+syringe_30ml = [
+    [ "name", "30 mL BD luer-lock syringe (estimated)" ], [ "barrel_od", 23.8 ], [ "flange", [ 44.0, 27.5 ] ],
+    [ "flange_t", 1.8 ], [ "button_d", 26.0 ], [ "button_t", 1.8 ], [ "stroke", 92.5 ], [ "exposed", 14.5 ],
+    [ "plunger_span", 20.8 ], [ "barrel_l", 104.5 ]
+];
+
+syringe_50ml = [
+    [ "name", "50 mL BD luer-lock syringe (estimated)" ], [ "barrel_od", 29.4 ], [ "flange", [ 53.0, 33.2 ] ],
+    [ "flange_t", 2.2 ], [ "button_d", 31.0 ], [ "button_t", 2.0 ], [ "stroke", 117.0 ], [ "exposed", 15.0 ],
+    [ "plunger_span", 25.7 ], [ "barrel_l", 130.0 ]
+];
+
 // Pololu micro metal gearmotor dimension drawing, 2024-04-03 (the N20 form factor), 1000:1 gearbox.
 // Section w x h throughout; the M1.6 holes are pitch apart across w. shaft_l from the gearbox face,
 // measured on the motor in hand 2026-09-29, D-profile over its whole length. tail_l: the end cap's
