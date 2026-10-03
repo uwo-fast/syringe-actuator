@@ -21,7 +21,8 @@ the motor and a few screws.
 
 - `docs/` — design record
 - `cad/` — the OpenSCAD source: `main.scad` draws the assembly or any printed part for the chosen
-  syringe, and `just export` writes every printed part to `output/`
+  syringe; `just export` writes one syringe's parts to `output/`, and `just build` every syringe's
+  to `build/`
 
 ## Getting started
 

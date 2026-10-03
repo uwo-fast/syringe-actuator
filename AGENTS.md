@@ -32,7 +32,8 @@ cad/catalog.scad    bought parts (syringe, N20, screws), each figure with its so
 cad/parts/          one printed part per file: frame, crank, rod, clip, and the body with its cap
 docs/design.md      mechanism, part dimensions and their sources, open questions
 tools/stl_edges.py  counts STL edges that do not join exactly two facets
-output/             generated exports (gitignored)
+output/             one-off exports, `just export [syringe]` (gitignored)
+build/              every syringe's parts, `just build` (gitignored)
 working/            local scratch: session notes, partspec contracts (gitignored)
 ```
 
@@ -43,7 +44,8 @@ just setup    # verify the toolchain
 just fmt      # format the SCAD sources
 just check    # fmt-check, and every SCAD file evaluates cleanly (CI-equivalent)
 just test     # every part in PARTS, for every syringe in SYRINGES, exports as one solid
-just export   # printed parts to output/*.stl
+just export   # one syringe's printed parts to output/*.stl (default 3ml)
+just build    # every syringe's printed parts to build/<syringe>/*.stl
 ```
 
 `openscad -D 'part="report"' -o /tmp/r.csg cad/main.scad` echoes the screws to buy and the
@@ -80,7 +82,7 @@ derived figures.
 
 - Do not add an external SCAD library without updating `LICENSING.md`: a GPL library forces the
   CAD to GPL-only.
-- Do not commit generated files (`output/`) or scratch (`working/`).
+- Do not commit generated files (`output/`, `build/`) or scratch (`working/`).
 - Do not state a dimension, force or pressure as measured unless it was. Label estimates and
   listing figures as such.
 - Do not add dependencies without justification.

@@ -10,7 +10,8 @@ MAIN := "cad/main.scad"
 # Printed parts, by main.scad's `part` names. `test` checks each; `export` writes each to output/.
 PARTS := "frame crank rod clip body lid cap"
 
-# The builds, by main.scad's `syringe` names. `test` checks every part of each.
+# The builds, by main.scad's `syringe` names. `test` checks every part of each; `build` writes each to
+# build/<syringe>/.
 SYRINGES := "1ml 3ml 5ml"
 
 default:
@@ -103,18 +104,33 @@ test:
     done
     exit $failed
 
-# Export every printed part to output/<part>.stl, in its print orientation.
-export:
+# Export one syringe's printed parts to output/<part>.stl, the spot for one-off exports.
+export syringe="3ml":
     #!/usr/bin/env bash
     set -uo pipefail
     [ -n "{{PARTS}}" ] || { echo "skip  export (PARTS is empty: no printed part yet)"; exit 0; }
     mkdir -p output
     for p in {{PARTS}}; do
         rm -f "output/$p.stl"
-        {{OPENSCAD}} -o "output/$p.stl" -D "part=\"$p\"" {{MAIN}} 2>"output/$p.err"
+        {{OPENSCAD}} -o "output/$p.stl" -D 'syringe="{{syringe}}"' -D "part=\"$p\"" {{MAIN}} 2>"output/$p.err"
         if grep -qE '^(ERROR|WARNING)' "output/$p.err"; then echo "FAIL  $p"; exit 1; fi
         rm -f "output/$p.err"; printf 'ok    output/%s.stl\n' "$p"
     done
 
+# Export every printed part for every syringe to build/<syringe>/<part>.stl.
+build:
+    #!/usr/bin/env bash
+    set -uo pipefail
+    [ -n "{{PARTS}}" ] || { echo "skip  build (PARTS is empty: no printed part yet)"; exit 0; }
+    for s in {{SYRINGES}}; do
+        mkdir -p "build/$s"
+        for p in {{PARTS}}; do
+            rm -f "build/$s/$p.stl"
+            {{OPENSCAD}} -o "build/$s/$p.stl" -D "syringe=\"$s\"" -D "part=\"$p\"" {{MAIN}} 2>"build/$s/$p.err"
+            if grep -qE '^(ERROR|WARNING)' "build/$s/$p.err"; then echo "FAIL  $s $p"; exit 1; fi
+            rm -f "build/$s/$p.err"; printf 'ok    build/%s/%s.stl\n' "$s" "$p"
+        done
+    done
+
 clean:
-    rm -rf output
+    rm -rf output build
