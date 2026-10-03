@@ -64,9 +64,16 @@ module clip(s)
             translate([ front - 1, side > 0 ? top - 0.6 : -top, 0 ]) cube([ back - front + 2, 0.6, top + 1 ]);
         translate([ pin_x, 0, bottom - 1 ]) cylinder(d = get(s, "tap"), h = -bottom + boss[1] + 2);
     }
-    // the lips, over the button's slot near the side walls' tops
+    // the lips, over the button's slot near the side walls' tops. A polyhedron, not an extruded polygon: 2D
+    // polygons are snapped to a grid, which leaves a sliver against the wall when top is off it (the 1 mL's 5.3).
     for (side = [ -1, 1 ])
-        translate([ -fit, 0, 0 ]) rotate([ 90, 0, 90 ]) linear_extrude(get(sy, "button_t") + 2 * fit)
-            polygon([[side * (top + 0.5), top - 3], [side * top, top - 2.5],
-                     [side * (top - fit - get(s, "grip")), top - 1], [side * top, top], [side * (top + 0.5), top]]);
+    {
+        yz = [[side * (top + 0.5), top - 3], [side * top, top - 2.5], [side * (top - fit - get(s, "grip")), top - 1],
+              [side * top, top], [side * (top + 0.5), top]];
+        cw = side > 0 ? yz : [for (i = [len(yz) - 1:-1:0]) yz[i]]; // clockwise seen from +x
+        n = len(cw);
+        polyhedron(points = [for (x = [ -fit, get(sy, "button_t") + fit ]) for (p = cw)[x, p[0], p[1]]],
+                   faces = concat([[for (i = [0:n - 1]) n + i]], [[for (i = [n - 1:-1:0]) i]],
+                                  [for (i = [0:n - 1])[i, (i + 1) % n, (i + 1) % n + n, i + n]]));
+    }
 }
