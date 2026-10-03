@@ -12,7 +12,9 @@
 include <lib/struct.scad>;
 // clang-format on
 
-// Luer syringes, measured by hand (the 3 mL 2026-09-29, the rest 2026-10-02), barrel axis along x, nozzle towards -x.
+// Luer-lock syringes, measured by hand (the 3 mL 2026-09-29, the rest 2026-10-02), barrel axis along x, nozzle towards
+// -x. Not BD's: the 3 and 5 mL carry no maker's mark, and another maker's syringe of the same volume can differ by most
+// of a millimetre; measure the one you use (docs/measuring.md).
 // flange: [width, height] across the axis, as it sits in the frame. exposed: the flange's rear face to the
 // push-button's front face, stopper bottomed. plunger_span: the widest the plunger reaches across the axis (its
 // ribs' cross; the 1 mL's plunger is a solid rod), where all of them narrow a little towards the push-button.

@@ -99,7 +99,10 @@ costs about three times as much, and the measured load does not need it.
 
 The 3 mL measured 2026-09-29 (its barrel length and stroke 2026-10-02), the 1, 5 and 20 mL
 2026-10-02. `syringe` in the Customizer picks which one the parts are built for: the 1, 3 or 5 mL.
-The 20 mL waits on the round 25 mm motor, which the frame does not take yet.
+The 20 mL waits on the round 25 mm motor, which the frame does not take yet. They are not BD's: the
+3 and 5 mL carry no maker's mark (BD prints its logo at the scale's end), and another maker's
+syringe of the same volume can differ by most of a millimetre, so a syringe from elsewhere is
+measured and added as its own entry ([`measuring.md`](measuring.md)).
 
 | Feature | 1 mL | 3 mL | 5 mL | 20 mL |
 | --- | --- | --- | --- | --- |
