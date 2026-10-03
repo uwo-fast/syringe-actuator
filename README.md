@@ -9,10 +9,10 @@
 ## Overview
 
 An N20 gearmotor runs in one direction straight off a supply. A printed crank and connecting rod
-turn that into a continuous 58 mm pull-and-push stroke on a 3 mL luer syringe, the plunger's clip
-guided on rails. The mechanism sits in a printed body: the syringe loads through a lidded window in
-the roof, and the motor's two wires come out the back. The bought hardware is the syringe, the
-motor and a few screws.
+turn that into a continuous full-stroke pull and push on a 1, 3 or 5 mL luer syringe, the plunger's
+clip guided on rails. The mechanism sits in a printed body: the syringe loads through a lidded
+window in the roof, and the motor's two wires come out the back. The bought hardware is the syringe,
+the motor and a few screws.
 
 **Status:** working prototype. The third print (2026-10-02), body and all, runs as designed.
 [`docs/design.md`](docs/design.md) records the mechanism, the part dimensions and what is open.
@@ -20,8 +20,8 @@ motor and a few screws.
 ## Repository layout
 
 - `docs/` — design record
-- `cad/` — the OpenSCAD source: `main.scad` draws the assembly or any printed part, and
-  `just export` writes every printed part to `output/`
+- `cad/` — the OpenSCAD source: `main.scad` draws the assembly or any printed part for the chosen
+  syringe, and `just export` writes every printed part to `output/`
 
 ## Getting started
 

@@ -42,7 +42,7 @@ working/            local scratch: session notes, partspec contracts (gitignored
 just setup    # verify the toolchain
 just fmt      # format the SCAD sources
 just check    # fmt-check, and every SCAD file evaluates cleanly (CI-equivalent)
-just test     # every printed part in PARTS exports as one solid, every edge manifold
+just test     # every part in PARTS, for every syringe in SYRINGES, exports as one solid
 just export   # printed parts to output/*.stl
 ```
 
@@ -60,7 +60,7 @@ derived figures.
   another project's structure.
 - **Libraries draw nothing.** Only `cad/main.scad` has top-level geometry; `check-scad` fails any
   other file that does. Every printed part is a `part` choice in `main.scad`, added to `PARTS` in
-  the justfile.
+  the justfile, and every syringe built for is a `syringe` choice there, added to `SYRINGES`.
 - **OpenSCAD exits 0 on a failed assert.** Gates grep stderr for `ERROR` and `WARNING`; never trust
   `$?`.
 - **Overshoot every cutter, overlap every union.** Solids that meet only along an edge or at a point

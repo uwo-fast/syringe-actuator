@@ -12,15 +12,34 @@
 include <lib/struct.scad>;
 // clang-format on
 
-// Measured by hand 2026-09-29, except where NOMINAL. Barrel axis along x, nozzle towards -x.
-// flange: [width, height] in the plane across the axis, as it sits in the frame. exposed: the
-// flange's rear face to the push-button's front face with the stopper bottomed. plunger_span: the
-// widest the plunger's ribs reach across the axis. barrel_l: flange to the nozzle's root, NOMINAL,
-// drawn only.
+// Luer syringes, measured by hand (the 3 mL 2026-09-29, the rest 2026-10-02), barrel axis along x, nozzle towards -x.
+// flange: [width, height] across the axis, as it sits in the frame. exposed: the flange's rear face to the
+// push-button's front face, stopper bottomed. plunger_span: the widest the plunger reaches across the axis (its
+// ribs' cross; the 1 mL's plunger is a solid rod), where all of them narrow a little towards the push-button.
+// barrel_l: the flange's front face to the barrel's shoulder at the nozzle's root. The 20 mL is not built yet: it
+// needs the round 25 mm motor, ga25_30, which the frame does not take yet.
+syringe_1ml = [
+    [ "name", "1 mL luer syringe" ], [ "barrel_od", 9.45 ], [ "flange", [ 24.6, 12.6 ] ], [ "flange_t", 2.0 ],
+    [ "button_d", 10.2 ], [ "button_t", 1.8 ], [ "stroke", 64.25 ], [ "exposed", 10.75 ], [ "plunger_span", 3.8 ],
+    [ "barrel_l", 75.0 ]
+];
+
 syringe_3ml = [
     [ "name", "3 mL luer syringe" ], [ "barrel_od", 10.0 ], [ "flange", [ 24.5, 12.6 ] ], [ "flange_t", 2.0 ],
-    [ "button_d", 12.6 ], [ "button_t", 1.6 ], [ "stroke", 58 ], [ "exposed", 10.75 ], [ "plunger_span", 7.5 ],
-    [ "barrel_l", 55 ]
+    [ "button_d", 12.6 ], [ "button_t", 1.6 ], [ "stroke", 57.25 ], [ "exposed", 10.75 ], [ "plunger_span", 7.5 ],
+    [ "barrel_l", 68.0 ]
+];
+
+syringe_5ml = [
+    [ "name", "5 mL luer syringe" ], [ "barrel_od", 13.6 ], [ "flange", [ 26.9, 16.0 ] ], [ "flange_t", 1.4 ],
+    [ "button_d", 16.6 ], [ "button_t", 1.8 ], [ "stroke", 52.5 ], [ "exposed", 14.3 ], [ "plunger_span", 11.5 ],
+    [ "barrel_l", 63.5 ]
+];
+
+syringe_20ml = [
+    [ "name", "20 mL luer syringe" ], [ "barrel_od", 20.9 ], [ "flange", [ 36.3, 24.2 ] ], [ "flange_t", 1.6 ],
+    [ "button_d", 20.9 ], [ "button_t", 1.4 ], [ "stroke", 80.0 ], [ "exposed", 11.75 ], [ "plunger_span", 18.3 ],
+    [ "barrel_l", 91.75 ]
 ];
 
 // Pololu micro metal gearmotor dimension drawing, 2024-04-03 (the N20 form factor), 1000:1 gearbox.

@@ -10,6 +10,9 @@ MAIN := "cad/main.scad"
 # Printed parts, by main.scad's `part` names. `test` checks each; `export` writes each to output/.
 PARTS := "frame crank rod clip body lid cap"
 
+# The builds, by main.scad's `syringe` names. `test` checks every part of each.
+SYRINGES := "1ml 3ml 5ml"
+
 default:
     @just --list
 
@@ -74,27 +77,29 @@ check-scad:
 
 # .csg does not run CGAL, so only an STL export can see a broken or disconnected part, and CGAL's
 # volume count cannot see an edge where two solids meet face to face: tools/stl_edges.py counts those.
-# Every printed part must export as one closed solid.
+# Every printed part, for every syringe, must export as one closed solid.
 test:
     #!/usr/bin/env bash
     set -uo pipefail
     [ -n "{{PARTS}}" ] || { echo "skip  part exports (PARTS is empty: no printed part yet)"; exit 0; }
     tmp=$(mktemp -d) && trap 'rm -rf "$tmp"' EXIT
     failed=0
-    for p in {{PARTS}}; do
-        rm -f "$tmp/out.stl"
-        {{OPENSCAD}} -o "$tmp/out.stl" -D "part=\"$p\"" {{MAIN}} 2>"$tmp/err"
-        if grep -qE '^(ERROR|WARNING)' "$tmp/err"; then
-            echo "FAIL  $p"; grep -E '^(ERROR|WARNING)' "$tmp/err" | head -5 | sed 's/^/        /'; failed=1
-        elif ! vols=$(grep -oE 'Volumes: *[0-9]+' "$tmp/err" | grep -oE '[0-9]+'); then
-            echo "FAIL  $p  no volume count reported (a lone primitive skips CGAL)"; failed=1
-        elif [ "$vols" -ne 2 ]; then
-            echo "FAIL  $p  $((vols-1)) disconnected bodies; a printed part is one solid"; failed=1
-        elif ! edges=$(python3 tools/stl_edges.py "$tmp/out.stl"); then
-            echo "FAIL  $p  ${edges#*out.stl  }"; failed=1
-        else
-            printf 'ok    %-18s one closed solid, every edge manifold\n' "$p"
-        fi
+    for s in {{SYRINGES}}; do
+        for p in {{PARTS}}; do
+            rm -f "$tmp/out.stl"
+            {{OPENSCAD}} -o "$tmp/out.stl" -D "syringe=\"$s\"" -D "part=\"$p\"" {{MAIN}} 2>"$tmp/err"
+            if grep -qE '^(ERROR|WARNING)' "$tmp/err"; then
+                echo "FAIL  $s $p"; grep -E '^(ERROR|WARNING)' "$tmp/err" | head -5 | sed 's/^/        /'; failed=1
+            elif ! vols=$(grep -oE 'Volumes: *[0-9]+' "$tmp/err" | grep -oE '[0-9]+'); then
+                echo "FAIL  $s $p  no volume count reported (a lone primitive skips CGAL)"; failed=1
+            elif [ "$vols" -ne 2 ]; then
+                echo "FAIL  $s $p  $((vols-1)) disconnected bodies; a printed part is one solid"; failed=1
+            elif ! edges=$(python3 tools/stl_edges.py "$tmp/out.stl"); then
+                echo "FAIL  $s $p  ${edges#*out.stl  }"; failed=1
+            else
+                printf 'ok    %-4s %-13s one closed solid, every edge manifold\n' "$s" "$p"
+            fi
+        done
     done
     exit $failed
 

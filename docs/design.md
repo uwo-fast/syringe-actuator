@@ -25,9 +25,9 @@ crank, the rod and the plunger all move in one horizontal plane:
   clip's travel, out to the plate's edges. The motor hangs under the plate's other end: its gearbox
   sits 2 mm up into a pocket, located by its bushing and held by two M1.6 × 3 pan heads,
   counterbored below the crank's hub.
-- **Crank.** It presses onto the 3 mm D-shaft and carries the pin at a **29 mm throw**, half the
-  58 mm stroke. Its D-bore is blind, so pressed on, it stops on the shaft's tip, 1 mm over the
-  plate.
+- **Crank.** It presses onto the 3 mm D-shaft and carries the pin at a throw of half the syringe's
+  stroke: **28.6 mm** for the 3 mL's 57.25 mm. Its D-bore is blind, so pressed on, it stops on the
+  shaft's tip, 1 mm over the plate.
 - **Rod.** A 90 mm rod runs from the crank pin to the clip, lying on both parts' top faces. Each end
   turns on a printed boss 0.3 mm taller than the rod. An M3 × 10 screw and an M3 washer clamp down
   on the boss, not on the rod, so the joint turns freely with the screw tight. A screw clamping the
@@ -60,16 +60,16 @@ crank, the rod and the plunger all move in one horizontal plane:
   back, lid onto its rails from the back, then the cap.
 
 The motor never reverses: each revolution is one pull and one push. At a = 180° the plunger is in,
-stopping 1 mm short of the barrel's end, and at 0° it is out 58 mm.
+stopping 1 mm short of the barrel's end, and at 0° it is out a full stroke.
 
-**Side load.** The rod's angle `φ` puts a side load `F·tan(φ)` on the clip, where `F` is the
-force along the stroke. The rod is three throws long, so `φ` peaks at `asin(29/90)` = 18.8°. The
-rails take that load. On the first print the clip had no guide. On the push stroke the side load
-bowed the plunger sideways and the clip turned with it (video, 2026-09-30). The plunger cannot carry
-a side load in compression.
+**Side load.** The rod's angle `φ` puts a side load `F·tan(φ)` on the clip, where `F` is the force
+along the stroke. The rod is at least three throws long, so `φ` peaks at `asin(28.6/90)` = 18.5° on
+the 3 mL. The rails take that load. On the first print the clip had no guide. On the push stroke the
+side load bowed the plunger sideways and the clip turned with it (video, 2026-09-30). The plunger
+cannot carry a side load in compression.
 
 **Torque (estimate).** The peak crank torque is about `F·r`. At an assumed 3 N of seal friction
-(unmeasured) and `r` = 29 mm, that is about 0.09 N·m (0.9 kg·cm). A fully blocked line adds full
+(unmeasured) and `r` = 28.6 mm, that is about 0.09 N·m (0.9 kg·cm). A fully blocked line adds full
 vacuum on the bore: about 5.9 N at 8.66 mm ID, which makes 2.6 kg·cm with the friction.
 
 **Motor.** A 12 V N20 at about 30 rpm, which is a 1000:1-class gearbox: Pololu #3046 or a generic
@@ -77,7 +77,7 @@ vacuum on the bore: about 5.9 N at 8.66 mm ID, which makes 2.6 kg·cm with the f
 recommends keeping instantaneous torque under 2.5 kg·cm on this gearbox
 (<https://www.pololu.com/category/60/micro-metal-gearmotors>). The running load is about a third
 of that limit, and a blocked line reaches about the limit. 35 rpm gives a 1.7 s cycle and a peak
-plunger speed of about 106 mm/s. A lower supply voltage slows the motor roughly in proportion.
+plunger speed of about 105 mm/s. A lower supply voltage slows the motor roughly in proportion.
 
 **Motor for the larger syringes.** A 20 mL plunger, pushed by hand on a kitchen scale with the tip
 open (2026-10-02, rough), slides at about 250 g (2.5 N) and about 500 g (4.9 N) pushed hard and
@@ -94,26 +94,34 @@ not need it.
 
 ## Parts
 
-### Syringe (measured, 2026-09-29)
+### Syringes (measured)
 
-| Feature | Size |
-| --- | --- |
-| Barrel OD | 10.0 mm |
-| Barrel flanges | 24.5 × 12.6 mm, 2.0 mm thick |
-| Push-button | Ø12.6 mm, 1.6 mm thick |
-| Working stroke | 58 mm |
-| Plunger exposed, stopper bottomed (flange rear face to push-button front face) | 10.75 mm |
-| Plunger ribs, widest across | 7.5 mm (ribs about 1 mm thick); the last 9 mm before the push-button tapers to 6.6 mm |
+The 3 mL measured 2026-09-29 (its barrel length and stroke 2026-10-02), the 1, 5 and 20 mL
+2026-10-02. `syringe` in the Customizer picks which one the parts are built for: the 1, 3 or 5 mL.
+The 20 mL waits on the round 25 mm motor, which the frame does not take yet.
+
+| Feature | 1 mL | 3 mL | 5 mL | 20 mL |
+| --- | --- | --- | --- | --- |
+| Barrel OD | 9.45 mm | 10.0 mm | 13.6 mm | 20.9 mm |
+| Barrel, flange front face to the shoulder at the nozzle's root | 75.0 mm | 68.0 mm | 63.5 mm | 91.75 mm |
+| Barrel flanges | 24.6 × 12.6 mm, 2.0 mm thick | 24.5 × 12.6 mm, 2.0 mm thick | 26.9 × 16.0 mm, 1.4 mm thick | 36.3 × 24.2 mm, 1.6 mm thick |
+| Push-button | Ø10.2 mm, 1.8 mm thick | Ø12.6 mm, 1.6 mm thick | Ø16.6 mm, 1.8 mm thick | Ø20.9 mm, 1.4 mm thick |
+| Working stroke | 64.25 mm | 57.25 mm | 52.5 mm | 80.0 mm |
+| Plunger exposed, stopper bottomed (flange rear face to push-button front face) | 10.75 mm | 10.75 mm | 14.3 mm | 11.75 mm |
+| Plunger, widest across (each narrows a little towards the push-button) | 3.8 mm, a solid rod | 7.5 mm, ribs about 1 mm thick; the last 9 mm before the push-button tapers to 6.6 mm | 11.5 mm | 18.3 mm |
+
+The barrel must be longer than the stroke plus the margin the stopper stops short of its end by, or
+the stroke pulls the stopper out; `layout()` asserts it.
 
 The size is inferred to be 3 mL, because published 3 mL inner diameters (8.57–8.94 mm, BD and
-Terumo, from syringe-pump libraries) give 3.4–3.6 mL over 58 mm. A 5 mL barrel (ID about 12 mm)
+Terumo, from syringe-pump libraries) give 3.3–3.6 mL over 57.25 mm. A 5 mL barrel (ID about 12 mm)
 cannot have a 10 mm OD.
 
 The part names follow ISO 7886-1: **barrel**, **barrel flanges** (finger grips), **plunger**,
 **push-button** (thumb rest), **plunger stopper** (the rubber piston) and **nozzle** (the luer
 tip).
 
-### N20 inline gearmotor (the one used)
+### N20 inline gearmotor (the one used, for the 1, 3 and 5 mL)
 
 From Pololu's micro metal gearmotor dimension drawing
 (<https://www.pololu.com/file/0J949/micro-metal-gearmotor-dimensions.pdf>, 2024-04-03), except the
