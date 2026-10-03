@@ -234,9 +234,9 @@ module screws(L, pins)
         translate([ get(L, "crank_x"), y, get(L, "motor_head_z") ]) flat_screw(ms, get(L, "motor_screw_l"));
 }
 
-// M3 socket heads through the body's mounting holes, their heads inside, as a user would fit them into an adapter;
-// shown 6 past the body. The front ones can go in first; the top ones too if the frame slides in with its crank along
-// the axis, as one turned across carries its pin screws into them.
+// M3 socket heads through the body's mounting holes, knocked out, their heads inside, as a user would fit them into an
+// adapter; shown 6 past the body. The front ones can go in first; the top ones too if the frame slides in with its
+// crank along the axis, as one turned across carries its pin screws into them.
 module mount_screws(L)
 {
     b = get(L, "body");
@@ -272,9 +272,8 @@ module report(L)
              get(L, "motor_thread"), " of it into the gearbox; 2 x M3 x 10 (cap)"));
     mf = get(b, "mount_front");
     mt = get(b, "mount_top");
-    echo(str("mounting: 4 x M3 clearance through the front, ", mf[3][0] - mf[0][0], " across x ", mf[3][1] - mf[0][1],
+    echo(str("mounting, knockouts for M3: 4 in the front, ", mf[3][0] - mf[0][0], " across x ", mf[3][1] - mf[0][1],
              " up, centred ", (mf[0][1] + mf[3][1]) / 2, " over the plate's underside, where the syringe's axis is ",
-             get(L, "axis_z"), "; 4 through the roof's shoulders, ", mt[3][1] - mt[0][1], " across x ",
-             mt[3][0] - mt[0][0], " along, centred ", get(b, "x")[1] - (mt[0][0] + mt[3][0]) / 2,
-             " in front of the back end"));
+             get(L, "axis_z"), "; 4 in the roof's shoulders, ", mt[3][1] - mt[0][1], " across x ", mt[3][0] - mt[0][0],
+             " along, centred ", get(b, "x")[1] - (mt[0][0] + mt[3][0]) / 2, " in front of the back end"));
 }
