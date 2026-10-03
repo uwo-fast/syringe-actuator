@@ -76,8 +76,8 @@ check-scad:
     done <<<"$files"
     exit $failed
 
-# .csg does not run CGAL, so only an STL export can see a broken or disconnected part, and CGAL's
-# volume count cannot see an edge where two solids meet face to face: tools/stl_edges.py counts those.
+# .csg does not render, so only an STL export can see a broken or disconnected part; tools/stl_edges.py
+# counts the solids and the edges where two meet, from the mesh, so any OpenSCAD's export reads the same.
 # Every printed part, for every syringe, must export as one closed solid.
 test:
     #!/usr/bin/env bash
@@ -91,10 +91,6 @@ test:
             {{OPENSCAD}} -o "$tmp/out.stl" -D "syringe=\"$s\"" -D "part=\"$p\"" {{MAIN}} 2>"$tmp/err"
             if grep -qE '^(ERROR|WARNING)' "$tmp/err"; then
                 echo "FAIL  $s $p"; grep -E '^(ERROR|WARNING)' "$tmp/err" | head -5 | sed 's/^/        /'; failed=1
-            elif ! vols=$(grep -oE 'Volumes: *[0-9]+' "$tmp/err" | grep -oE '[0-9]+'); then
-                echo "FAIL  $s $p  no volume count reported (a lone primitive skips CGAL)"; failed=1
-            elif [ "$vols" -ne 2 ]; then
-                echo "FAIL  $s $p  $((vols-1)) disconnected bodies; a printed part is one solid"; failed=1
             elif ! edges=$(python3 tools/stl_edges.py "$tmp/out.stl"); then
                 echo "FAIL  $s $p  ${edges#*out.stl  }"; failed=1
             else
