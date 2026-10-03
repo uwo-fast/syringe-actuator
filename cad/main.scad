@@ -58,8 +58,8 @@ chosen = syringe == "1ml"    ? syringe_1ml
          : syringe == "10ml" ? syringe_10ml
                              : undef;
 L = assert(!is_undef(chosen), str("no syringe '", syringe, "'"))
-    layout(syringe = chosen, motor = n20_1000, pin = m3_shcs, pin_washer = m3_washer, motor_screw = m1_6_pan, fit = fit,
-           press = press, hole = hole, wall = wall, grip = grip);
+    layout(syringe = chosen, motor = n20_1000, pin = m3_shcs, pin_washer = m3_washer, motor_screw = m1_6_flat,
+           fit = fit, press = press, hole = hole, wall = wall, grip = grip);
 
 // The assembly bare or in its body, or each printed part turned to how it prints; cut open if asked.
 section(section, section_at)
@@ -97,14 +97,16 @@ section(section, section_at)
 // washer overlaps the rod's bore round it by at least 0.5 a side. play: the rod's end float between
 // its seat and the washer. sled: [reach past the clip's pin, depth of its top and the rails' under the
 // rod]. slide: per side, the sled between the rails. recess: the motor screws' heads under the
-// plate's top. margin: the stopper stops this short of each end of its travel, the barrel's end and the
-// plunger's stop, for the error in exposed and stroke and the print. pin_l and motor_screw_l: the screws' lengths.
-// window: how much wider the body's window is than the barrel's flanges, room for fingers round them.
+// plate's top. motor_bore: [d, depth] of the counterbore over each motor screw, the room an ISO 7045 pan head
+// takes; the flat heads bought sit in it on the clearance hole's rim, as printed and proven. margin: the stopper stops
+// this short of each end of its travel, the barrel's end and the plunger's stop, for the error in exposed and stroke
+// and the print. pin_l and motor_screw_l: the screws' lengths. window: how much wider the body's window is than the
+// barrel's flanges, room for fingers round them.
 // clang-format off
 function layout(syringe, motor, pin, pin_washer, motor_screw, fit, press, hole, wall, grip,
                 plate_t = 5, pocket = 2, gap = 1, float = 1.5, clip_wall = 2, rod_t = 4, rod_min = 90,
                 rod_w = 10, boss_d = 5.6, play = 0.3, sled = [20, 2], slide = 0.3, recess = 0.2,
-                margin = 1, pin_l = 10, motor_screw_l = 3, window = 3.5) =
+                margin = 1, pin_l = 10, motor_screw_l = 3, window = 3.5, motor_bore = [ 3.2, 1.3 ]) =
     let (
         throw = get(syringe, "stroke") / 2 - margin,
         rod_l = max(rod_min, ceil(3 * throw)),
@@ -123,8 +125,11 @@ function layout(syringe, motor, pin, pin_washer, motor_screw, fit, press, hole, 
         sweep_x = crank_x - throw - rod_w / 2,
         stack = boss[1] + get(pin_washer, "h"),
         pin_tip = axis_z + stack - pin_l,
-        motor_seat_z = plate_t - get(motor_screw, "head_h") - recess,
-        frame = frame_spec(syringe, motor, motor_screw, fit, wall, plate_t, pocket, axis_z, crank_x, rails, motor_seat_z),
+        motor_seat_z = plate_t - motor_bore[1] - recess,
+        // a flat head's cone rests where it is as wide as the clearance hole, this far under its top
+        motor_head_z = motor_seat_z + (get(motor_screw, "head_d") - get(motor_screw, "clear") - 2 * fit) / 2,
+        frame = frame_spec(syringe, motor, motor_screw, fit, wall, plate_t, pocket, axis_z, crank_x, rails, motor_seat_z,
+                           motor_bore[0]),
         // what the frame carries at its extremes over a turn, [y, z], for the body to clear
         reach = throw + rod_w / 2,
         motor_z = pocket - get(motor, "gearbox_l") - get(motor, "can_l") - get(motor, "tail_l"),
@@ -162,7 +167,8 @@ function layout(syringe, motor, pin, pin_washer, motor_screw, fit, press, hole, 
     [
         ["name", "layout"], ["syringe", syringe], ["motor", motor], ["pin", pin], ["pin_l", pin_l],
         ["pin_washer", pin_washer], ["motor_screw", motor_screw], ["motor_screw_l", motor_screw_l],
-        ["motor_seat_z", motor_seat_z], ["motor_thread", motor_screw_l - (motor_seat_z - pocket)],
+        ["motor_seat_z", motor_seat_z], ["motor_head_z", motor_head_z],
+        ["motor_thread", motor_screw_l - (motor_head_z - pocket)],
         ["pin_thread", pin_l - stack], ["throw", throw], ["rod_l", rod_l], ["axis_z", axis_z],
         ["pocket", pocket], ["hub_z", hub_z], ["crank_x", crank_x],
         ["frame", frame], ["crank", crank], ["rod", rod], ["clip", clip], ["body", body],
@@ -278,7 +284,7 @@ module screws(L, pins)
         screw(pin, get(L, "pin_l"), get(washer, "h"));
     }
     color("dimgray") for (y = [ -1, 1 ] * get(get(L, "motor"), "hole_pitch") / 2)
-        translate([ get(L, "crank_x"), y, get(L, "motor_seat_z") ]) screw(ms, get(L, "motor_screw_l"), 0);
+        translate([ get(L, "crank_x"), y, get(L, "motor_head_z") ]) flat_screw(ms, get(L, "motor_screw_l"));
 }
 
 // A screw of length len whose head seats at z = seat.
@@ -286,6 +292,14 @@ module screw(s, len, seat)
 {
     translate([ 0, 0, seat ]) cylinder(d = get(s, "head_d"), h = get(s, "head_h"));
     translate([ 0, 0, seat - len ]) cylinder(d = get(s, "d"), h = len);
+}
+
+// A flat head screw of overall length len, its head's top at z = 0.
+module flat_screw(s, len)
+{
+    hd = get(s, "head_d");
+    translate([ 0, 0, -(hd - get(s, "d")) / 2 ]) cylinder(d1 = get(s, "d"), d2 = hd, h = (hd - get(s, "d")) / 2);
+    translate([ 0, 0, -len ]) cylinder(d = get(s, "d"), h = len);
 }
 
 // Echoes what to buy and the derived figures.
@@ -304,6 +318,6 @@ module report(L)
                                                          get(b, "T") + get(b, "lid")[0] - sec[1] + 2 * get(b, "wall")]],
         " wide x high at the front and the back, outside, with the lid"));
     echo(str("screws: 2 x M3 x ", get(L, "pin_l"), " with 2 x M3 washer (crank pin, clip pin), ", get(L, "pin_thread"),
-             " of thread; 2 x M1.6 x ", get(L, "motor_screw_l"), " pan head (motor), ", get(L, "motor_thread"),
-             " of it into the gearbox; 2 x M3 x 10 (cap)"));
+             " of thread; 2 x ", get(get(L, "motor_screw"), "name"), " x ", get(L, "motor_screw_l"), " (motor), ",
+             get(L, "motor_thread"), " of it into the gearbox; 2 x M3 x 10 (cap)"));
 }
