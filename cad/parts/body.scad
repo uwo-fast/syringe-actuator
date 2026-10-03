@@ -45,11 +45,15 @@ function loft_w(st, x) = let(i = max([for (k = [0:len(st) - 2]) if (st[k][0] <= 
 // the cap's screws; tap: their holes in the bosses. wire_z: the wires' hole in the cap. clr: round the frame's
 // contents. slide: per side, the dovetails in the rails, and the lid in its rails. wall, end_t: the shell's wall and
 // its front wall's and cap's thickness. lid: [thickness, its reach past the window's sides, its reach past the
-// window's end when shut]. lid_grip: how far the lid flexes to pass the ridge behind its notch.
+// window's end when shut]. lid_grip: how far the lid flexes to pass the ridge behind its notch. mount_front and
+// mount_top: four through holes each for the screw, as [across, along, centre], for whatever a user mounts the body
+// to: the front's across y and up z, centred on the axis's plane at a height over the plate's underside; the top's
+// across y and along x, centred a distance in front of the back end, through the roof's shoulders outboard of the
+// lid's rails, behind the crank's sweep. The same for every syringe.
 // clang-format off
 function body_spec(front_pts, back_pts, rod, sweep_x, x, window, axis_z, barrel_d, plate, frame_end, screw, tap,
                    wire_z, fit, clr = 2, slide = 0.3, wall = 2.5, end_t = 3, boss_d = 8, boss_l = 12, wire_d = 6,
-                   lid = [2, 3, 3], lid_grip = 0.2) =
+                   lid = [2, 3, 3], lid_grip = 0.2, mount_front = [30, 10, 15], mount_top = [60, 20, 15]) =
     let (T = max([for (p = back_pts) p[1]]) + clr,
          front = section_fit(front_pts, T, clr),
          back = section_fit(back_pts, T, clr),
@@ -74,6 +78,8 @@ function body_spec(front_pts, back_pts, rod, sweep_x, x, window, axis_z, barrel_
         ["plate", plate], ["frame_end", frame_end], ["screw", screw], ["tap", tap], ["wire_z", wire_z], ["fit", fit],
         ["slide", slide], ["wall", wall], ["end_t", end_t], ["boss_d", boss_d], ["boss_l", boss_l], ["wire_d", wire_d],
         ["lid", lid], ["lid_x", lid_x], ["lid_grip", lid_grip],
+        ["mount_front", [for (i = [-1, 1], j = [-1, 1]) [i * mount_front[0] / 2, mount_front[2] + j * mount_front[1] / 2]]],
+        ["mount_top", [for (i = [-1, 1], j = [-1, 1]) [x_back - mount_top[2] + i * mount_top[1] / 2, j * mount_top[0] / 2]]],
         ["bosses", [for (side = [-1, 1]) [side * (m[0] - k), m[1] + k]]],
     ];
 // clang-format on
@@ -174,18 +180,30 @@ module lid(s)
 
 // The body: the shell and its cuts, then the lid's rails, which go on after the cuts so no cutter reaches their lips.
 // The rails run out to the shell's sides, so over the wider back they fill the roof's shoulders flush with their tops:
-// no fin to snap off and no inside corner to clean.
+// no fin to snap off and no inside corner to clean. The mounting holes go through after.
 module body(s)
 {
     x = get(s, "x");
     end_t = get(s, "end_t");
     wall = get(s, "wall");
-    body_shell(s);
-    intersection()
+    t = get(s, "lid")[0];
+    d = get(get(s, "screw"), "clear") + 2 * get(s, "fit");
+    difference()
     {
-        along_x(x[0] - end_t, x[1] - x[0] + end_t) for (side = [ 0, 1 ]) mirror([ side, 0 ])
-            lid_rail_section(s, get(s, "back")[0] + wall + 1);
-        loft(s, wall, x[0] - end_t, x[1], get(s, "T") + get(s, "lid")[0] + 1);
+        union()
+        {
+            body_shell(s);
+            intersection()
+            {
+                along_x(x[0] - end_t, x[1] - x[0] + end_t) for (side = [ 0, 1 ]) mirror([ side, 0 ])
+                    lid_rail_section(s, get(s, "back")[0] + wall + 1);
+                loft(s, wall, x[0] - end_t, x[1], get(s, "T") + t + 1);
+            }
+        }
+        for (h = get(s, "mount_front"))
+            translate([ x[0] - end_t - 1, h[0], h[1] ]) rotate([ 0, 90, 0 ]) cylinder(d = d, h = end_t + 2);
+        for (h = get(s, "mount_top"))
+            translate([ h[0], h[1], get(s, "T") - 1 ]) cylinder(d = d, h = wall + t + 2);
     }
 }
 
