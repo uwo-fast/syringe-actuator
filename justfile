@@ -128,5 +128,10 @@ build:
         done
     done
 
+# tools/qa/qa.sh says what it checks; it takes a few minutes on an OpenSCAD with the Manifold backend.
+# Geometry QA beyond test, slivers, collisions over a turn and overhangs, for every syringe or those named.
+qa *syringes:
+    OPENSCAD="{{OPENSCAD}}" tools/qa/qa.sh {{ if syringes == "" { SYRINGES } else { syringes } }}
+
 clean:
     rm -rf output build

@@ -33,6 +33,7 @@ cad/purchased/      bought parts: syringes, motors, fasteners hold the rows, eac
 cad/parts/          one printed part per file: frame, crank, rod, clip, and the body with its cap
 docs/design.md      mechanism, part dimensions and their sources, open questions
 tools/stl_edges.py  checks an STL is one closed shell, every edge joining two facets
+tools/qa/           `just qa`: slivers, collisions over a turn, overhangs, per syringe
 output/             one-off exports, `just export [syringe]` (gitignored)
 build/              every syringe's parts, `just build` (gitignored)
 working/            local scratch: session notes, partspec contracts (gitignored)
@@ -47,7 +48,11 @@ just check    # fmt-check, and every SCAD file evaluates cleanly (CI-equivalent)
 just test     # every part in PARTS, for every syringe in SYRINGES, exports as one solid
 just export   # one syringe's printed parts to output/*.stl (default 3ml)
 just build    # every syringe's printed parts to build/<syringe>/*.stl
+just qa       # slivers, collisions and overhangs, every syringe or those named (a few minutes)
 ```
+
+Run `just qa` before committing a geometry change;
+it exits 1 on a collision.
 
 `openscad -D 'part="report"' -o /tmp/r.csg cad/main.scad` echoes the screws to buy and the
 derived figures.
