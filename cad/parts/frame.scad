@@ -22,16 +22,17 @@ include <../lib/struct.scad>;
 // block, length, wall] of the snap ring; snap: its opening, as a fraction of the barrel's diameter.
 // chamfer: the motor pocket's mouth. rails: [x of their end, half the gap between them, their top's
 // z]; they start at the flange block and reach out to the plate's edges. seat_z: the motor screws'
-// heads' seat. dovetail: how far each long edge's foot reaches out, at 45 degrees.
+// heads' seat; screw_bore: the counterbore's diameter over them. dovetail: how far each long edge's foot reaches out,
+// at 45 degrees.
 // clang-format off
-function frame_spec(syringe, motor, screw, fit, wall, plate_t, pocket, axis_z, crank_x, rails, seat_z,
+function frame_spec(syringe, motor, screw, fit, wall, plate_t, pocket, axis_z, crank_x, rails, seat_z, screw_bore,
                     ring = [15, 6, 2], snap = 0.8, chamfer = 0.5, dovetail = 2.5) =
     let (block = [-get(syringe, "flange_t") - fit - wall, fit + wall],
          ring_x = block[0] - ring[0] - ring[1]) [
         ["name", "frame"], ["syringe", syringe], ["motor", motor], ["screw", screw], ["fit", fit],
         ["plate_t", plate_t], ["pocket", pocket], ["axis_z", axis_z], ["crank_x", crank_x],
         ["ring", ring], ["snap", snap], ["chamfer", chamfer], ["block", block], ["ring_x", ring_x],
-        ["rail_end", rails[0]], ["rail_gap", rails[1]], ["rail_top", rails[2]], ["seat_z", seat_z], ["dovetail", dovetail],
+        ["rail_end", rails[0]], ["rail_gap", rails[1]], ["rail_top", rails[2]], ["seat_z", seat_z], ["screw_bore", screw_bore], ["dovetail", dovetail],
         ["w", get(syringe, "flange")[0] + 2 * fit],
         ["x", [ring_x, crank_x + get(motor, "h") / 2 + fit + wall]],
     ];
@@ -117,7 +118,7 @@ module frame(s)
             translate([ cx, y, 0 ])
             {
                 translate([ 0, 0, -1 ]) cylinder(d = get(sc, "clear") + 2 * fit, h = t + 2);
-                translate([ 0, 0, get(s, "seat_z") ]) cylinder(d = get(sc, "head_d") + 2 * fit, h = t);
+                translate([ 0, 0, get(s, "seat_z") ]) cylinder(d = get(s, "screw_bore") + 2 * fit, h = t);
             }
     }
 }
