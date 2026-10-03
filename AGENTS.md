@@ -34,8 +34,8 @@ cad/parts/          one printed part per file: frame, crank, rod, clip, and the 
 docs/design.md      mechanism, part dimensions and their sources, open questions
 tools/stl_edges.py  checks an STL is one closed shell, every edge joining two facets
 tools/qa/           `just qa`: slivers, collisions over a turn, overhangs, per syringe
-output/             one-off exports, `just export [syringe]` (gitignored)
-build/              every syringe's parts, `just build` (gitignored)
+output/             one-off exports, `just export [syringe]`, with BUILT_FROM (gitignored)
+build/              every syringe's parts, `just build`, with BUILT_FROM (gitignored)
 working/            local scratch: session notes, partspec contracts (gitignored)
 ```
 
@@ -51,7 +51,9 @@ just build    # every syringe's printed parts to build/<syringe>/*.stl
 just qa       # slivers, collisions and overhangs, every syringe or those named (a few minutes)
 ```
 
-Run `just qa` before committing a geometry change;
+`just build` and `just export` write `BUILT_FROM` beside the parts: the commit, `-dirty` if the
+source had edits, and the OpenSCAD. Re-run `just build` after any change to geometry, so `build/`
+never holds parts the source no longer draws. Run `just qa` before committing a geometry change;
 it exits 1 on a collision.
 
 `openscad -D 'part="report"' -o /tmp/r.csg cad/main.scad` echoes the screws to buy and the

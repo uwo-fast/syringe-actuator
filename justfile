@@ -112,6 +112,7 @@ export syringe="3ml":
         if grep -qE '^(ERROR|WARNING)' "output/$p.err"; then echo "FAIL  $p"; exit 1; fi
         rm -f "output/$p.err"; printf 'ok    output/%s.stl\n' "$p"
     done
+    just _stamp output "{{syringe}}"
 
 # Export every printed part for every syringe to build/<syringe>/<part>.stl.
 build:
@@ -127,6 +128,18 @@ build:
             rm -f "build/$s/$p.err"; printf 'ok    build/%s/%s.stl\n' "$s" "$p"
         done
     done
+    just _stamp build "{{SYRINGES}}"
+
+# Write what an export was made from to <dir>/BUILT_FROM: once the commit moves on, or reads -dirty,
+# the files may not be what the source draws now.
+_stamp dir syringes:
+    #!/usr/bin/env bash
+    set -uo pipefail
+    { echo "commit   $(git describe --always --dirty 2>/dev/null || echo unknown)"
+      echo "openscad $({{OPENSCAD}} --version 2>&1 | tail -1)"
+      echo "syringes {{syringes}}"
+      echo "made     $(date -Iseconds)"; } >"{{dir}}/BUILT_FROM"
+    sed 's/^/        /' "{{dir}}/BUILT_FROM"
 
 # tools/qa/qa.sh says what it checks; it takes a few minutes on an OpenSCAD with the Manifold backend.
 # Geometry QA beyond test, slivers, collisions over a turn and overhangs, for every syringe or those named.
