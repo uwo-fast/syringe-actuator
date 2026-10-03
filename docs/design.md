@@ -49,15 +49,17 @@ crank, the rod and the plunger all move in one horizontal plane:
   through a slot. A lid slides on rails along the roof, between a lip on the front wall and the cap:
   its edges rest on the roof either side of the window; a bump under the middle of its back end
   drops into a notch at the window's back edge when it is shut, and runs in a groove along the
-  roof's middle the rest of its travel. The bottom is not flat, so a desk stand is an add-on; the
-  narrow front is a constant section a bracket can grip. The push-button snaps into the clip's cup
-  past two small lips, so the syringe stays in whichever way up the unit is. The body prints
-  standing on its back end, 217 mm tall, with no supports: its walls lean in at most 45 degrees,
-  `layout()` starting the taper sooner where they would lean further (the 3 mL's lean 43), and the
-  front wall bridges about 27 mm. Its rails start at the bed, so turn on the slicer's elephant-foot
-  compensation, and use a brim. No edge on it, the lid or the frame's plate comes to a knife edge:
-  the dovetails and the lid's bevels stand on short lands. Assembly: frame into the body from the
-  back, lid onto its rails from the back, then the cap.
+  roof's middle the rest of its travel. Over the wider back, the lid's rails run out to the sides,
+  filling the roof's shoulders flush with the rails' tops: the rails cannot snap off, and there is
+  no inside corner to clean. The bottom is not flat, so a desk stand is an add-on; the narrow front
+  is a constant section a bracket can grip. The push-button snaps into the clip's cup past two small
+  lips, so the syringe stays in whichever way up the unit is. The body prints standing on its back
+  end, 217 mm tall, with no supports: its walls lean in at most 45 degrees, `layout()` starting the
+  taper sooner where they would lean further (the 3 mL's lean 43), and the front wall bridges about
+  27 mm. Its rails start at the bed, so turn on the slicer's elephant-foot compensation, and use a
+  brim. No edge on it, the lid or the frame's plate comes to a knife edge: the dovetails and the
+  lid's bevels stand on short lands. Assembly: frame into the body from the back, lid onto its rails
+  from the back, then the cap.
 
 The motor never reverses: each revolution is one pull and one push. At a = 180° the plunger is in,
 stopping 1 mm short of the barrel's end, and at 0° it is out, stopping 1 mm short of the plunger's

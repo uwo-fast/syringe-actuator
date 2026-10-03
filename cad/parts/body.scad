@@ -87,8 +87,8 @@ module section_shape(sec, T, g = 0) offset(delta = g) polygon([
 // A 2D section in [y, z], extruded along x from x0 for len.
 module along_x(x0, len) translate([ x0, 0, 0 ]) rotate([ 90, 0, 90 ]) linear_extrude(len) children();
 
-// The loft through the spec's stations, grown by g, its end stations moved to x0 and x1.
-module loft(s, g, x0, x1)
+// The loft through the spec's stations, grown by g, its end stations moved to x0 and x1; its top at top if given.
+module loft(s, g, x0, x1, top = undef)
 {
     st = get(s, "stations");
     n = len(st);
@@ -96,7 +96,7 @@ module loft(s, g, x0, x1)
     for (i = [0:n - 2])
         // each station a 0.01 slab, the last one ending at its station rather than starting there
         hull() for (e = [ ends[i], ends[i + 1] ]) along_x(e[0] - (e == ends[n - 1] ? 0.01 : 0), 0.01)
-            section_shape(e[1], get(s, "T"), g);
+            section_shape(e[1], is_undef(top) ? get(s, "T") : top, g);
 }
 
 // One rail's section, the +y one: it stands on the floor, holds the plate's edge from below, and hooks over its
@@ -135,14 +135,13 @@ module lid_section(s)
     ]);
 }
 
-// The +y rail on the roof the lid slides in, from the lid's edge, with slide, out to the narrow front's side; its foot
-// sinks 1 into the roof outside the lid's edge.
-module lid_rail_section(s)
+// The +y rail on the roof the lid slides in, from the lid's edge, with slide, out to out; its foot sinks 1 into the
+// roof outside the lid's edge.
+module lid_rail_section(s, out)
 {
     top = get(s, "T") + get(s, "wall");
     hb = get(s, "window")[1] / 2 + get(s, "lid")[1] + get(s, "slide");
     t = get(s, "lid")[0];
-    out = get(s, "front")[0] + get(s, "wall");
     e = lid_edge(t);
     polygon([[hb, top - 1], [out, top - 1], [out, top + t], [hb - e [1], top + t], [hb - e [1], top + e [0] + e [1]],
              [hb, top + e [0]]]);
@@ -174,12 +173,20 @@ module lid(s)
 }
 
 // The body: the shell and its cuts, then the lid's rails, which go on after the cuts so no cutter reaches their lips.
+// The rails run out to the shell's sides, so over the wider back they fill the roof's shoulders flush with their tops:
+// no fin to snap off and no inside corner to clean.
 module body(s)
 {
     x = get(s, "x");
+    end_t = get(s, "end_t");
+    wall = get(s, "wall");
     body_shell(s);
-    along_x(x[0] - get(s, "end_t"), x[1] - x[0] + get(s, "end_t")) for (side = [ 0, 1 ]) mirror([ side, 0 ])
-        lid_rail_section(s);
+    intersection()
+    {
+        along_x(x[0] - end_t, x[1] - x[0] + end_t) for (side = [ 0, 1 ]) mirror([ side, 0 ])
+            lid_rail_section(s, get(s, "back")[0] + wall + 1);
+        loft(s, wall, x[0] - end_t, x[1], get(s, "T") + get(s, "lid")[0] + 1);
+    }
 }
 
 module body_shell(s)
@@ -251,7 +258,7 @@ module cap(s)
     sc = get(s, "screw");
     T = get(s, "T");
     wall = get(s, "wall");
-    out = get(s, "front")[0] + wall;
+    back_out = get(s, "back")[0] + wall;
     difference()
     {
         union()
@@ -259,7 +266,7 @@ module cap(s)
             along_x(x[1], end_t)
             {
                 section_shape(get(s, "back"), T, wall);
-                translate([ -out, T + wall - 1 ]) square([ 2 * out, get(s, "lid")[0] + 1 ]);
+                translate([ -back_out, T + wall - 1 ]) square([ 2 * back_out, get(s, "lid")[0] + 1 ]);
             }
             post = get(s, "frame_end") + get(s, "slide");
             along_x(post, x[1] - post + 1) polygon(plate_profile(p[0], p[1], p[2]));
