@@ -31,7 +31,7 @@ cad/main.scad       THE ENTRY POINT and the only file that draws: settings, layo
 cad/catalog.scad    bought parts (syringe, N20, screws), each figure with its source
 cad/parts/          one printed part per file: frame, crank, rod, clip, and the body with its cap
 docs/design.md      mechanism, part dimensions and their sources, open questions
-tools/stl_edges.py  counts STL edges that do not join exactly two facets
+tools/stl_edges.py  checks an STL is one closed shell, every edge joining two facets
 output/             one-off exports, `just export [syringe]` (gitignored)
 build/              every syringe's parts, `just build` (gitignored)
 working/            local scratch: session notes, partspec contracts (gitignored)
@@ -66,8 +66,8 @@ derived figures.
 - **OpenSCAD exits 0 on a failed assert.** Gates grep stderr for `ERROR` and `WARNING`; never trust
   `$?`.
 - **Overshoot every cutter, overlap every union.** Solids that meet only along an edge or at a point
-  are not one solid; `just test` fails them (the volume count, OpenSCAD's warning and
-  `tools/stl_edges.py`), and so does `partspec lint`.
+  are not one solid; `just test` fails them (OpenSCAD's warning, and `tools/stl_edges.py`'s edge
+  and shell counts), and so does `partspec lint`.
 - **One physical fact, one expression.** Derive dimensions from catalog rows; never restate a
   number in a second file.
 - **Visual review:** the sandbox has no display, so `openscad` cannot render PNGs there. Export STLs
