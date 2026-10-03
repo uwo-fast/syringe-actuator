@@ -32,6 +32,7 @@ Tasks run through [`just`](https://github.com/casey/just); `just --list` shows t
 just setup   # verify the toolchain: OpenSCAD, clang-format
 just check   # what CI runs: formatting and every SCAD file evaluating cleanly
 just test    # every printed part exports as one closed solid
+just qa      # slivers, collisions over a turn and overhangs, for every syringe
 ```
 
 ## Contributing
