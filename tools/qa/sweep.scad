@@ -85,6 +85,9 @@ intersection()
             body(B);
         if (!lid_only && other != "insert")
             cap(B);
+        // the mounting screws' heads, fitted after the frame is in
+        if (!lid_only && other != "insert")
+            mount_screws(L);
         if (lid_dx >= 0)
             translate([ lid_dx, 0, lid_lift ]) lid(B);
     }

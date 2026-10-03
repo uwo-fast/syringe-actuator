@@ -207,6 +207,8 @@ module assembly(L, a, bought = true, body = false)
             lid(get(L, "body"));
             cap(get(L, "body"));
         }
+    if (body && bought)
+        mount_screws(L);
     if (bought)
     {
         translate([ 0, 0, z ]) syringe(get(L, "syringe"), button_x);
@@ -232,6 +234,24 @@ module screws(L, pins)
         translate([ get(L, "crank_x"), y, get(L, "motor_head_z") ]) flat_screw(ms, get(L, "motor_screw_l"));
 }
 
+// M3 socket heads through the body's mounting holes, their heads inside, as a user would fit them into an adapter;
+// shown 6 past the body. The front ones can go in first; the top ones too if the frame slides in with its crank along
+// the axis, as one turned across carries its pin screws into them.
+module mount_screws(L)
+{
+    b = get(L, "body");
+    sc = get(b, "screw");
+    x = get(b, "x");
+    color("silver")
+    {
+        for (h = get(b, "mount_front"))
+            translate([ x[0], h[0], h[1] ]) rotate([ 0, 90, 0 ]) screw(sc, get(b, "end_t") + 6, 0);
+        for (h = get(b, "mount_top"))
+            translate([ h[0], h[1], get(b, "T") ]) rotate([ 180, 0, 0 ])
+                screw(sc, get(b, "wall") + get(b, "lid")[0] + 6, 0);
+    }
+}
+
 // Echoes what to buy and the derived figures.
 module report(L)
 {
@@ -250,4 +270,11 @@ module report(L)
     echo(str("screws: 2 x M3 x ", get(L, "pin_l"), " with 2 x M3 washer (crank pin, clip pin), ", get(L, "pin_thread"),
              " of thread; 2 x ", get(get(L, "motor_screw"), "name"), " x ", get(L, "motor_screw_l"), " (motor), ",
              get(L, "motor_thread"), " of it into the gearbox; 2 x M3 x 10 (cap)"));
+    mf = get(b, "mount_front");
+    mt = get(b, "mount_top");
+    echo(str("mounting: 4 x M3 clearance through the front, ", mf[3][0] - mf[0][0], " across x ", mf[3][1] - mf[0][1],
+             " up, centred ", (mf[0][1] + mf[3][1]) / 2, " over the plate's underside, where the syringe's axis is ",
+             get(L, "axis_z"), "; 4 through the roof's shoulders, ", mt[3][1] - mt[0][1], " across x ",
+             mt[3][0] - mt[0][0], " along, centred ", get(b, "x")[1] - (mt[0][0] + mt[3][0]) / 2,
+             " in front of the back end"));
 }

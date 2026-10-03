@@ -12,7 +12,8 @@ forth continuously. The motor runs in one direction straight off a supply; each 
 full pull and one full push.
 
 Not in scope: what the syringe is connected to, and anything that powers or controls the motor.
-Mounting the assembly is deferred until the prototype works; it is held by hand until then.
+The body has two mounting interfaces, plain holes a user's own adapter screws to; the adapters are
+not in scope.
 
 ## Mechanism
 
@@ -51,15 +52,19 @@ crank, the rod and the plunger all move in one horizontal plane:
   drops into a notch at the window's back edge when it is shut, and runs in a groove along the
   roof's middle the rest of its travel. Over the wider back, the lid's rails run out to the sides,
   filling the roof's shoulders flush with the rails' tops: the rails cannot snap off, and there is
-  no inside corner to clean. The bottom is not flat, so a desk stand is an add-on; the narrow front
-  is a constant section a bracket can grip. The push-button snaps into the clip's cup past two small
-  lips, so the syringe stays in whichever way up the unit is. The body prints standing on its back
-  end, 217 mm tall, with no supports: its walls lean in at most 45 degrees, `layout()` starting the
-  taper sooner where they would lean further (the 3 mL's lean 43), and the front wall bridges about
-  27 mm. Its rails start at the bed, so turn on the slicer's elephant-foot compensation, and use a
-  brim. No edge on it, the lid or the frame's plate comes to a knife edge: the dovetails and the
-  lid's bevels stand on short lands. Assembly: frame into the body from the back, lid onto its rails
-  from the back, then the cap.
+  no inside corner to clean. Two mounting patterns, each four M3 clearance holes the same for every
+  syringe, take a user's adapter: one through the front wall, 30 across by 10 up, centred 15 mm over
+  the plate's underside, beside the barrel's slot; one through the roof's shoulders, 60 across by 20
+  along, centred 15 mm in front of the back end, behind the crank's sweep. The screws' heads sit
+  inside. The front ones can go in before the frame; the top ones too if the frame slides in with
+  its crank along the axis, since one turned across carries its pin screws into them. The
+  push-button snaps into the clip's cup past two small lips, so the syringe stays in whichever way
+  up the unit is. The body prints standing on its back end, 217 mm tall, with no supports: its walls
+  lean in at most 45 degrees, `layout()` starting the taper sooner where they would lean further
+  (the 3 mL's lean 43), and the front wall bridges about 27 mm. Its rails start at the bed, so turn
+  on the slicer's elephant-foot compensation, and use a brim. No edge on it, the lid or the frame's
+  plate comes to a knife edge: the dovetails and the lid's bevels stand on short lands. Assembly:
+  frame into the body from the back, lid onto its rails from the back, then the cap.
 
 The motor never reverses: each revolution is one pull and one push. At a = 180° the plunger is in,
 stopping 1 mm short of the barrel's end, and at 0° it is out, stopping 1 mm short of the plunger's
@@ -199,7 +204,8 @@ draws the inline one, simplified, from the figures above.
 1. **Measure** the plan shape of the barrel flanges; the slot is open at the sides and 12.6 tall
    with clearance, and 24.5 sets only the frame's width. For the worm motor, if it is ever used,
    measure its shaft length and boss.
-2. **Mounting:** the desk stand and the vertical mount are add-ons still to design.
+2. **Mounting:** adapters for the two hole patterns, for a stand, a rail or a breadboard, are a
+   user's to design.
 3. **Measure** the barrel's length, flange to luer tip, and the motor's end boss and terminals past
    its can. The body is sized with 3 mm nominal for the terminals.
 4. **Measure the GA25YN370 when it arrives:** its gearbox length, the shaft's length from the gearbox
