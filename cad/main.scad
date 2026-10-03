@@ -92,16 +92,16 @@ section(section, section_at)
 // washer overlaps the rod's bore round it by at least 0.5 a side. play: the rod's end float between
 // its seat and the washer. sled: [reach past the clip's pin, depth of its top and the rails' under the
 // rod]. slide: per side, the sled between the rails. recess: the motor screws' heads under the
-// plate's top. margin: the stopper stops this short of the barrel's end, for the error in exposed and
-// the print. pin_l and motor_screw_l: the screws' lengths. window: how much wider the body's window is
-// than the barrel's flanges, room for fingers round them.
+// plate's top. margin: the stopper stops this short of each end of its travel, the barrel's end and the
+// plunger's stop, for the error in exposed and stroke and the print. pin_l and motor_screw_l: the screws' lengths.
+// window: how much wider the body's window is than the barrel's flanges, room for fingers round them.
 // clang-format off
 function layout(syringe, motor, pin, pin_washer, motor_screw, fit, press, hole, wall,
                 plate_t = 5, pocket = 2, gap = 1, float = 1.5, clip_wall = 2, rod_t = 4, rod_min = 90,
                 rod_w = 10, boss_d = 5.6, play = 0.3, sled = [20, 2], slide = 0.3, recess = 0.2,
                 margin = 1, pin_l = 10, motor_screw_l = 3, window = 3.5) =
     let (
-        throw = get(syringe, "stroke") / 2,
+        throw = get(syringe, "stroke") / 2 - margin,
         rod_l = max(rod_min, ceil(3 * throw)),
         boss = [boss_d, rod_t + play],
         rod_bore = boss_d + 2 * fit,
