@@ -46,6 +46,7 @@ fit = 0.2;   // per side: a printed pocket round bought stock
 press = 0.05; // per side: the crank's bore on the steel shaft
 hole = 0.1;   // per side: a small hole a screw threads itself into, which prints undersize
 wall = 3;
+grip = 0.15;  // per side: how far the clip's lips reach over the push-button; more holds it tighter
 // clang-format on
 
 /* [Hidden] */
@@ -54,7 +55,7 @@ $fn = 48;
 chosen = syringe == "1ml" ? syringe_1ml : syringe == "3ml" ? syringe_3ml : syringe == "5ml" ? syringe_5ml : undef;
 L = assert(!is_undef(chosen), str("no syringe '", syringe, "'"))
     layout(syringe = chosen, motor = n20_1000, pin = m3_shcs, pin_washer = m3_washer, motor_screw = m1_6_pan, fit = fit,
-           press = press, hole = hole, wall = wall);
+           press = press, hole = hole, wall = wall, grip = grip);
 
 // The assembly bare or in its body, or each printed part turned to how it prints; cut open if asked.
 section(section, section_at)
@@ -96,7 +97,7 @@ section(section, section_at)
 // plunger's stop, for the error in exposed and stroke and the print. pin_l and motor_screw_l: the screws' lengths.
 // window: how much wider the body's window is than the barrel's flanges, room for fingers round them.
 // clang-format off
-function layout(syringe, motor, pin, pin_washer, motor_screw, fit, press, hole, wall,
+function layout(syringe, motor, pin, pin_washer, motor_screw, fit, press, hole, wall, grip,
                 plate_t = 5, pocket = 2, gap = 1, float = 1.5, clip_wall = 2, rod_t = 4, rod_min = 90,
                 rod_w = 10, boss_d = 5.6, play = 0.3, sled = [20, 2], slide = 0.3, recess = 0.2,
                 margin = 1, pin_l = 10, motor_screw_l = 3, window = 3.5) =
@@ -106,7 +107,7 @@ function layout(syringe, motor, pin, pin_washer, motor_screw, fit, press, hole, 
         boss = [boss_d, rod_t + play],
         rod_bore = boss_d + 2 * fit,
         tap = get(pin, "tap") + 2 * hole,
-        clip = clip_spec(syringe, tap, fit, clip_wall, boss, rod_w, sled),
+        clip = clip_spec(syringe, tap, fit, clip_wall, boss, rod_w, sled, grip),
         axis_z = plate_t + float + get(clip, "half_w"),
         hub_z = plate_t + gap,
         bore = pocket + get(motor, "shaft_l") - hub_z,
