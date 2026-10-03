@@ -26,8 +26,8 @@ crank, the rod and the plunger all move in one horizontal plane:
   sits 2 mm up into a pocket, located by its bushing and held by two M1.6 × 3 pan heads,
   counterbored below the crank's hub.
 - **Crank.** It presses onto the 3 mm D-shaft and carries the pin at a throw of half the syringe's
-  stroke: **28.6 mm** for the 3 mL's 57.25 mm. Its D-bore is blind, so pressed on, it stops on the
-  shaft's tip, 1 mm over the plate.
+  stroke less a 1 mm margin at each end: **27.6 mm** for the 3 mL's 57.25 mm. Its D-bore is blind,
+  so pressed on, it stops on the shaft's tip, 1 mm over the plate.
 - **Rod.** A 90 mm rod runs from the crank pin to the clip, lying on both parts' top faces. Each end
   turns on a printed boss 0.3 mm taller than the rod. An M3 × 10 screw and an M3 washer clamp down
   on the boss, not on the rod, so the joint turns freely with the screw tight. A screw clamping the
@@ -60,37 +60,38 @@ crank, the rod and the plunger all move in one horizontal plane:
   back, lid onto its rails from the back, then the cap.
 
 The motor never reverses: each revolution is one pull and one push. At a = 180° the plunger is in,
-stopping 1 mm short of the barrel's end, and at 0° it is out a full stroke.
+stopping 1 mm short of the barrel's end, and at 0° it is out, stopping 1 mm short of the plunger's
+stop. The margin at each end takes up error in the measured exposed length and stroke, and in the
+print.
 
 **Side load.** The rod's angle `φ` puts a side load `F·tan(φ)` on the clip, where `F` is the force
-along the stroke. The rod is at least three throws long, so `φ` peaks at `asin(28.6/90)` = 18.5° on
+along the stroke. The rod is at least three throws long, so `φ` peaks at `asin(27.6/90)` = 17.9° on
 the 3 mL. The rails take that load. On the first print the clip had no guide. On the push stroke the
 side load bowed the plunger sideways and the clip turned with it (video, 2026-09-30). The plunger
 cannot carry a side load in compression.
 
 **Torque (estimate).** The peak crank torque is about `F·r`. At an assumed 3 N of seal friction
-(unmeasured) and `r` = 28.6 mm, that is about 0.09 N·m (0.9 kg·cm). A fully blocked line adds full
-vacuum on the bore: about 5.9 N at 8.66 mm ID, which makes 2.6 kg·cm with the friction.
+(unmeasured) and `r` = 27.6 mm, that is about 0.08 N·m (0.8 kg·cm). A fully blocked line adds full
+vacuum on the bore: about 5.9 N at 8.66 mm ID, which makes 2.5 kg·cm with the friction.
 
 **Motor.** A 12 V N20 at about 30 rpm, which is a 1000:1-class gearbox: Pololu #3046 or a generic
 "N20 12V 30RPM". Pololu's #3046 gives 35 rpm free-running and a 10 kg·cm extrapolated stall, and
 recommends keeping instantaneous torque under 2.5 kg·cm on this gearbox
-(<https://www.pololu.com/category/60/micro-metal-gearmotors>). The running load is about a third
-of that limit, and a blocked line reaches about the limit. 35 rpm gives a 1.7 s cycle and a peak
-plunger speed of about 105 mm/s. A lower supply voltage slows the motor roughly in proportion.
+(<https://www.pololu.com/category/60/micro-metal-gearmotors>). The running load is about a third of
+that limit, and a blocked line reaches about the limit. 35 rpm gives a 1.7 s cycle and a peak
+plunger speed of about 101 mm/s. A lower supply voltage slows the motor roughly in proportion.
 
 **Motor for the larger syringes.** A 20 mL plunger, pushed by hand on a kitchen scale with the tip
 open (2026-10-02, rough), slides at about 250 g (2.5 N) and about 500 g (4.9 N) pushed hard and
-fast. On a crank of about 35 mm throw, for a stroke of about 70 mm (not yet measured), that is about
-0.9 kg·cm running and 1.8 kg·cm at the hard push; a fully blocked line would add about 29 N of
-vacuum on the 19.1 mm bore and stall any motor considered here. The motor chosen is a 25 mm
-GA25YN370 at 12 V and 30 rpm (Parts, below): its seller gives a 12 kgf·cm stall, and Pololu
-recommends at most 4 kg·cm continuous on its 25 mm metal gearboxes, so it runs at under a tenth of
-its stall and well within what a gearbox of its size takes continuously. Rejected: the yellow
-plastic "TT" gearmotor (about 0.8 kg·cm stall at 6 V, 1:48, about 200 rpm: Adafruit's datasheet for
-product 3777), and a 20 mm "turbo worm" motor whose listing's 8 kg·cm a buyer measured at under 1.
-A 37 mm JGB37-520 has more margin but costs about three times as much, and the measured load does
-not need it.
+fast. On a crank of 39 mm throw, for its measured 80 mm stroke, that is about 1.0 kg·cm running and
+1.9 kg·cm at the hard push; a fully blocked line would add about 29 N of vacuum on the 19.1 mm bore
+and stall any motor considered here. The motor chosen is a 25 mm GA25YN370 at 12 V and 30 rpm
+(Parts, below): its seller gives a 12 kgf·cm stall, and Pololu recommends at most 4 kg·cm continuous
+on its 25 mm metal gearboxes, so it runs at under a tenth of its stall and well within what a
+gearbox of its size takes continuously. Rejected: the yellow plastic "TT" gearmotor (about 0.8 kg·cm
+stall at 6 V, 1:48, about 200 rpm: Adafruit's datasheet for product 3777), and a 20 mm "turbo worm"
+motor whose listing's 8 kg·cm a buyer measured at under 1. A 37 mm JGB37-520 has more margin but
+costs about three times as much, and the measured load does not need it.
 
 ## Parts
 
@@ -110,8 +111,9 @@ The 20 mL waits on the round 25 mm motor, which the frame does not take yet.
 | Plunger exposed, stopper bottomed (flange rear face to push-button front face) | 10.75 mm | 10.75 mm | 14.3 mm | 11.75 mm |
 | Plunger, widest across (each narrows a little towards the push-button) | 3.8 mm, a solid rod | 7.5 mm, ribs about 1 mm thick; the last 9 mm before the push-button tapers to 6.6 mm | 11.5 mm | 18.3 mm |
 
-The barrel must be longer than the stroke plus the margin the stopper stops short of its end by, or
-the stroke pulls the stopper out; `layout()` asserts it.
+The parts drive 2 mm less than the working stroke, stopping 1 mm short of each end. The barrel must
+be longer than the stroke plus that margin, or the stroke pulls the stopper out; `layout()` asserts
+it.
 
 The size is inferred to be 3 mL, because published 3 mL inner diameters (8.57–8.94 mm, BD and
 Terumo, from syringe-pump libraries) give 3.3–3.6 mL over 57.25 mm. A 5 mL barrel (ID about 12 mm)
