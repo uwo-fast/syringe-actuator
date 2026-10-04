@@ -128,6 +128,10 @@ function layout(syringe, motor, pin, pin_washer, motor_screw, fit, press, hole, 
         motor_head_z = motor_seat_z + (get(motor_screw, "head_d") - get(motor_screw, "clear") - 2 * fit) / 2,
         frame = frame_spec(syringe, motor, motor_screw, fit, wall, plate_t, pocket, axis_z, crank_x, rails, motor_seat_z,
                            motor_bore[0]),
+        // the front mounting holes' spacing across: the narrowest multiple of 10 whose screws' heads, inside the front
+        // wall, clear the frame's snap ring round the barrel by 0.5
+        ring_half = (get(syringe, "barrel_od") + 2 * fit) / 2 + get(frame, "ring")[2],
+        mount_w = 10 * ceil(2 * (ring_half + get(pin, "head_d") / 2 + 0.5) / 10),
         // what the frame carries at its extremes over a turn, [y, z], for the body to clear
         reach = throw + rod_w / 2,
         motor_z = pocket - get(motor, "gearbox_l") - get(motor, "can_l") - get(motor, "tail_l"),
@@ -151,7 +155,7 @@ function layout(syringe, motor, pin, pin_washer, motor_screw, fit, press, hole, 
                          [get(frame, "x")[0], max(crank_x + reach, get(frame, "x")[1]) + 2],
                          [button_in + 2 * throw + get(clip, "back") + 5, get(syringe, "flange")[0] + window], axis_z, get(syringe, "barrel_od"),
                          [get(frame, "w"), get(frame, "dovetail"), plate_t], get(frame, "x")[1], pin, tap,
-                         motor_z + 5, fit)
+                         motor_z + 5, fit, mount_front = [ mount_w, 10, 15 ])
     )
     assert(bore >= 5, str("the shaft reaches only ", bore, " into the crank"))
     assert(axis_z - hub_z - bore >= 1.5, "the crank's blind bore leaves under 1.5 over the shaft's tip")
