@@ -1,6 +1,6 @@
 # Syringe Actuator
 
-> A printed crank that drives a syringe plunger back and forth from a continuously running N20
+> A printed crank that drives a syringe plunger back and forth from a continuously running
 > gearmotor.
 
 [![Licensing](https://img.shields.io/badge/Licensing-by_component-lightgrey.svg)](LICENSING.md)
@@ -8,11 +8,11 @@
 
 ## Overview
 
-An N20 gearmotor runs in one direction straight off a supply. A printed crank and connecting rod
-turn that into a continuous pull and push over nearly the whole stroke of a 1, 3, 5 or 10 mL luer
-syringe, the plunger's clip guided on rails. The mechanism sits in a printed body: the syringe loads
-through a lidded window in the roof, and the motor's two wires come out the back. The bought
-hardware is the syringe, the motor and a few screws.
+An N20 gearmotor, or a 25 mm GA25 for the larger syringes, runs in one direction straight off a
+supply. A printed crank and connecting rod turn that into a continuous pull and push over nearly the
+whole stroke of a 1 to 30 mL luer syringe, the plunger's clip guided on rails. The mechanism sits in
+a printed body: the syringe loads through a lidded window in the roof, and the motor's two wires
+come out the back. The bought hardware is the syringe, the motor and a few screws.
 
 **Status:** working prototype. The third print (2026-10-02), body and all, runs as designed.
 [`docs/design.md`](docs/design.md) records the mechanism, the part dimensions and what is open.

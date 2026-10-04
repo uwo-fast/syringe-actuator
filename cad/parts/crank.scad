@@ -53,7 +53,18 @@ module crank(s)
             }
             translate([ throw, 0, h - 1 ]) cylinder(d = boss[0], h = boss[1] + 1);
         }
-        translate([ 0, 0, -1 ]) linear_extrude(get(s, "bore") + 1) d_shaft(get(s, "motor"), get(s, "press"));
+        // the D only as far down as the shaft's flat runs from its tip, where the motor says (a GA25's stops short of
+        // its bushing); round below it
+        m = get(s, "motor");
+        bore = get(s, "bore");
+        if (has(m, "flat_l") && get(m, "flat_l") < bore)
+        {
+            fl = get(m, "flat_l");
+            translate([ 0, 0, -1 ]) cylinder(d = get(m, "shaft_d") + 2 * get(s, "press"), h = bore - fl + 1);
+            translate([ 0, 0, bore - fl - 0.5 ]) linear_extrude(fl + 0.5) d_shaft(m, get(s, "press"));
+        }
+        else
+            translate([ 0, 0, -1 ]) linear_extrude(bore + 1) d_shaft(m, get(s, "press"));
         translate([ throw, 0, -1 ]) cylinder(d = get(s, "tap"), h = h + boss[1] + 2);
     }
 }

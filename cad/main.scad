@@ -24,7 +24,6 @@
 // clang-format off
 include <purchased/syringes.scad>;
 include <purchased/motors.scad>;
-include <purchased/fasteners.scad>;
 include <parts/frame.scad>;
 include <parts/crank.scad>;
 include <parts/rod.scad>;
@@ -37,7 +36,8 @@ include <lib/section.scad>;
 // clang-format off
 /* [View] */
 part = "assembly"; // [assembly, housed, frame, crank, rod, clip, body, lid, cap, report]
-syringe = "3ml";   // [1ml, 3ml, 5ml, 10ml]
+syringe = "3ml";   // [1ml, 3ml, 5ml, 10ml, 20ml, 30ml]
+motor = "auto";    // [auto, n20, ga25]
 angle = 180;       // [0:5:355]
 show_bought = true;
 section = "none";  // [none, x, y, z]
@@ -55,9 +55,12 @@ grip = 0.15;  // per side: how far the clip's lips reach over the push-button; m
 $fn = 48;
 
 chosen = syringe_by_name(syringe);
+// auto: the motor syringes.scad pairs the syringe with
+driven = motor_by_name(motor == "auto" ? syringe_motor(syringe) : motor);
 L = assert(!is_undef(chosen), str("no syringe '", syringe, "'"))
-    layout(syringe = chosen, motor = n20_1000, pin = m3_shcs, pin_washer = m3_washer, motor_screw = m1_6_flat,
-           fit = fit, press = press, hole = hole, wall = wall, grip = grip);
+    assert(!is_undef(driven), str("no motor '", motor, "'"))
+        layout(syringe = chosen, motor = driven, pin = m3_shcs, pin_washer = m3_washer, fit = fit, press = press,
+               hole = hole, wall = wall, grip = grip);
 
 // The assembly bare or in its body, or each printed part turned to how it prints; cut open if asked.
 section(section, section_at)
@@ -95,16 +98,16 @@ section(section, section_at)
 // washer overlaps the rod's bore round it by at least 0.5 a side. play: the rod's end float between
 // its seat and the washer. sled: [reach past the clip's pin, depth of its top and the rails' under the
 // rod]. slide: per side, the sled between the rails. recess: the motor screws' heads under the
-// plate's top. motor_bore: [d, depth] of the counterbore over each motor screw, the room an ISO 7045 pan head
-// takes; the flat heads bought sit in it on the clearance hole's rim, as printed and proven. margin: the stopper stops
+// plate's top; the motor's own row gives its screws, their length and their counterbore. margin: the stopper stops
 // this short of each end of its travel, the barrel's end and the plunger's stop, for the error in exposed and stroke
-// and the print. pin_l and motor_screw_l: the screws' lengths. window: how much wider the body's window is than the
+// and the print. friction: the plunger's seal friction, N, assumed, for the report's torque estimate. pin_l: the pin
+// screws' length. window: how much wider the body's window is than the
 // barrel's flanges, room for fingers round them.
 // clang-format off
-function layout(syringe, motor, pin, pin_washer, motor_screw, fit, press, hole, wall, grip,
+function layout(syringe, motor, pin, pin_washer, fit, press, hole, wall, grip,
                 plate_t = 5, pocket = 2, gap = 1, float = 1.5, clip_wall = 2, rod_t = 4, rod_min = 90,
                 rod_w = 10, boss_d = 5.6, play = 0.3, sled = [20, 2], slide = 0.3, recess = 0.2,
-                margin = 1, pin_l = 10, motor_screw_l = 3, window = 3.5, motor_bore = [ 3.2, 1.3 ]) =
+                margin = 1, pin_l = 10, window = 3.5, friction = 3) =
     let (
         throw = get(syringe, "stroke") / 2 - margin,
         rod_l = max(rod_min, ceil(3 * throw)),
@@ -123,9 +126,18 @@ function layout(syringe, motor, pin, pin_washer, motor_screw, fit, press, hole, 
         sweep_x = crank_x - throw - rod_w / 2,
         stack = boss[1] + get(pin_washer, "h"),
         pin_tip = axis_z + stack - pin_l,
+        mount = get(motor, "mount"),
+        motor_screw = mount[0],
+        motor_screw_l = mount[1],
+        motor_bore = mount[2],
         motor_seat_z = plate_t - motor_bore[1] - recess,
-        // a flat head's cone rests where it is as wide as the clearance hole, this far under its top
-        motor_head_z = motor_seat_z + (get(motor_screw, "head_d") - get(motor_screw, "clear") - 2 * fit) / 2,
+        flat_head = get(motor_screw, "head") == "flat",
+        // a flat head's cone rests where it is as wide as the clearance hole, this far under its top; any other head
+        // sits on the counterbore's floor
+        motor_head_z = flat_head ? motor_seat_z + (get(motor_screw, "head_d") - get(motor_screw, "clear") - 2 * fit) / 2
+                                 : motor_seat_z,
+        // a flat head's length is overall, any other's under its head
+        motor_thread = pocket - (motor_head_z - motor_screw_l),
         frame = frame_spec(syringe, motor, motor_screw, fit, wall, plate_t, pocket, axis_z, crank_x, rails, motor_seat_z,
                            motor_bore[0]),
         // the front mounting holes' spacing across: the narrowest multiple of 10 whose screws' heads, inside the front
@@ -138,7 +150,7 @@ function layout(syringe, motor, pin, pin_washer, motor_screw, fit, press, hole, 
         envelope = [
             [reach, hub_z], [reach, axis_z + rod_t],
             [throw + get(pin_washer, "od") / 2, axis_z + stack + get(pin, "head_h")],
-            [get(motor, "w") / 2, motor_z],
+            [motor_half_w(motor), motor_z],
             [get(frame, "w") / 2 + get(frame, "dovetail"), 0],
             [get(syringe, "flange")[0] / 2, axis_z + get(syringe, "flange")[1] / 2],
             [get(clip, "half_w"), axis_z + get(clip, "top")],
@@ -166,11 +178,16 @@ function layout(syringe, motor, pin, pin_washer, motor_screw, fit, press, hole, 
     assert(get(syringe, "barrel_l") > margin + 2 * throw, "the stroke pulls the stopper's face out of the barrel")
     assert(sweep_x - rails[0] >= 1, str("the rails reach ", rails[0] - sweep_x + 1, " into the crank's sweep"))
     assert(sled[1] >= 1, "the sled and the rails are under 1 below the rod")
+    assert(get(frame, "w") - motor_size(motor)[1] - 2 * fit >= 3, "the plate is too narrow round the motor's gearbox")
+    assert(motor_seat_z - pocket >= 1, "the motor screws' counterbores leave under 1 over the gearbox's pocket")
+    assert(motor_thread >= 1.2, str("the motor screws reach only ", motor_thread, " into the gearbox"))
+    assert(!has(motor, "hole_depth") || motor_thread <= get(motor, "hole_depth") - 0.5,
+           str("the motor screws reach ", motor_thread, " into the gearbox's holes, too near their bottoms"))
     [
         ["name", "layout"], ["syringe", syringe], ["motor", motor], ["pin", pin], ["pin_l", pin_l],
         ["pin_washer", pin_washer], ["motor_screw", motor_screw], ["motor_screw_l", motor_screw_l],
         ["motor_seat_z", motor_seat_z], ["motor_head_z", motor_head_z],
-        ["motor_thread", motor_screw_l - (motor_head_z - pocket)],
+        ["motor_thread", motor_thread], ["friction", friction],
         ["pin_thread", pin_l - stack], ["throw", throw], ["rod_l", rod_l], ["axis_z", axis_z],
         ["pocket", pocket], ["hub_z", hub_z], ["crank_x", crank_x],
         ["frame", frame], ["crank", crank], ["rod", rod], ["clip", clip], ["body", body],
@@ -222,7 +239,7 @@ module assembly(L, a, bought = true, body = false)
 }
 
 // The pin screws and washers on their bosses at pins [[x, y], ...], and the motor screws seated in
-// their counterbores. Each screw's length is under its head.
+// their counterbores. A pin screw's length is under its head.
 module screws(L, pins)
 {
     pin = get(L, "pin");
@@ -235,7 +252,9 @@ module screws(L, pins)
         screw(pin, get(L, "pin_l"), get(washer, "h"));
     }
     color("dimgray") for (y = [ -1, 1 ] * get(get(L, "motor"), "hole_pitch") / 2)
-        translate([ get(L, "crank_x"), y, get(L, "motor_head_z") ]) flat_screw(ms, get(L, "motor_screw_l"));
+        translate([ get(L, "crank_x"), y, get(L, "motor_head_z") ]) if (get(ms, "head") == "flat")
+            flat_screw(ms, get(L, "motor_screw_l"));
+    else screw(ms, get(L, "motor_screw_l"), 0);
 }
 
 // M3 socket heads through the body's mounting holes, knocked out, their heads inside, as a user would fit them into an
@@ -261,6 +280,15 @@ module report(L)
 {
     f = get(L, "frame");
     throw = get(L, "throw");
+    m = get(L, "motor");
+    sy = get(L, "syringe");
+    echo(str("motor ", get(m, "name")));
+    // the crank's peak torque is about the plunger's force times the throw; kg.cm, as gearmotors are rated
+    kgcm = throw / 1000 / 0.0980665;
+    area = PI * pow(get(sy, "bore_d"), 2) / 4;
+    echo(str("torque at the crank, estimated: ", get(L, "friction") * kgcm, " kg.cm on an open line (",
+             get(L, "friction"), " N of seal friction, assumed), and ", 0.1 * area * kgcm,
+             " more per bar of vacuum or back-pressure; keep it under ", get(m, "torque"), " kg.cm for this motor"));
     echo(str("stroke ", 2 * throw, ", crank throw ", throw, ", rod ", get(L, "rod_l"), ", peak rod angle ",
              asin(throw / get(L, "rod_l")), " deg"));
     echo(str("frame ", get(f, "x")[1] - get(f, "x")[0], " x ", get(f, "w"), ", syringe axis ", get(L, "axis_z"),

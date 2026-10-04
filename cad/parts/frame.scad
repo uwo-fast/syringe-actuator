@@ -6,8 +6,8 @@
  *
  * The barrel's flange drops into a slot, whose walls take the push and the pull, and the barrel
  * snaps into a ring in front of it. Two rails either side of the clip's travel guide its sled. The
- * motor's gearbox goes up into a pocket under the plate, located by its bushing and held by two M1.6
- * screws from above, counterbored under the crank's hub; the motor hangs below the plate. The plate's
+ * motor's gearbox goes up into a pocket under the plate, located by its bushing and held by two screws
+ * from above, counterbored under the crank's hub; the motor hangs below the plate. The plate's
  * long edges are dovetails, which the body's rails take when the frame slides in.
  *
  * x along the syringe axis, 0 at the flange's rear face, the nozzle towards -x; z = 0 at the plate's
@@ -34,7 +34,7 @@ function frame_spec(syringe, motor, screw, fit, wall, plate_t, pocket, axis_z, c
         ["ring", ring], ["snap", snap], ["chamfer", chamfer], ["block", block], ["ring_x", ring_x],
         ["rail_end", rails[0]], ["rail_gap", rails[1]], ["rail_top", rails[2]], ["seat_z", seat_z], ["screw_bore", screw_bore], ["dovetail", dovetail],
         ["w", get(syringe, "flange")[0] + 2 * fit],
-        ["x", [ring_x, crank_x + get(motor, "h") / 2 + fit + wall]],
+        ["x", [ring_x, crank_x + motor_size(motor)[0] / 2 + fit + wall]],
     ];
 // clang-format on
 
@@ -107,12 +107,11 @@ module frame(s)
         translate([ ring_x - 1, 0, 0 ]) on_axis(s, od, ring[1] + 2);
         translate([ ring_x - 1, -get(s, "snap") * od / 2, z ]) cube([ ring[1] + 2, get(s, "snap") * od, 100 ]);
         // the motor: gearbox pocket from below, bushing and shaft through, screws counterbored from above
-        pocket = [ get(m, "h"), get(m, "w") ] + [ 2, 2 ] * fit;
-        translate([ cx - pocket[0] / 2, -pocket[1] / 2, -1 ]) cube([ pocket[0], pocket[1], get(s, "pocket") + 1 ]);
+        translate([ cx, 0, -1 ]) linear_extrude(get(s, "pocket") + 1) motor_outline(m, fit);
         // the pocket's mouth chamfered, against the first layer's squash
-        translate([ cx, 0, -1 ]) linear_extrude(1 + chamfer, scale = [
-            pocket[0] / (pocket[0] + 2 * chamfer + 2), pocket[1] / (pocket[1] + 2 * chamfer + 2)
-        ]) square(pocket + [ 2, 2 ] * (chamfer + 1), center = true);
+        pocket = motor_size(m) + [ 2, 2 ] * fit;
+        translate([ cx, 0, -1 ]) linear_extrude(1 + chamfer, scale = [for (p = pocket) p / (p + 2 * chamfer + 2)])
+            motor_outline(m, fit + chamfer + 1);
         translate([ cx, 0, -1 ]) cylinder(d = get(m, "bushing_d") + 2 * fit, h = t + 2);
         for (y = [ -1, 1 ] * get(m, "hole_pitch") / 2)
             translate([ cx, y, 0 ])
