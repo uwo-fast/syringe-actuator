@@ -14,6 +14,7 @@
 #
 # usage: tools/qa/qa.sh syringe [...]        e.g. tools/qa/qa.sh 3ml 5ml
 #        OPENSCAD=/path/to/openscad J=8 QA_KEEP=1 tools/qa/qa.sh 3ml
+#        MOTOR=n20 tools/qa/qa.sh 10ml       (a motor other than the syringe's default)
 
 set -uo pipefail
 cd "$(dirname "$0")/../.." || exit 1
@@ -21,6 +22,7 @@ cd "$(dirname "$0")/../.." || exit 1
 export Q=tools/qa
 export SCAD="${OPENSCAD:-openscad}"
 "$SCAD" --help 2>&1 | grep -q -- '--backend' && SCAD="$SCAD --backend=Manifold"
+SCAD="$SCAD -D motor=\"${MOTOR:-auto}\""
 export W
 W=$(mktemp -d)
 [ -n "${QA_KEEP:-}" ] || trap 'rm -rf "$W"' EXIT
