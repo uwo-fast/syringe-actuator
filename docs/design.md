@@ -54,11 +54,12 @@ crank, the rod and the plunger all move in one horizontal plane:
   filling the roof's shoulders flush with the rails' tops: the rails cannot snap off, and there is
   no inside corner to clean. Two mounting patterns, each four M3 clearance holes the same for every
   syringe and sealed by a 0.6 mm knockout skin at the outer face until a user drills or punches the
-  ones they use, take a user's adapter: one through the front wall, 30 across by 10 up, centred 15
-  mm over the plate's underside, beside the barrel's slot; one through the roof's shoulders, 60
-  across by 20 along, centred 15 mm in front of the back end, behind the crank's sweep. The screws'
-  heads sit inside. The front ones can go in before the frame; the top ones too if the frame slides
-  in with its crank along the axis, since one turned across carries its pin screws into them. The
+  ones they use, take a user's adapter: one through the front wall, 30 across by 10 up (wider for a
+  barrel whose snap ring would meet the screws' heads, in steps of 10), centred 15 mm over the
+  plate's underside, beside the barrel's slot; one through the roof's shoulders, 60 across by 20
+  along, centred 15 mm in front of the back end, behind the crank's sweep. The screws' heads sit
+  inside. The front ones can go in before the frame; the top ones too if the frame slides in with
+  its crank along the axis, since one turned across carries its pin screws into them. The
   push-button snaps into the clip's cup past two small lips, so the syringe stays in whichever way
   up the unit is. The body prints standing on its back end, 217 mm tall, with no supports: its walls
   lean in at most 45 degrees, `layout()` starting the taper sooner where they would lean further

@@ -49,8 +49,9 @@ function loft_w(st, x) = let(i = max([for (k = [0:len(st) - 2]) if (st[k][0] <= 
 // holes each for the screw, as [across, along, centre], for whatever a user mounts the body to: the front's across y
 // and up z, centred on the axis's plane at a height over the plate's underside; the top's across y and along x, centred
 // a distance in front of the back end, through the roof's shoulders outboard of the lid's rails, behind the crank's
-// sweep. The same for every syringe. knockout: each hole is blind from inside, stopping this short of the outer face,
-// so the body stays sealed until a user drills or punches through the holes they use.
+// sweep. The top's are the same for every syringe; layout() widens the front's where a wider barrel's snap ring needs
+// it. knockout: each hole is blind from inside, stopping this short of the outer face, so the body stays sealed until a
+// user drills or punches through the holes they use.
 // clang-format off
 function body_spec(front_pts, back_pts, rod, sweep_x, x, window, axis_z, barrel_d, plate, frame_end, screw, tap,
                    wire_z, fit, clr = 2, slide = 0.3, wall = 2.5, end_t = 3, boss_d = 8, boss_l = 12, wire_d = 6,
@@ -72,6 +73,8 @@ function body_spec(front_pts, back_pts, rod, sweep_x, x, window, axis_z, barrel_
          m = [back[0] - back[2] / 2, back[1] + back[2] / 2],
          k = (boss_d / 2 - 0.5) / sqrt(2))
     assert(x1 < x2, "the rod spreads past the narrow front only after the crank's sweep starts")
+    assert(front[0] + wall - mount_front[0] / 2 - (get(screw, "clear") + 2 * fit) / 2 >= 1.5,
+           "the front mounting holes come within 1.5 of the body's sides")
     assert(min([for (r = rod) if (r[0] >= x1 && r[0] <= x2) loft_w(stations, r[0]) - r[1]]) >= clr,
            "the taper does not clear the rod's swing")
     [
