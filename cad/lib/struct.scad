@@ -14,3 +14,6 @@ function get(s, k) = let(i = search([k], s, 1, 0)[0],
                          who = let(n = search(["name"], s, 1, 0)[0]) n == [] ? "struct" : s[n][1])
     assert(i != [], str(who, " has no '", k, "'"))
         assert(!is_undef(s[i][1]), str(who, ": '", k, "' is not known yet, measure it")) s[i][1];
+
+// Whether struct s has key k at all, for a field only some rows carry.
+function has(s, k) = search([k], s, 1, 0)[0] != [];

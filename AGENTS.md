@@ -4,10 +4,10 @@ Instructions for AI coding agents working in this repository.
 
 ## Project
 
-Printed parts that connect an N20 gearmotor to a luer syringe so the plunger strokes back and forth
-continuously. The motor runs in one direction straight off a supply; a printed crank and
-connecting rod do the rest. Read [`docs/design.md`](docs/design.md) before changing anything: it
-holds the mechanism, the part dimensions and what is open.
+Printed parts that connect a gearmotor (an N20, or a GA25 for 10 mL and up) to a luer syringe so the
+plunger strokes back and forth continuously. The motor runs in one direction straight off a supply;
+a printed crank and connecting rod do the rest. Read [`docs/design.md`](docs/design.md) before
+changing anything: it holds the mechanism, the part dimensions and what is open.
 
 **Scope is the mechanism only.** What the syringe is connected to, and anything that powers or
 controls the motor, belong to other projects. Do not design for them here.

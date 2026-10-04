@@ -12,7 +12,7 @@ PARTS := "frame crank rod clip body lid cap"
 
 # The builds, by main.scad's `syringe` names. `test` checks every part of each; `build` writes each to
 # build/<syringe>/.
-SYRINGES := "1ml 3ml 5ml 10ml"
+SYRINGES := "1ml 3ml 5ml 10ml 20ml 30ml"
 
 default:
     @just --list

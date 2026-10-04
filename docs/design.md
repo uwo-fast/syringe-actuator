@@ -54,8 +54,8 @@ crank, the rod and the plunger all move in one horizontal plane:
   filling the roof's shoulders flush with the rails' tops: the rails cannot snap off, and there is
   no inside corner to clean. Two mounting patterns, each four M3 clearance holes the same for every
   syringe and sealed by a 0.6 mm knockout skin at the outer face until a user drills or punches the
-  ones they use, take a user's adapter: one through the front wall, 30 across by 10 up (wider for a
-  barrel whose snap ring would meet the screws' heads, in steps of 10), centred 15 mm over the
+  ones they use, take a user's adapter: one through the front wall, 30 across by 10 up (40 across
+  for the 20 and 30 mL, whose wider snap rings would meet the screws' heads), centred 15 mm over the
   plate's underside, beside the barrel's slot; one through the roof's shoulders, 60 across by 20
   along, centred 15 mm in front of the back end, behind the crank's sweep. The screws' heads sit
   inside. The front ones can go in before the frame; the top ones too if the frame slides in with
@@ -102,16 +102,37 @@ stall at 6 V, 1:48, about 200 rpm: Adafruit's datasheet for product 3777), and a
 motor whose listing's 8 kg·cm a buyer measured at under 1. A 37 mm JGB37-520 has more margin but
 costs about three times as much, and the measured load does not need it.
 
+**Which motor.** Friction differs little between sizes, but vacuum or back-pressure acts on the
+bore's area, which grows fast: the 10 mL's is nearly three times the 3 mL's. Peak crank torque,
+estimated from 3 N of seal friction up to 10 mL and 5 N from 20 mL (assumed, bar the 20 mL's scale
+test) and BD's published bores:
+
+| Syringe | Open line | Against full vacuum, or 1 bar of back-pressure |
+| --- | --- | --- |
+| 3 mL | 0.8 kg·cm | 2.5 kg·cm |
+| 5 mL | 0.8 | 3.8 |
+| 10 mL | 1.1 | 6.9 |
+| 20 mL | 2.0 | 13.6 |
+| 30 mL | 2.3 | 19.6 |
+
+Against Pololu's 2.5 kg·cm for the N20's gearbox and its 4 kg·cm continuous for a 25 mm one (the
+GA25's seller gives 12 at stall): on an open line the N20 drives up to the 10 mL; against vacuum or
+pressure it suits only the 3 mL, the GA25 the 10 mL, and a blocked 20 or 30 mL stalls either.
+Positive pressure has no ceiling, unlike vacuum. So `motor` in the Customizer is `auto`, which gives
+the N20 up to the 5 mL and the GA25 from the 10 mL, or either by name, and the report gives the
+estimated torque on an open line and per bar for the syringe and motor chosen, beside that motor's
+limit.
+
 ## Parts
 
 ### Syringes (measured)
 
 The 3 mL measured 2026-09-29 (its barrel length and stroke 2026-10-02), the 1, 5 and 20 mL
 2026-10-02. `syringe` in the Customizer picks which one the parts are built for: the 1, 3 or 5 mL,
-or BD's 10 mL below. The 20 mL waits on the round 25 mm motor, which the frame does not take yet.
-They are not BD's: the 3 and 5 mL carry no maker's mark (BD prints its logo at the scale's end), and
-another maker's syringe of the same volume can differ by most of a millimetre, so a syringe from
-elsewhere is measured and added as its own entry ([`measuring.md`](measuring.md)).
+or the 20 mL, or BD's 10 and 30 mL below. They are not BD's: the 3 and 5 mL carry no maker's mark
+(BD prints its logo at the scale's end), and another maker's syringe of the same volume can differ
+by most of a millimetre, so a syringe from elsewhere is measured and added as its own entry
+([`measuring.md`](measuring.md)).
 
 | Feature | 1 mL | 3 mL | 5 mL | 20 mL |
 | --- | --- | --- | --- | --- |
@@ -126,10 +147,10 @@ elsewhere is measured and added as its own entry ([`measuring.md`](measuring.md)
 ### Syringes (BD, estimated)
 
 BD Plastipak luer-lock syringes, estimated and not measured: from BD's photo of its range, scaled
-against the 5 and 20 mL above, with outside diameters from published figures (Fisher's 16.21 mm
-for the 10 mL, 23.77 and 29.5 mm for the 30 and 50 mL) and exposed lengths from a Terumo pump
-manual's flange-to-plunger-end figures less the push-button. Good to about a millimetre; measure one
-in hand and replace them. The 10 mL builds on the N20; the 30 and 50 mL need the round motor too.
+against the 5 and 20 mL above, with outside diameters from published figures (Fisher's 16.21 mm for
+the 10 mL, 23.77 and 29.5 mm for the 30 and 50 mL) and exposed lengths from a Terumo pump manual's
+flange-to-plunger-end figures less the push-button. Good to about a millimetre; measure one in hand
+and replace them. The 10 and 30 mL build, on the GA25; the 50 mL is not built.
 
 | Feature | 10 mL | 30 mL | 50 mL |
 | --- | --- | --- | --- |
@@ -167,21 +188,27 @@ shaft's length, measured on the motor in hand (2026-09-29):
 | Bushing | Ø4.0, 0.7 proud |
 | Mounting | 2 × M1.6 tapped, 9.0 apart, either side of the shaft |
 
-### GA25YN370 gearmotor, 12 V 30 rpm (for the larger syringes)
+### GA25YN370 gearmotor, 12 V 30 rpm (for the 10, 20 and 30 mL)
 
-Ordered 2026-10-02: HERCHR, Amazon.ca B0BX6B91L9; the same part is sold by aqxreight (B0BSC9CK13)
-and as the JGA25-370 and 25GA-370. Outline from Seeed's JGA25-370 drawing
-(<https://media.digikey.com/pdf/Data%20Sheets/Seeed%20Technology/114090046_Web.pdf>), the same 25 mm
-form factor; ratings from the HERCHR listing.
+HERCHR, Amazon.ca B0BX6B91L9; the same part is sold by aqxreight (B0BSC9CK13) and as the JGA25-370
+and 25GA-370. Measured on the motor in hand, 2026-10-03; it agrees with Seeed's JGA25-370 drawing
+(<https://media.digikey.com/pdf/Data%20Sheets/Seeed%20Technology/114090046_Web.pdf>) bar the
+gearbox's length, longer at this ratio. Ratings from the HERCHR listing.
 
 | Feature | Size |
 | --- | --- |
-| Gearbox | Ø25 × L; L grows with the ratio (21 on Seeed's 350 rpm part) and is not given for this one: measure |
-| Can | Ø24.4 × 30.8 |
-| Shaft | Ø4.0, 3.5 across the flat, the flat 8 long from the tip; 10 long (listing) or 11.5 ± 0.5 (Seeed) from the gearbox face: measure |
+| Gearbox | Ø25 × 26.8 |
+| Can | Ø24.3 × 30.8, and 1.75 of end boss and terminals past it |
+| Shaft | Ø4.0, centred, 12.5 from the gearbox face (10 past the boss); 3.5 across the flat, the flat 8 long from the tip |
 | Boss | Ø7 × 2.5 |
-| Mounting | 2 × M3 tapped, 17 apart across the shaft, at most 3.5 deep. The face's other two screws hold the gearbox together: leave them in |
+| Mounting | 2 × M3 tapped, 17 apart across the shaft, at most 3.5 deep (Seeed's drawing; not measured). The face's other two screws hold the gearbox together: leave them in |
 | Rating (listing) | 12 V, 30 rpm no load; 25 rpm at 770 gf·cm; stall 12 kgf·cm at up to 2.1 A |
+
+On the frame its gearbox goes 2 mm up into a round pocket, held by two M3 × 4 button heads (ISO 7380)
+in counterbores under the crank's hub, 2.85 mm into its holes. The plate over the pocket is 3 mm,
+too thin for socket heads. The crank's bore is D-shaped only as far as the shaft's flat runs, round
+below. The motor hangs 57 mm under the plate, so its bodies are deep: the 10, 20 and 30 mL's stand
+239, 257 and 289 mm tall as they print.
 
 ### N20 worm (90°) gearmotor
 
@@ -210,5 +237,4 @@ draws the inline one, simplified, from the figures above.
    user's to design.
 3. **Measure** the barrel's length, flange to luer tip, and the motor's end boss and terminals past
    its can. The body is sized with 3 mm nominal for the terminals.
-4. **Measure the GA25YN370 when it arrives:** its gearbox length, the shaft's length from the gearbox
-   face, where its two M3 holes sit relative to the D-flat, and its end boss and terminals.
+4. **Measure the GA25's mounting holes' depth.** The screws are sized to Seeed's 3.5 mm.
