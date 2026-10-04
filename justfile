@@ -100,19 +100,19 @@ test:
     done
     exit $failed
 
-# Export one syringe's printed parts to output/<part>.stl, the spot for one-off exports.
-export syringe="3ml":
+# Export one syringe's printed parts to output/<part>.stl, the spot for one-off exports; motor overrides its default.
+export syringe="3ml" motor="auto":
     #!/usr/bin/env bash
     set -uo pipefail
     [ -n "{{PARTS}}" ] || { echo "skip  export (PARTS is empty: no printed part yet)"; exit 0; }
     mkdir -p output
     for p in {{PARTS}}; do
         rm -f "output/$p.stl"
-        {{OPENSCAD}} -o "output/$p.stl" -D 'syringe="{{syringe}}"' -D "part=\"$p\"" {{MAIN}} 2>"output/$p.err"
+        {{OPENSCAD}} -o "output/$p.stl" -D 'syringe="{{syringe}}"' -D 'motor="{{motor}}"' -D "part=\"$p\"" {{MAIN}} 2>"output/$p.err"
         if grep -qE '^(ERROR|WARNING)' "output/$p.err"; then echo "FAIL  $p"; exit 1; fi
         rm -f "output/$p.err"; printf 'ok    output/%s.stl\n' "$p"
     done
-    just _stamp output "{{syringe}}"
+    just _stamp output "{{syringe}}, motor {{motor}}"
 
 # Export every printed part for every syringe to build/<syringe>/<part>.stl.
 build:
