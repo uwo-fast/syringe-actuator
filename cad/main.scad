@@ -35,7 +35,7 @@ include <lib/section.scad>;
 // Customizer: one line per setting, so clang-format must leave the dropdown comments whole.
 // clang-format off
 /* [View] */
-part = "assembly"; // [assembly, housed, frame, crank, rod, clip, body, lid, cap, report]
+part = "assembly"; // [assembly, housed, frame, crank, rod, clip, body, lid, cap, ring_test, report]
 syringe = "3ml";   // [1ml, 3ml, 5ml, 10ml, 20ml, 30ml]
 motor = "auto";    // [auto, n20, ga25]
 angle = 180;       // [0:5:355]
@@ -49,6 +49,7 @@ press = 0.05; // per side: the crank's bore on the steel shaft
 hole = 0.1;   // per side: a small hole a screw threads itself into, which prints undersize
 wall = 3;
 grip = 0.15;  // per side: how far the clip's lips reach over the push-button; more holds it tighter
+ring_grip = 0.5; // per side: how much narrower than the barrel the snap ring's opening is; more holds it tighter
 // clang-format on
 
 /* [Hidden] */
@@ -60,7 +61,7 @@ driven = motor_by_name(motor == "auto" ? syringe_motor(syringe) : motor);
 L = assert(!is_undef(chosen), str("no syringe '", syringe, "'"))
     assert(!is_undef(driven), str("no motor '", motor, "'"))
         layout(syringe = chosen, motor = driven, pin = m3_shcs, pin_washer = m3_washer, fit = fit, press = press,
-               hole = hole, wall = wall, grip = grip);
+               hole = hole, wall = wall, grip = grip, ring_grip = ring_grip);
 
 // The assembly bare or in its body, or each printed part turned to how it prints; cut open if asked.
 section(section, section_at)
@@ -82,6 +83,13 @@ section(section, section_at)
             rotate([ 180, 0, 0 ]) lid(b);
     else if (part == "cap")
         let(b = get(L, "body")) rotate([ 0, 90, 0 ]) translate([ -get(b, "x")[1] - get(b, "end_t"), 0, 0 ]) cap(b);
+    // the frame's front end alone, its snap ring on a stub of plate: a quick print to try the snap on a syringe
+    else if (part == "ring_test")
+        let(f = get(L, "frame")) intersection()
+        {
+            frame(f);
+            translate([ get(f, "ring_x") - 1, -100, -1 ]) cube([ get(f, "ring")[1] + 6, 200, 200 ]);
+        }
     else if (part == "report")
         report(L);
     else
@@ -104,7 +112,7 @@ section(section, section_at)
 // screws' length. window: how much wider the body's window is than the
 // barrel's flanges, room for fingers round them.
 // clang-format off
-function layout(syringe, motor, pin, pin_washer, fit, press, hole, wall, grip,
+function layout(syringe, motor, pin, pin_washer, fit, press, hole, wall, grip, ring_grip,
                 plate_t = 5, pocket = 2, gap = 1, float = 1.5, clip_wall = 2, rod_t = 4, rod_min = 90,
                 rod_w = 10, boss_d = 5.6, play = 0.3, sled = [20, 2], slide = 0.3, recess = 0.2,
                 margin = 1, pin_l = 10, window = 3.5, friction = 3) =
@@ -139,7 +147,7 @@ function layout(syringe, motor, pin, pin_washer, fit, press, hole, wall, grip,
         // a flat head's length is overall, any other's under its head
         motor_thread = pocket - (motor_head_z - motor_screw_l),
         frame = frame_spec(syringe, motor, motor_screw, fit, wall, plate_t, pocket, axis_z, crank_x, rails, motor_seat_z,
-                           motor_bore[0]),
+                           motor_bore[0], ring_grip),
         // the front mounting holes' spacing across: the narrowest multiple of 10 whose screws' heads, inside the front
         // wall, clear the frame's snap ring round the barrel by 0.5
         ring_half = (get(syringe, "barrel_od") + 2 * fit) / 2 + get(frame, "ring")[2],

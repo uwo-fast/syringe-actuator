@@ -5,7 +5,7 @@
  * @copyright 2026
  *
  * The barrel's flange drops into a slot, whose walls take the push and the pull, and the barrel
- * snaps into a ring in front of it. Two rails either side of the clip's travel guide its sled. The
+ * snaps into a ring in front of it, past two thin arms. Two rails either side of the clip's travel guide its sled. The
  * motor's gearbox goes up into a pocket under the plate, located by its bushing and held by two screws
  * from above, counterbored under the crank's hub; the motor hangs below the plate. The plate's
  * long edges are dovetails, which the body's rails take when the frame slides in.
@@ -19,19 +19,21 @@ include <../lib/struct.scad>;
 // clang-format on
 
 // axis_z: the syringe axis's height; crank_x: the motor shaft's x. ring: [gap to the flange
-// block, length, wall] of the snap ring; snap: its opening, as a fraction of the barrel's diameter.
+// block, length, wall] of the snap ring. ring_grip: per side, how much narrower than the barrel the ring's opening
+// is, which the barrel springs its arms open by. ring_root: how far below the axis, in degrees, the base lets go of
+// the ring, so each arm bends over a long arc rather than a short one; 45 is the most its underside overhangs.
 // chamfer: the motor pocket's mouth. rails: [x of their end, half the gap between them, their top's
 // z]; they start at the flange block and reach out to the plate's edges. seat_z: the motor screws'
 // heads' seat; screw_bore: the counterbore's diameter over them. dovetail: how far each long edge's foot reaches out,
 // at 45 degrees.
 // clang-format off
 function frame_spec(syringe, motor, screw, fit, wall, plate_t, pocket, axis_z, crank_x, rails, seat_z, screw_bore,
-                    ring = [15, 6, 2], snap = 0.8, chamfer = 0.5, dovetail = 2.5) =
+                    ring_grip, ring = [15, 6, 1.6], ring_root = 45, chamfer = 0.5, dovetail = 2.5) =
     let (block = [-get(syringe, "flange_t") - fit - wall, fit + wall],
          ring_x = block[0] - ring[0] - ring[1]) [
         ["name", "frame"], ["syringe", syringe], ["motor", motor], ["screw", screw], ["fit", fit],
         ["plate_t", plate_t], ["pocket", pocket], ["axis_z", axis_z], ["crank_x", crank_x],
-        ["ring", ring], ["snap", snap], ["chamfer", chamfer], ["block", block], ["ring_x", ring_x],
+        ["ring", ring], ["ring_grip", ring_grip], ["ring_root", ring_root], ["chamfer", chamfer], ["block", block], ["ring_x", ring_x],
         ["rail_end", rails[0]], ["rail_gap", rails[1]], ["rail_top", rails[2]], ["seat_z", seat_z], ["screw_bore", screw_bore], ["dovetail", dovetail],
         ["w", get(syringe, "flange")[0] + 2 * fit],
         ["x", [ring_x, crank_x + motor_size(motor)[0] / 2 + fit + wall]],
@@ -83,14 +85,14 @@ module frame(s)
         {
             translate([ x[0], 0, 0 ]) rotate([ 90, 0, 90 ]) linear_extrude(x[1] - x[0]) plate_section(s);
             translate([ block[0], -w / 2, t - 1 ]) cube([ block[1] - block[0], w, z - t + 3 ]);
-            translate([ ring_x, 0, 0 ]) on_axis(s, ring_d, ring[1]);
-            // under the ring, a base that flares from its sides at the axis's height down to the plate's
-            // edges; the ring's top half, which the barrel springs open, stands free of it
-            translate([ ring_x, 0, 0 ]) rotate([ 90, 0, 90 ]) linear_extrude(ring[1]) difference()
+            // the ring on a base that holds only its bottom, up to ring_root below the axis either side: above that
+            // each arm stands free, so the barrel springs it open over a long arc. The corners where the arms leave
+            // the base are filleted, so no notch starts a crack there.
+            translate([ ring_x, 0, 0 ]) rotate([ 90, 0, 90 ]) linear_extrude(ring[1]) offset(r = -1) offset(delta = 1)
+                let(root = [ ring_d / 2 * cos(get(s, "ring_root")), z - ring_d / 2 * sin(get(s, "ring_root")) ])
             {
-                translate([ -w / 2, t - 1 ]) square([ w, z - t + 1 ]);
-                for (side = [ -1, 1 ])
-                    translate([ side * w / 2, z ]) scale([ (w - ring_d) / 2, z - t ]) circle(1);
+                translate([ 0, z ]) circle(d = ring_d);
+                polygon([ [ -root[0], t - 1 ], [ root[0], t - 1 ], root, [ -root[0], root[1] ] ]);
             }
             // the rails run from the flange block's back wall, out to the plate's edges
             gap = get(s, "rail_gap");
@@ -103,9 +105,13 @@ module frame(s)
         translate([ -ft - fit, -w / 2 - 1, z - slot_h / 2 ]) cube([ ft + 2 * fit, w + 2, 100 ]);
         translate([ block[0] - 1, 0, 0 ]) u_cut(s, od, -block[0]);
         translate([ fit - 1, 0, 0 ]) u_cut(s, get(sy, "plunger_span") + 2 * fit, block[1] - fit + 2);
-        // the snap ring's bore and opening
+        // the snap ring's bore, and its opening, ring_grip a side narrower than the barrel, each tip's top bevelled
+        // at 45 degrees as a lead-in so the barrel spreads the arms rather than bearing on their tips
         translate([ ring_x - 1, 0, 0 ]) on_axis(s, od, ring[1] + 2);
-        translate([ ring_x - 1, -get(s, "snap") * od / 2, z ]) cube([ ring[1] + 2, get(s, "snap") * od, 100 ]);
+        a = get(sy, "barrel_od") / 2 - get(s, "ring_grip");
+        h = sqrt(od * od / 4 - a * a);
+        translate([ ring_x - 1, 0, 0 ]) rotate([ 90, 0, 90 ]) linear_extrude(ring[1] + 2) polygon(
+            [ [ -a, z ], [ a, z ], [ a, z + h ], [ a + 50, z + h + 50 ], [ -a - 50, z + h + 50 ], [ -a, z + h ] ]);
         // the motor: gearbox pocket from below, bushing and shaft through, screws counterbored from above
         translate([ cx, 0, -1 ]) linear_extrude(get(s, "pocket") + 1) motor_outline(m, fit);
         // the pocket's mouth chamfered, against the first layer's squash
