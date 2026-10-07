@@ -118,7 +118,7 @@ function layout(syringe, motor, pin, pin_washer, fit, press, hole, wall, grip,
         axis_z = plate_t + float + get(clip, "half_w"),
         hub_z = plate_t + gap,
         bore = pocket + get(motor, "shaft_l") - hub_z,
-        crank = crank_spec(motor, tap, press, throw, axis_z - hub_z, boss, bore, rod_w),
+        crank = crank_spec(motor, tap, press, throw, axis_z - hub_z, boss, bore, rod_w, m3_set, m3_nut, fit),
         rod = rod_spec(rod_bore, rod_l, rod_t, rod_w),
         button_in = get(syringe, "exposed") + margin,
         crank_x = button_in + get(clip, "pin_x") + rod_l + throw,
@@ -301,7 +301,9 @@ module report(L)
         " wide x high at the front and the back, outside, with the lid"));
     echo(str("screws: 2 x M3 x ", get(L, "pin_l"), " with 2 x M3 washer (crank pin, clip pin), ", get(L, "pin_thread"),
              " of thread; 2 x ", get(get(L, "motor_screw"), "name"), " x ", get(L, "motor_screw_l"), " (motor), ",
-             get(L, "motor_thread"), " of it into the gearbox; 2 x M3 x 10 (cap)"));
+             get(L, "motor_thread"), " of it into the gearbox; 2 x M3 x 10 (cap); 1 x M3 x ",
+             get(get(L, "crank"), "set_l"), " ", get(get(get(L, "crank"), "set"), "name"), " and 1 x M3 ",
+             get(get(get(L, "crank"), "nut"), "name"), " (crank)"));
     mf = get(b, "mount_front");
     mt = get(b, "mount_top");
     echo(str("mounting, knockouts for M3: 4 in the front, ", mf[3][0] - mf[0][0], " across x ", mf[3][1] - mf[0][1],

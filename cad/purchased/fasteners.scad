@@ -29,3 +29,6 @@ m1_6_flat = [
     [ "head_h", 0.5 ]
 ];
 m3_washer = [ [ "name", "ISO 7089 M3" ], [ "id", 3.2 ], [ "od", 7 ], [ "h", 0.5 ] ];
+// ISO 4026 set screw, cup point, and ISO 4032 hex nut table values: the crank's grub screw and the nut trapped in it.
+m3_set = [ [ "name", "ISO 4026 set screw, cup point" ], [ "d", 3 ], [ "clear", 3.4 ] ];
+m3_nut = [ [ "name", "ISO 4032 nut" ], [ "s", 5.5 ], [ "e", 6.01 ], [ "m", 2.4 ] ];
