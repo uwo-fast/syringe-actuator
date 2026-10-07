@@ -22,10 +22,16 @@ crank, the rod and the plunger all move in one horizontal plane:
 
 - **Frame.** A 5 mm plate, about 175 × 25 mm, as wide as the barrel flanges. They drop into a slot
   at one end, and the slot's walls take both the push and the pull. The barrel snaps into a ring 15
-  mm in front of the slot. Two rails, 8 mm tall, run from the slot's back wall either side of the
-  clip's travel, out to the plate's edges. The motor hangs under the plate's other end: its gearbox
-  sits 2 mm up into a pocket, located by its bushing and held by two M1.6 × 3 JIS flat heads
-  (McMaster 91305A002), counterbored below the crank's hub.
+  mm in front of the slot, past two arms 1.6 mm thick that stand free from 45° below the axis, so
+  they bend over a long arc; the opening is 0.5 mm a side narrower than the barrel (`ring_grip` in
+  the Customizer), with a 45° lead-in at each tip. The first rings, 2 mm thick and free only above
+  the axis with an opening 80% of the barrel's width, snapped in PLA on every size, worse as the
+  barrel grew (reported 2026-10-05); a PETG one with its tips cut back held. The new ring works in
+  PLA and in PETG (2026-10-07). `ring_test` prints the ring alone on a stub of plate, to try the
+  snap on a syringe in a few minutes. Two rails, 8 mm tall, run from the slot's back wall either
+  side of the clip's travel, out to the plate's edges. The motor hangs under the plate's other end:
+  its gearbox sits 2 mm up into a pocket, located by its bushing and held by two M1.6 × 3 JIS flat
+  heads (McMaster 91305A002), counterbored below the crank's hub.
 - **Crank.** It presses onto the 3 mm D-shaft and carries the pin at a throw of half the syringe's
   stroke less a 1 mm margin at each end: **27.6 mm** for the 3 mL's 57.25 mm. Its D-bore is blind,
   so pressed on, it stops on the shaft's tip, 1 mm over the plate. An M3 × 6 grub screw (ISO 4026,
