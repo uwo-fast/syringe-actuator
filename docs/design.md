@@ -28,7 +28,13 @@ crank, the rod and the plunger all move in one horizontal plane:
   (McMaster 91305A002), counterbored below the crank's hub.
 - **Crank.** It presses onto the 3 mm D-shaft and carries the pin at a throw of half the syringe's
   stroke less a 1 mm margin at each end: **27.6 mm** for the 3 mL's 57.25 mm. Its D-bore is blind,
-  so pressed on, it stops on the shaft's tip, 1 mm over the plate.
+  so pressed on, it stops on the shaft's tip, 1 mm over the plate. An M3 × 6 grub screw (ISO 4026,
+  cup point) through a lobe on the hub's back, away from the pin, bears on the shaft's flat, which
+  faces it, threaded through an M3 nut dropped into a slot from the crank's top: steel on steel
+  carries the torque and holds the crank down. The printed D alone, keyed only by the flat's half
+  millimetre, wore round and rode up the shaft within an hour on an N20, in PETG (reported
+  2026-10-05), as the load reverses every stroke. With the grub screw, cranks printed in PLA and in
+  PETG held, and a 2-hour run left the bore unworn (2026-10-07).
 - **Rod.** A 90 mm rod runs from the crank pin to the clip, lying on both parts' top faces. Each end
   turns on a printed boss 0.3 mm taller than the rod. An M3 × 10 screw and an M3 washer clamp down
   on the boss, not on the rod, so the joint turns freely with the screw tight. A screw clamping the
