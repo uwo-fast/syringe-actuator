@@ -55,13 +55,7 @@ ring_grip = 0.5; // per side: how much narrower than the barrel the snap ring's 
 /* [Hidden] */
 $fn = 48;
 
-chosen = syringe_by_name(syringe);
-// auto: the motor syringes.scad pairs the syringe with
-driven = motor_by_name(motor == "auto" ? syringe_motor(syringe) : motor);
-L = assert(!is_undef(chosen), str("no syringe '", syringe, "'"))
-    assert(!is_undef(driven), str("no motor '", motor, "'"))
-        layout(syringe = chosen, motor = driven, pin = m3_shcs, pin_washer = m3_washer, fit = fit, press = press,
-               hole = hole, wall = wall, grip = grip, ring_grip = ring_grip);
+L = actuator(syringe, motor);
 
 // The assembly bare or in its body, or each printed part turned to how it prints; cut open if asked.
 section(section, section_at)
@@ -97,6 +91,23 @@ section(section, section_at)
 }
 
 // ---- Layout
+
+// The layout for a syringe and a motor by their Customizer names, at the print settings above; motor "auto" is the one
+// syringes.scad pairs the syringe with. Another project that mounts the actuator reads its layout here, with
+// `use <cad/main.scad>`, and front_x(), tip_x() and the body's front_face() and mount_front.
+function actuator(syringe,
+                  motor = "auto") = let(chosen = syringe_by_name(syringe),
+                                        driven = motor_by_name(motor == "auto" ? syringe_motor(syringe) : motor))
+    assert(!is_undef(chosen), str("no syringe '", syringe, "'"))
+        assert(!is_undef(driven), str("no motor '", motor, "'"))
+            layout(syringe = chosen, motor = driven, pin = m3_shcs, pin_washer = m3_washer, fit = fit, press = press,
+                   hole = hole, wall = wall, grip = grip, ring_grip = ring_grip);
+
+// The x of the front wall's outer face, the face an adapter meets.
+function front_x(L) = let(b = get(L, "body")) get(b, "x")[0] - get(b, "end_t");
+
+// The x of the syringe's front end: the nozzle's, or its luer-lock collar's if that reaches further.
+function tip_x(L) = let(s = get(L, "syringe")) - get(s, "flange_t") - get(s, "barrel_l") - get(s, "nozzle_l");
 
 // plate_t: stiff enough over the frame's length; pocket: the gearbox's depth into it, which locates
 // it square. gap: the crank's underside over the plate, set by the shaft's tip bottoming in the
