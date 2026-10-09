@@ -16,3 +16,6 @@ and [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Design record: the crank-slider mechanism, the syringe and N20 gearmotor dimensions, and what is
   open (`docs/design.md`)
 - `just check` / `just test` gates for the OpenSCAD source, CI, and the pre-commit config
+- What another project needs to mount the actuator, read with `use <cad/main.scad>`: `actuator()`,
+  the layout for a syringe by name; `front_x()` and the body's `front_face()`, the front wall's
+  outer face; `tip_x()`, where the syringe's front end is, from each syringe's new `nozzle_l`
