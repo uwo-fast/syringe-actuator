@@ -59,7 +59,10 @@ mL's; `part="report"` gives any syringe's.
     One is through the front wall beside the barrel's slot, 30 across by 10 up (40 across for the 20
     and 30 mL, whose wider snap rings would meet the heads), centred 15 mm over the plate's
     underside; the other through the roof's shoulders, 60 across by 20 along, centred 15 mm in front
-    of the back end, behind the crank's sweep.
+    of the back end, behind the crank's sweep. Another OpenSCAD project draws its adapter from the
+    layout with `use <cad/main.scad>`: `actuator(syringe, motor)` gives it, `front_x()` and the
+    body's `front_face()` the front wall's outer face, the body's `mount_front` and `mount_top` the
+    holes, and `tip_x()` the syringe's front end, from its `nozzle_l`.
   - _Printing._ The body prints standing on its back end with no supports: 211 mm tall for the 3 mL,
     its walls leaning in at most 45°, and its front wall bridges about 27 mm (44 on the 30 mL). Its
     rails start at the bed, so turn on the slicer's elephant-foot compensation, and use a brim. No
@@ -132,6 +135,7 @@ a syringe from elsewhere is measured and added as its own entry ([`measuring.md`
 | Working stroke | 64.25 mm | 57.25 mm | 52.5 mm | 80.0 mm |
 | Plunger exposed, stopper bottomed (flange rear face to push-button front face) | 10.75 mm | 10.75 mm | 14.3 mm | 11.75 mm |
 | Plunger, widest across (each narrows a little towards the push-button) | 3.8 mm, a solid rod | 7.5 mm, ribs about 1 mm thick; the last 9 mm before the push-button tapers to 6.6 mm | 11.5 mm | 18.3 mm |
+| Nozzle, the barrel's shoulder to the syringe's front end | not measured | not measured | 10.2 mm, derived from the assembled unit, not measured | not measured |
 
 ### Syringes (BD, estimated)
 
