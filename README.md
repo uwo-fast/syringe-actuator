@@ -6,32 +6,86 @@
 [![Licensing](https://img.shields.io/badge/Licensing-by_component-lightgrey.svg)](LICENSING.md)
 [![Contributions welcome](https://img.shields.io/badge/Contributions-welcome-brightgreen.svg)](https://github.com/uwo-fast/.github/blob/main/CONTRIBUTING.md)
 
+![The mechanism for a 3 mL syringe: the frame holds the syringe at one end and the motor under the other; the crank turns the rod, which drives the plunger's clip along its rails](docs/images/mechanism.png)
+
 ## Overview
 
-An N20 gearmotor, or a 25 mm GA25 for the larger syringes, runs in one direction straight off a
-supply. A printed crank and connecting rod turn that into a continuous pull and push over nearly the
-whole stroke of a 1 to 30 mL luer syringe, the plunger's clip guided on rails. The mechanism sits in
-a printed body: the syringe loads through a lidded window in the roof, and the motor's two wires
-come out the back. The bought hardware is the syringe, the motor and a few screws.
+A gearmotor runs in one direction straight off a supply: an N20 for 1 to 5 mL syringes, a 25 mm GA25
+for 10 to 30 mL. A printed crank and connecting rod turn that into a continuous pull and push over
+nearly the whole stroke of a luer syringe, the plunger's clip guided on rails. The mechanism sits in
+a printed body: the syringe loads through a lidded window in the roof, the motor's two wires come
+out the back, and two patterns of knockout holes take whatever you mount it to. The bought hardware
+is the syringe, the motor and a few screws.
 
-**Status:** working prototype. The third print (2026-10-02), body and all, runs as designed.
-[`docs/design.md`](docs/design.md) records the mechanism, the part dimensions and what is open.
+**Status:** working prototype. [`docs/design.md`](docs/design.md) records the mechanism, the part
+dimensions and their sources, and what is open.
+
+## Build one
+
+1. **Pick the syringe.** The parts are built for one syringe at a time. Presets:
+
+   | Syringe | Motor | Source |
+   | --- | --- | --- |
+   | 1, 3, 5 mL | N20 | measured unbranded luer-lock syringes |
+   | 20 mL | GA25 | measured |
+   | 10, 30 mL | GA25 | BD Plastipak, estimated to about a millimetre |
+
+   Syringes of the same volume differ by maker, so for any other syringe, or to replace an estimate,
+   measure it and add it as a preset: [`docs/measuring.md`](docs/measuring.md).
+
+2. **Export the parts.** `just build` writes every preset's printed parts to `build/<syringe>/`, or
+   open `cad/main.scad` in OpenSCAD and pick the syringe and the `part` in the Customizer. The parts
+   are the frame, crank, rod, clip, body, lid and cap; `ring_test` prints the syringe's snap ring
+   alone, to try it first.
+
+3. **Buy the hardware.** `openscad -D 'syringe="3ml"' -D 'part="report"' -o r.csg cad/main.scad`
+   lists it for a syringe:
+
+   | Part | For | What |
+   | --- | --- | --- |
+   | Gearmotor | 1–5 mL | N20, 12 V, about 30 rpm (1000:1), such as Pololu #3046 |
+   | Gearmotor | 10–30 mL | GA25YN370 (also JGA25-370), 12 V, 30 rpm |
+   | Motor screws | N20 | 2 × M1.6 × 3 flat head |
+   | Motor screws | GA25 | 2 × M3 × 4 button head (ISO 7380) |
+   | Pin screws | all | 2 × M3 × 10 socket head, with 2 × M3 washers |
+   | Cap screws | all | 2 × M3 × 10 |
+   | Crank | all | 1 × M3 × 6 set screw, cup point (ISO 4026), and 1 × M3 nut |
+
+4. **Print.** PLA or PETG, no supports. The body stands on its back end, 208 to 289 mm tall by
+   syringe; turn on the slicer's elephant-foot compensation and use a brim, since its rails start
+   at the bed.
+
+5. **Assemble.**
+   - **Crank:** drop the nut into its slot, press the crank onto the motor's shaft, and tighten the
+     set screw onto the shaft's flat.
+   - **Frame:** screw the motor under the plate, and join the rod to the crank and the clip with the
+     pin screws over their washers.
+   - **Body:** slide the frame into the body from the back, slide the lid onto its rails from the
+     back, then screw on the cap.
+   - **Syringe:** load it through the window: the barrel snaps into its ring and the push-button
+     into the clip.
+   - **Tune:** if the clip or the ring holds too loosely or too tightly, change `grip` or
+     `ring_grip` in the Customizer and reprint that part.
+
+6. **Mount it**, if you need to. Drill or punch out the knockouts you use: four through the front
+   wall and four through the roof's shoulders. Your adapter screws to them, M3, with the heads
+   inside the body; the front ones are easiest to fit before the frame goes in.
 
 ## Repository layout
 
-- `docs/` — design record
-- `cad/` — the OpenSCAD source: `main.scad` draws the assembly or any printed part for the chosen
-  syringe; `just export` writes one syringe's parts to `output/`, and `just build` every syringe's
-  to `build/`
+- `cad/` — the OpenSCAD source: `main.scad` draws the assembly or any printed part,
+  `purchased/` holds the syringes, motors and fasteners, `parts/` the printed parts
+- `docs/` — the design record and the measuring guide
+- `tools/` — the mesh check behind `just test`, and the geometry checks behind `just qa`
 
-## Getting started
+## Development
 
 Tasks run through [`just`](https://github.com/casey/just); `just --list` shows them all.
 
 ```sh
 just setup   # verify the toolchain: OpenSCAD, clang-format
 just check   # what CI runs: formatting and every SCAD file evaluating cleanly
-just test    # every printed part exports as one closed solid
+just test    # every printed part, for every syringe, exports as one closed solid
 just build   # every syringe's printed parts to build/<syringe>/, stamped with the commit
 just qa      # slivers, collisions over a turn and overhangs, for every syringe
 ```
