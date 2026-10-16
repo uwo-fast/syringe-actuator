@@ -113,12 +113,12 @@ from 20 mL (assumed, bar the 20 mL's scale test) and BD's published bores:
 | 20 mL | 2.0 | 13.6 |
 | 30 mL | 2.3 | 19.6 |
 
-On an open line the N20 drives up to the 10 mL; against vacuum or pressure it suits only the 1 and 3
-mL, the GA25 the 10 mL, and a blocked 20 or 30 mL stalls either. Positive pressure has no ceiling,
-unlike vacuum. So `motor` in the Customizer is `auto`, the N20 up to the 5 mL and the GA25 from the
-10 mL, or either by name, and the report gives the estimated torque for the syringe and motor chosen
-beside that motor's limit; it assumes 3 N of friction throughout, so for the 20 and 30 mL it gives
-less than the table.
+On an open line the N20 drives up to the 10 mL; against vacuum or pressure it suits only the 1 mL,
+and the 3 mL right at its limit, the GA25 the 10 mL, and a blocked 20 or 30 mL stalls either.
+Positive pressure has no ceiling, unlike vacuum. So `motor` in the Customizer is `auto`, the N20 up
+to the 5 mL and the GA25 from the 10 mL, or either by name, and the report gives the estimated
+torque for the syringe and motor chosen beside that motor's limit; it assumes 3 N of friction
+throughout, so for the 20 and 30 mL it gives less than the table.
 
 ## Parts
 
