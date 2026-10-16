@@ -47,7 +47,7 @@ section_at = 0;    // [-100:1:100]
 fit = 0.2;   // per side: a printed pocket round bought stock
 press = 0.05; // per side: the crank's bore on the steel shaft
 hole = 0.1;   // per side: a small hole a screw threads itself into, which prints undersize
-wall = 3;
+wall = 3;     // the frame's walls either side of the flange's slot and past the motor
 grip = 0.15;  // per side: how far the clip's lips reach over the push-button; more holds it tighter
 ring_grip = 0.5; // per side: how much narrower than the barrel the snap ring's opening is; more holds it tighter
 // clang-format on
@@ -109,19 +109,18 @@ function front_x(L) = let(b = get(L, "body")) get(b, "x")[0] - get(b, "end_t");
 // The x of the syringe's front end: the nozzle's, or its luer-lock collar's if that reaches further.
 function tip_x(L) = let(s = get(L, "syringe")) - get(s, "flange_t") - get(s, "barrel_l") - get(s, "nozzle_l");
 
-// plate_t: stiff enough over the frame's length; pocket: the gearbox's depth into it, which locates
-// it square. gap: the crank's underside over the plate, set by the shaft's tip bottoming in the
-// crank's blind bore. float: the clip's underside over the plate. clip_wall: the clip's cup, which
-// bears only the stroke on the push-button's rim. rod_min: the rod's shortest; it is at least three throws long,
-// so it leans at most asin(1/3) = 19.5 degrees. rod_w: wide enough for 2 of wall round a boss's bore. boss_d: the
-// washer overlaps the rod's bore round it by at least 0.5 a side. play: the rod's end float between
-// its seat and the washer. sled: [reach past the clip's pin, depth of its top and the rails' under the
-// rod]. slide: per side, the sled between the rails. recess: the motor screws' heads under the
-// plate's top; the motor's own row gives its screws, their length and their counterbore. margin: the stopper stops
-// this short of each end of its travel, the barrel's end and the plunger's stop, for the error in exposed and stroke
-// and the print. friction: the plunger's seal friction, N, assumed, for the report's torque estimate. pin_l: the pin
-// screws' length. window: how much wider the body's window is than the
-// barrel's flanges, room for fingers round them.
+// plate_t: stiff enough over the frame's length; pocket: the gearbox's depth into it, which locates it square. gap:
+// the crank's underside over the plate, set by the shaft's tip bottoming in the crank's blind bore. float: the
+// clip's underside over the plate. clip_wall: the clip's cup, which bears only the stroke on the push-button's rim.
+// rod_min: the rod's shortest; it is at least three throws long, so it leans at most asin(1/3) = 19.5 degrees.
+// rod_w: wide enough for 2 of wall round a boss's bore. boss_d: the washer overlaps the rod's bore round it by at
+// least 0.5 a side. play: the rod's end float between its seat and the washer. sled: [reach past the clip's pin,
+// depth of its top and the rails' under the rod]. slide: per side, the sled between the rails. recess: the motor
+// screws' heads under the plate's top; the motor's own row gives its screws, their length and their counterbore.
+// margin: the stopper stops this short of each end of its travel, the barrel's end and the plunger's stop, for the
+// error in exposed and stroke and the print. friction: the plunger's seal friction, N, assumed, for the report's
+// torque estimate. pin_l: the pin screws' length. window: how much wider the body's window is than the barrel's
+// flanges, room for fingers round them.
 // clang-format off
 function layout(syringe, motor, pin, pin_washer, fit, press, hole, wall, grip, ring_grip,
                 plate_t = 5, pocket = 2, gap = 1, float = 1.5, clip_wall = 2, rod_t = 4, rod_min = 90,
