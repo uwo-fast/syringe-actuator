@@ -48,10 +48,10 @@ syringe_20ml = [
     [ "plunger_span", 18.3 ], [ "barrel_l", 91.75 ], [ "nozzle_l", undef ]
 ];
 
-// BD Plastipak luer-lock syringes, estimated, not measured: from BD's photo of its range, scaled against the 5 and
-// 20 mL above, with outside diameters from published figures (Fisher's 16.21 for the 10 mL; 23.77 and 29.5 for the 30
-// and 50 mL) and exposed from a Terumo pump manual's flange-to-plunger-end figures less the push-button. Good to about
-// a millimetre; measure one in hand and replace these (docs/measuring.md). The 30 and 50 mL need the round motor too.
+// BD Plastipak luer-lock syringes, estimated, not measured: from BD's photo of its range, scaled against the 5 and 20
+// mL above, with outside diameters from published figures (Fisher's 16.21 for the 10 mL; 23.77 and 29.5 for the 30 and
+// 50 mL) and exposed from a Terumo pump manual's flange-to-plunger-end figures less the push-button. Good to about a
+// millimetre; measure one in hand and replace these (docs/measuring.md). The 50 mL is not built.
 syringe_10ml = [
     [ "name", "10 mL BD luer-lock syringe (estimated)" ], [ "bore_d", 14.5 ], [ "barrel_od", 16.2 ],
     [ "flange", [ 30.0, 19.0 ] ], [ "flange_t", 1.5 ], [ "button_d", 18.0 ], [ "button_t", 1.6 ], [ "stroke", 71.0 ],

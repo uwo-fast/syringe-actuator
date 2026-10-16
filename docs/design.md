@@ -22,11 +22,11 @@ mL's; `part="report"` gives any syringe's.
 
 - **Frame.** A 5 mm plate as wide as the barrel's flanges, which drop into a slot at one end; the
   slot's walls take both the push and the pull. The barrel snaps into a ring 15 mm in front of the
-  slot, past two arms 1.6 mm thick that stand free from 45° below the axis, so they bend over a long
-  arc. The opening is `ring_grip` (0.5 mm) a side narrower than the barrel, with a 45° lead-in at
-  each tip. Two rails, 8 mm tall, run from the slot's back wall either side of the clip's travel.
-  The motor hangs under the plate's other end, its gearbox 2 mm up into a pocket, located by its
-  bushing and held by two screws counterbored under the crank's hub.
+  flange's block, past two arms 1.6 mm thick that stand free from 45° below the axis, so they bend
+  over a long arc. The opening is `ring_grip` (0.5 mm) a side narrower than the barrel, with a 45°
+  lead-in at each tip. Two rails, 8 mm tall, run from the slot's back wall either side of the clip's
+  travel. The motor hangs under the plate's other end, its gearbox 2 mm up into a pocket, located by
+  its bushing and held by two screws counterbored under the crank's hub.
 - **Crank.** It presses onto the motor's D-shaft and carries the pin at a throw of half the
   syringe's stroke less a 1 mm margin at each end: 27.6 mm for the 3 mL. Its D-bore is blind, so it
   stops on the shaft's tip, 1 mm over the plate. An M3 × 6 grub screw (ISO 4026, cup point) runs
@@ -56,15 +56,16 @@ mL's; `part="report"` gives any syringe's.
     no inside corner to clean.
   - _Mounting._ Two patterns of four M3 clearance holes, each sealed by a 0.6 mm knockout skin at
     the outer face until a user drills or punches the ones they use; the screws' heads sit inside.
-    One is through the front wall beside the barrel's slot, 30 across by 10 up (40 across for the 20
-    and 30 mL, whose wider snap rings would meet the heads), centred 15 mm over the plate's
-    underside; the other through the roof's shoulders, 60 across by 20 along, centred 15 mm in front
-    of the back end, behind the crank's sweep. Another OpenSCAD project draws its adapter from the
-    layout with `use <cad/main.scad>`: `actuator(syringe, motor)` gives it, `front_x()` and the
-    body's `front_face()` the front wall's outer face, the body's `mount_front` and `mount_top` the
-    holes, and `tip_x()` the syringe's front end, from its `nozzle_l`.
+    One is through the front wall beside the barrel's slot, 10 up and the narrowest multiple of 10
+    across whose heads clear the frame's snap ring: 20 for the 1 mL, 30 up to the 10 mL, 40 for the
+    20 and 30 mL, centred 15 mm over the plate's underside; the other through the roof's shoulders,
+    60 across by 20 along, centred 15 mm in front of the back end, behind the crank's sweep. Another
+    OpenSCAD project draws its adapter from the layout with `use <cad/main.scad>`:
+    `actuator(syringe, motor)` gives it, `front_x()` and the body's `front_face()` the front wall's
+    outer face, the body's `mount_front` and `mount_top` the holes, and `tip_x()` the syringe's
+    front end, from its `nozzle_l`.
   - _Printing._ The body prints standing on its back end with no supports: 211 mm tall for the 3 mL,
-    its walls leaning in at most 45°, and its front wall bridges about 27 mm (44 on the 30 mL). Its
+    its walls leaning in at most 45°, and its front wall bridges about 27 mm (39 on the 30 mL). Its
     rails start at the bed, so turn on the slicer's elephant-foot compensation, and use a brim. No
     edge on the body, the lid or the plate comes to a knife edge: the dovetails and the lid's bevels
     stand on short lands.
@@ -105,17 +106,19 @@ from 20 mL (assumed, bar the 20 mL's scale test) and BD's published bores:
 
 | Syringe | Open line | Against full vacuum, or 1 bar of back-pressure |
 | --- | --- | --- |
+| 1 mL | 1.0 kg·cm | 1.5 kg·cm |
 | 3 mL | 0.8 kg·cm | 2.5 kg·cm |
 | 5 mL | 0.8 | 3.8 |
 | 10 mL | 1.1 | 6.9 |
 | 20 mL | 2.0 | 13.6 |
 | 30 mL | 2.3 | 19.6 |
 
-On an open line the N20 drives up to the 10 mL; against vacuum or pressure it suits only the 3 mL,
-the GA25 the 10 mL, and a blocked 20 or 30 mL stalls either. Positive pressure has no ceiling,
+On an open line the N20 drives up to the 10 mL; against vacuum or pressure it suits only the 1 and 3
+mL, the GA25 the 10 mL, and a blocked 20 or 30 mL stalls either. Positive pressure has no ceiling,
 unlike vacuum. So `motor` in the Customizer is `auto`, the N20 up to the 5 mL and the GA25 from the
 10 mL, or either by name, and the report gives the estimated torque for the syringe and motor chosen
-beside that motor's limit.
+beside that motor's limit; it assumes 3 N of friction throughout, so for the 20 and 30 mL it gives
+less than the table.
 
 ## Parts
 
@@ -223,5 +226,7 @@ No usable OpenSCAD model of either motor was found (NopSCADlib has none), so
 1. **Measure the 10 and 30 mL** syringes in hand and replace their estimates.
 2. **Measure the GA25's mounting holes' depth.** Its screws are sized to Seeed's 3.5 mm.
 3. **Measure the N20's end boss and terminals** past its can; the body allows 3 mm, nominal.
-4. **Measure the plan shape of the barrel flanges.** The slot is open at the sides and sized only by
+4. **Measure `nozzle_l`**, the barrel's shoulder to the syringe's front end, on every syringe but
+   the 5 mL, whose figure is derived: `tip_x()` stops the build without it.
+5. **Measure the plan shape of the barrel flanges.** The slot is open at the sides and sized only by
    the flanges' width, height and thickness.

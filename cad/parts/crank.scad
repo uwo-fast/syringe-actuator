@@ -7,24 +7,22 @@
  * The rod turns on a boss on the crank's top face, and the pin screw clamps a washer down on the
  * boss, not on the rod. The D-bore is blind: pressed on, the crank stops on the shaft's tip, which
  * sets its height over the plate. A grub screw through a lobe on the hub's back, away from the pin,
- * bears on the shaft's flat, which faces it, through a nut dropped into a slot from the top: steel on
- * steel carries the torque and holds the crank down. The
- * printed D alone, keyed only by the flat's half millimetre, wore round in an hour under the load
- * reversing every stroke, in PETG on an N20. z = 0 at the underside, the shaft on
- * the z axis, the pin on +x. Prints as it stands.
+ * bears on the shaft's flat, which faces it, through a nut dropped into a slot from the top: steel
+ * on steel carries the torque and holds the crank down. The printed D alone, keyed only by the
+ * flat's half millimetre, wore round in an hour under the load reversing every stroke, in PETG on
+ * an N20. z = 0 at the underside, the shaft on the z axis, the pin on +x. Prints as it stands.
  */
 
 // clang-format off
 include <../lib/struct.scad>;
 // clang-format on
 
-// tap: the pin screw's hole, which it threads itself into. throw: shaft axis to pin axis. press: per
-// side, a printed bore round a steel shaft. h: underside
-// to the top face the rod lies on. boss: [d, h] of the pin's boss. bore: the blind bore's depth, the
-// shaft's reach into the crank. end_d: the pin end, the rod's width. set, nut: the grub screw and the nut it threads
-// through, trapped in a slot from the top; fit: per side, round them. web: between the shaft's flat and the nut. skin:
-// the lobe beyond the nut. floor: under the nut's slot. hub_d: the hub's width. set_lengths: the stock set screw
-// lengths, the longest that reaches no further than the lobe's end chosen.
+// tap: the pin screw's hole, which it threads itself into. throw: shaft axis to pin axis. press: per side, a printed
+// bore round a steel shaft. h: underside to the top face the rod lies on. boss: [d, h] of the pin's boss. bore: the
+// blind bore's depth, the shaft's reach into the crank. end_d: the pin end, the rod's width. set, nut: the grub screw
+// and the nut it threads through, trapped in a slot from the top; fit: per side, round them. web: between the shaft's
+// flat and the nut. skin: the lobe beyond the nut. floor: under the nut's slot. hub_d: the hub's width. set_lengths:
+// the stock set screw lengths, the longest that reaches no further than the lobe's end chosen.
 // clang-format off
 function crank_spec(motor, tap, press, throw, h, boss, bore, end_d, set, nut, fit, web = 1.5, skin = 3, floor = 0.6,
                     hub_d = 12, set_lengths = [ 3, 4, 5, 6, 8, 10, 12 ]) =
