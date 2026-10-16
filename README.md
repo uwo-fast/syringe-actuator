@@ -69,7 +69,11 @@ dimensions and their sources, and what is open.
 
 6. **Mount it**, if you need to. Drill or punch out the knockouts you use: four through the front
    wall and four through the roof's shoulders. Your adapter screws to them, M3, with the heads
-   inside the body; the front ones are easiest to fit before the frame goes in.
+   inside the body; the front ones are easiest to fit before the frame goes in. An adapter drawn in
+   OpenSCAD can take its numbers from the layout: `use <cad/main.scad>`, then `L = actuator("3ml")`;
+   `front_x(L)` and `front_face(get(L, "body"))` give the front wall's outer face, the body's
+   `mount_front` and `mount_top` the holes, and `tip_x(L)` the syringe's tip, once the syringe's
+   `nozzle_l` is known.
 
 ## Repository layout
 

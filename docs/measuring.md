@@ -1,6 +1,6 @@
 # Measuring a syringe
 
-The parts are built for one syringe at a time, from eight numbers in `cad/purchased/syringes.scad`.
+The parts are built for one syringe at a time, from the numbers in `cad/purchased/syringes.scad`.
 Syringe makers do not publish these: BD, for one, gives its syringe-pump dimensions only on request,
 and ISO 7886-2 notes that diameters overlap between makers and that lengths and flange thicknesses
 vary from mould to mould. A "3 mL syringe" is therefore not one shape; a 3 mL Norm-Ject is 10.8 mm
@@ -23,6 +23,7 @@ All in millimetres. The barrel's axis runs front (the nozzle) to back (the push-
 | `flange` | Flange `[width, height]` | Across the flanges the long way, and across them the short way | Low. Sets the frame's width and the window's |
 | `plunger_span` | The plunger's widest | Across the plunger's ribs (or its rod, if solid), in front of the push-button | Low. Sets slots with clearance |
 | `barrel_l` | Barrel length | Flange's front face to the shoulder at the nozzle's root | Low. Checked against `stroke`, and drawn |
+| `nozzle_l` | Nozzle length | The barrel's shoulder to the syringe's front end, the nozzle's tip or its luer-lock collar's face, whichever reaches further | Only for `tip_x()`, where a mounting adapter finds the tip; may stay `undef` |
 
 ## How
 
