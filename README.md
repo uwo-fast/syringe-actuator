@@ -56,13 +56,13 @@ dimensions and their sources, and what is open.
    and use a brim, since its rails start at the bed.
 
 5. **Assemble.**
-   - **Motor:** screw it under the plate first; the crank's hub covers its screws.
+   - **Motor:** screw it under the plate first: its shaft comes up through the plate, and the crank
+     goes on after.
    - **Crank:** drop the nut into its slot, press the crank onto the motor's shaft through the
      plate, and tighten the set screw onto the shaft's flat. Join the rod to the crank and the clip
      with the pin screws over their washers.
    - **Body:** fit any front mounting screws first (step 6), then slide the frame into the body from
-     the back, slide the lid onto its rails from the
-     back, then screw on the cap.
+     the back, slide the lid onto its rails from the back, then screw on the cap.
    - **Syringe:** load it through the window: the barrel snaps into its ring and the push-button
      into the clip.
    - **Tune:** if the clip or the ring holds too loosely or too tightly, change `grip` or
@@ -70,11 +70,10 @@ dimensions and their sources, and what is open.
 
 6. **Mount it**, if you need to. Drill or punch out the knockouts you use: four through the front
    wall and four through the roof's shoulders. Your adapter screws to them, M3, with the heads
-   inside the body; fit the front ones before the frame goes in. An adapter drawn in
-   OpenSCAD can take its numbers from the layout: `use <cad/main.scad>`, then `L = actuator("3ml")`;
-   `front_x(L)` and `front_face(get(L, "body"))` give the front wall's outer face, the body's
-   `mount_front` and `mount_top` the holes, and `tip_x(L)` the syringe's tip, once the syringe's
-   `nozzle_l` is known.
+   inside the body; fit the front ones before the frame goes in. An adapter drawn in OpenSCAD can
+   take its numbers from the layout: `use <cad/main.scad>`, then `L = actuator("3ml")`; `front_x(L)`
+   and `front_face(get(L, "body"))` give the front wall's outer face, the body's `mount_front` and
+   `mount_top` the holes, and `tip_x(L)` the syringe's tip, once the syringe's `nozzle_l` is known.
 
 ## Repository layout
 
