@@ -5,10 +5,11 @@
  * @copyright 2026
  *
  * The barrel's flange drops into a slot, whose walls take the push and the pull, and the barrel
- * snaps into a ring in front of it, past two thin arms. Two rails either side of the clip's travel guide its sled. The
- * motor's gearbox goes up into a pocket under the plate, located by its bushing and held by two screws
- * from above, counterbored under the crank's hub; the motor hangs below the plate. The plate's
- * long edges are dovetails, which the body's rails take when the frame slides in.
+ * snaps into a ring in front of it, past two thin arms. Two rails either side of the clip's travel
+ * guide its sled. The motor's gearbox goes up into a pocket under the plate, located by its bushing
+ * and held by two screws from above, counterbored under the crank's hub; the motor hangs below the
+ * plate. The plate's long edges are dovetails, which the body's rails take when the frame slides
+ * in.
  *
  * x along the syringe axis, 0 at the flange's rear face, the nozzle towards -x; z = 0 at the plate's
  * underside. Prints as it stands.

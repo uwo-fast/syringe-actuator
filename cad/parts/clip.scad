@@ -4,13 +4,13 @@
  * @author Cameron K. Brooks
  * @copyright 2026
  *
- * The button drops in from above, the plunger through a slot in the front wall; the front wall pulls
- * and the back wall pushes. A sled under the clip runs between the frame's rails, which take the
- * rod's side load and keep the clip square to the axis; the plunger carries only the stroke. The
- * rod lies on the tongue's top face and turns on its boss. The cup's side walls stand free of its end
- * walls above the axis, and lips at their tops snap over the push-button, so it stays in whichever way
- * up the unit is. x = 0 at the button's front face, z = 0
- * on the syringe axis, which is the tongue's top face. Prints as it stands.
+ * The button drops in from above, the plunger through a slot in the front wall; the front wall
+ * pulls and the back wall pushes. A sled under the clip runs between the frame's rails, which take
+ * the rod's side load and keep the clip square to the axis; the plunger carries only the stroke.
+ * The rod lies on the tongue's top face and turns on its boss. The cup's side walls stand free of
+ * its end walls above the axis, and lips at their tops snap over the push-button, so it stays in
+ * whichever way up the unit is. x = 0 at the button's front face, z = 0 on the syringe axis, which
+ * is the tongue's top face. Prints as it stands.
  */
 
 // clang-format off
