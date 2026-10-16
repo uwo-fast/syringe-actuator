@@ -18,7 +18,9 @@ hardware has to say why a printed part cannot do the job.
 
 ## Stack
 
-- **CAD** — OpenSCAD 2021.01 (what Ubuntu 24.04 packages, and what CI runs), no external libraries
+- **CAD** — OpenSCAD, no external libraries. CI runs 2021.01, what Ubuntu 24.04 packages; the gates
+  read the exported mesh, so they pass the same on a current nightly, whose Manifold backend makes
+  `just qa` far faster
 - **Tooling** — `just`, `clang-format` 18 for `.scad` (config in `.clang-format`), pre-commit with
   gitleaks, Python 3 standard library only in `tools/`
 
@@ -30,6 +32,7 @@ cad/main.scad       THE ENTRY POINT and the only file that draws: settings, layo
                     part to draw
 cad/purchased/      bought parts: syringes, motors, fasteners hold the rows, each figure with its
                     source; syringe, motor, fastener draw one
+cad/lib/            struct.scad (get(), has()) and section.scad (cut a view open)
 cad/parts/          one printed part per file: frame, crank, rod, clip, and the body with its cap
 docs/design.md      mechanism, part dimensions and their sources, open questions
 tools/stl_edges.py  checks an STL is one closed shell, every edge joining two facets
@@ -80,13 +83,9 @@ derived figures.
   and shell counts), and so does `partspec lint`.
 - **One physical fact, one expression.** Derive dimensions from catalog rows; never restate a
   number in a second file.
-- **Visual review:** the sandbox has no display, so `openscad` cannot render PNGs there. Export STLs
-  and inspect them, or ask the user to render.
-
-## Sibling repositories
-
-- `uwo-fast/syringe-pump` — the precision pump this project deliberately is not. Its tooling
-  patterns are reusable; its architecture is not.
+- **Look at the parts.** `openscad --camera=... -o view.png` renders a PNG with no display; a
+  section through `tools/qa/slivers.scad` shows a part's cross-section. Numbers can pass on a part
+  that is upside down or the wrong shape.
 
 ## Constraints
 
