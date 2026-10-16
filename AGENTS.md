@@ -83,8 +83,9 @@ derived figures.
   and shell counts), and so does `partspec lint`.
 - **One physical fact, one expression.** Derive dimensions from catalog rows; never restate a
   number in a second file.
-- **Look at the parts.** `openscad --camera=... -o view.png` renders a PNG with no display; a
-  section through `tools/qa/slivers.scad` shows a part's cross-section. Numbers can pass on a part
+- **Look at the parts.** A current nightly's `openscad --camera=... -o view.png` renders a PNG
+  with no display; 2021.01 cannot (it segfaults without OpenGL). A section through
+  `tools/qa/slivers.scad` shows a part's cross-section on either. Numbers can pass on a part
   that is upside down or the wrong shape.
 
 ## Constraints

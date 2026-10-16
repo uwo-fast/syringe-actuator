@@ -52,15 +52,16 @@ dimensions and their sources, and what is open.
    | Crank | all | 1 × M3 × 6 set screw, cup point (ISO 4026), and 1 × M3 nut |
 
 4. **Print.** PLA or PETG, no supports. The body stands on its back end, 208 to 289 mm tall by
-   syringe; turn on the slicer's elephant-foot compensation and use a brim, since its rails start
-   at the bed.
+   syringe, so check your printer's height first; turn on the slicer's elephant-foot compensation
+   and use a brim, since its rails start at the bed.
 
 5. **Assemble.**
-   - **Crank:** drop the nut into its slot, press the crank onto the motor's shaft, and tighten the
-     set screw onto the shaft's flat.
-   - **Frame:** screw the motor under the plate, and join the rod to the crank and the clip with the
-     pin screws over their washers.
-   - **Body:** slide the frame into the body from the back, slide the lid onto its rails from the
+   - **Motor:** screw it under the plate first; the crank's hub covers its screws.
+   - **Crank:** drop the nut into its slot, press the crank onto the motor's shaft through the
+     plate, and tighten the set screw onto the shaft's flat. Join the rod to the crank and the clip
+     with the pin screws over their washers.
+   - **Body:** fit any front mounting screws first (step 6), then slide the frame into the body from
+     the back, slide the lid onto its rails from the
      back, then screw on the cap.
    - **Syringe:** load it through the window: the barrel snaps into its ring and the push-button
      into the clip.
@@ -69,7 +70,7 @@ dimensions and their sources, and what is open.
 
 6. **Mount it**, if you need to. Drill or punch out the knockouts you use: four through the front
    wall and four through the roof's shoulders. Your adapter screws to them, M3, with the heads
-   inside the body; the front ones are easiest to fit before the frame goes in. An adapter drawn in
+   inside the body; fit the front ones before the frame goes in. An adapter drawn in
    OpenSCAD can take its numbers from the layout: `use <cad/main.scad>`, then `L = actuator("3ml")`;
    `front_x(L)` and `front_face(get(L, "body"))` give the front wall's outer face, the body's
    `mount_front` and `mount_top` the holes, and `tip_x(L)` the syringe's tip, once the syringe's

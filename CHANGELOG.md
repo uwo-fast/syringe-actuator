@@ -16,8 +16,9 @@ and [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Design record: the crank-slider mechanism, the syringe and N20 gearmotor dimensions, and what is
   open (`docs/design.md`)
 - `just check` / `just test` gates for the OpenSCAD source, CI, and the pre-commit config
-- Syringe presets, picked in the Customizer: 1, 3, 5 and 20 mL measured, BD's 10, 30 and 50 mL
-  estimated, and a guide to measuring another syringe (`docs/measuring.md`)
+- Syringe presets, picked in the Customizer: 1, 3, 5 and 20 mL measured, BD's 10 and 30 mL
+  estimated, BD's 50 mL estimated in the catalog but not built, and a guide to measuring another
+  syringe (`docs/measuring.md`)
 - The GA25 gearmotor for the 10, 20 and 30 mL, the motor picked by syringe or by name, and the
   crank's estimated torque in the report beside the motor's limit
 - Two four-hole M3 mounting patterns on the body, sealed by knockout skins

@@ -49,9 +49,9 @@ function loft_w(st, x) = let(i = max([for (k = [0:len(st) - 2]) if (st[k][0] <= 
 // holes each for the screw, as [across, along, centre], for whatever a user mounts the body to: the front's across y
 // and up z, centred on the axis's plane at a height over the plate's underside; the top's across y and along x, centred
 // a distance in front of the back end, through the roof's shoulders outboard of the lid's rails, behind the crank's
-// sweep. The top's are the same for every syringe; layout() widens the front's where a wider barrel's snap ring needs
-// it. knockout: each hole is blind from inside, stopping this short of the outer face, so the body stays sealed until a
-// user drills or punches through the holes they use.
+// sweep. The top's are the same for every syringe; layout() sets the front's spacing across, the narrowest multiple of
+// 10 whose screws' heads clear the frame's snap ring. knockout: each hole is blind from inside, stopping this short of
+// the outer face, so the body stays sealed until a user drills or punches through the holes they use.
 // clang-format off
 function body_spec(front_pts, back_pts, rod, sweep_x, x, window, axis_z, barrel_d, plate, frame_end, screw, tap,
                    wire_z, fit, clr = 2, slide = 0.3, wall = 2.5, end_t = 3, boss_d = 8, boss_l = 12, wire_d = 6,
