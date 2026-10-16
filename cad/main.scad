@@ -41,7 +41,7 @@ motor = "auto";    // [auto, n20, ga25]
 angle = 180;       // [0:5:355]
 show_bought = true;
 section = "none";  // [none, x, y, z]
-section_at = 0;    // [-100:1:100]
+section_at = 0;    // [-100:1:300]
 
 /* [Print] */
 fit = 0.2;   // per side: a printed pocket round bought stock
