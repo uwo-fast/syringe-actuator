@@ -17,14 +17,13 @@ use <syringe.scad>;
 // -x. Not BD's: the 3 and 5 mL carry no maker's mark, and another maker's syringe of the same volume can differ by most
 // of a millimetre; measure the one you use (docs/measuring.md).
 // flange: [width, height] across the axis, as it sits in the frame. exposed: the flange's rear face to the
-// push-button's front face, stopper bottomed. plunger_span: the widest the plunger reaches across the axis (its
-// ribs' cross; the 1 mL's plunger is a solid rod), where all of them narrow a little towards the push-button.
-// barrel_l: the flange's front face to the barrel's shoulder at the nozzle's root. nozzle_l: that shoulder to the
-// syringe's front end, the nozzle's tip or its luer-lock collar's face, whichever reaches further; the 5 mL's is not
-// measured but derived, the tip's 46.5 past the assembled body's front face less the 36.3 the shoulder sits behind it,
-// and the rest are unmeasured. bore_d: the barrel's
-// inside, NOMINAL on every row: BD's published bores, from syringe-pump libraries, for the report's torque estimate
-// only. The 20 mL is not built yet: it needs the round 25 mm motor, ga25_30, which the frame does not take yet.
+// push-button's front face, stopper bottomed. plunger_span: the widest the plunger reaches across the axis (its ribs'
+// cross; the 1 mL's plunger is a solid rod), where all of them narrow a little towards the push-button. barrel_l: the
+// flange's front face to the barrel's shoulder at the nozzle's root. nozzle_l: that shoulder to the syringe's front
+// end, the nozzle's tip or its luer-lock collar's face, whichever reaches further; the 5 mL's is not measured but
+// derived, the tip's 46.5 past the assembled body's front face less the 36.3 the shoulder sits behind it, and the rest
+// are unmeasured. bore_d: the barrel's inside, NOMINAL on every row: BD's published bores, from syringe-pump libraries,
+// for the report's torque estimate only.
 syringe_1ml = [
     [ "name", "1 mL luer syringe" ], [ "bore_d", 4.78 ], [ "barrel_od", 9.45 ], [ "flange", [ 24.6, 12.6 ] ],
     [ "flange_t", 2.0 ], [ "button_d", 10.2 ], [ "button_t", 1.8 ], [ "stroke", 64.25 ], [ "exposed", 10.75 ],
