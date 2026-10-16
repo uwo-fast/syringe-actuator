@@ -22,7 +22,7 @@ picture lives.
 
 | Path | Licence |
 | --- | --- |
-| `justfile`, `.github/`, and other build tooling | `GPL-3.0-or-later` |
+| `justfile`, `.github/`, `tools/`, and other build tooling | `GPL-3.0-or-later` |
 | `cad/` — parametric CAD source (`.scad`) | `GPL-3.0-or-later` **and** `CERN-OHL-S-2.0` |
 | `cad/` — geometry (STL, STEP, 3MF), drawings and bill of materials generated from that source | `CERN-OHL-S-2.0` |
 | `docs/` | see below |

@@ -2,8 +2,8 @@ cff-version: 1.2.0
 message: "If you use this project, please cite it using the metadata below."
 title: "Syringe Actuator"
 abstract: >-
-  A 3D-printed crank that drives a syringe plunger back and forth from a
-  continuously running N20 gearmotor.
+  A 3D-printed crank that drives a luer syringe's plunger back and forth
+  from a continuously running gearmotor, for syringes from 1 to 30 mL.
 type: software
 authors:
   - family-names: "Brooks"
