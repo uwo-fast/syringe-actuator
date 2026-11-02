@@ -95,6 +95,7 @@ just build   # every syringe's printed parts to build/<syringe>/, stamped with t
 just qa      # slivers, collisions over a turn and overhangs, for every syringe
 just render  # the pictures listed in cad/views.tsv, to output/figures/<syringe>/
 just render-parts  # every printed part on its own, in its print orientation
+just render-stroke # one turn of the crank as an animated GIF
 ```
 
 ## Contributing

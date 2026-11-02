@@ -29,7 +29,7 @@ and [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - `just qa` (slivers, collisions over a turn, overhangs), `just build` for every syringe, and a
   `BUILT_FROM` stamp on every export
 - `just render`, pictures of the views `cad/views.tsv` lists, and `just render-parts`, every printed
-  part on its own, as PNGs in `output/figures/`
+  part on its own, as PNGs in `output/figures/`; `just render-stroke`, one turn of the crank as a GIF
 
 ### Changed
 

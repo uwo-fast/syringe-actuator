@@ -148,8 +148,12 @@ render filter="*" syringe="":
     @PARTS="{{PARTS}}" OPENSCAD="{{OPENSCAD}}" tools/render.sh views "{{filter}}" "{{syringe}}"
 
 # Render every printed part on its own in its print orientation, e.g. `just render-parts 10ml`.
-render-parts syringe="3ml" filter="*":
+render-parts syringe="5ml" filter="*":
     @PARTS="{{PARTS}}" OPENSCAD="{{OPENSCAD}}" tools/render.sh parts "{{filter}}" "{{syringe}}"
+
+# Render one turn of the crank as a GIF, e.g. `just render-stroke iso 5ml '-D part="housed"'`.
+render-stroke view="top" syringe="5ml" flags="":
+    @PARTS="{{PARTS}}" OPENSCAD="{{OPENSCAD}}" tools/render.sh stroke "{{view}}" "{{syringe}}" '{{flags}}'
 
 # tools/qa/qa.sh says what it checks; it takes a few minutes on an OpenSCAD with the Manifold backend.
 # Geometry QA beyond test, slivers, collisions over a turn and overhangs, for every syringe or those named.

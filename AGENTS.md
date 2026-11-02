@@ -37,7 +37,7 @@ cad/parts/          one printed part per file: frame, crank, rod, clip, and the 
 docs/design.md      mechanism, part dimensions and their sources, open questions
 tools/stl_edges.py  checks an STL is one closed shell, every edge joining two facets
 tools/qa/           `just qa`: slivers, collisions over a turn, overhangs, per syringe
-tools/render.sh     `just render`: the pictures cad/views.tsv lists, and every part, as PNGs
+tools/render.sh     `just render`: the pictures cad/views.tsv lists, every part, and a stroke GIF
 cad/views.tsv       the pictures: a name, a syringe, a view and the -D settings to draw
 output/             one-off exports, `just export [syringe]`, with BUILT_FROM (gitignored)
 build/              every syringe's parts, `just build`, with BUILT_FROM (gitignored)
@@ -55,7 +55,8 @@ just export   # one syringe's printed parts to output/*.stl (default 3ml)
 just build    # every syringe's printed parts to build/<syringe>/*.stl
 just qa       # slivers, collisions and overhangs, every syringe or those named (a few minutes)
 just render   # the pictures in cad/views.tsv to output/figures/<syringe>/, or those a glob names
-just render-parts  # every printed part on its own, for a syringe (3ml unless named)
+just render-parts  # every printed part on its own, for a syringe (5ml unless named)
+just render-stroke # one turn of the crank as a GIF, from a view (top unless named)
 ```
 
 `just build` and `just export` write `BUILT_FROM` beside the parts: the commit, `-dirty` if the

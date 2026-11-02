@@ -6,7 +6,9 @@
 #          is drawn. $2 is a glob over the names, "*" for all; $3 a syringe that replaces every
 #          row's own.
 #   parts  every printed part in PARTS on its own, in its print orientation. $2 is a glob over the
-#          part names, $3 the syringe (3ml unless given).
+#          part names, $3 the syringe (5ml unless given).
+#   stroke one turn of the crank as an animated GIF, FRAMES frames (36 unless set). $2 is the view
+#          (top unless given), $3 the syringe (5ml unless given), $4 any further -D settings.
 #
 # Pictures land in output/figures/<syringe>/, parts under parts/, and are not committed: a change
 # to the CAD makes a committed picture stale without anything noticing, so the list is what is
@@ -51,21 +53,24 @@ export OPENSCAD RENDER_SIZE RENDER_SCHEME MAGICK
 # then draws the part uncut. housed with section="y" from iso_back changed 0 pixels in perspective.
 # main.scad's frame: x along the syringe, the nozzle towards -x, z up, so front looks at the
 # mechanism side-on and top looks down on the plane the crank, rod and plunger move in.
+view_rotation() {
+    case "$1" in
+        iso)      echo 60,0,30 ;;
+        iso_back) echo 60,0,210 ;;
+        front)    echo 90,0,0 ;;
+        back)     echo 90,0,180 ;;
+        right)    echo 90,0,90 ;;
+        left)     echo 90,0,270 ;;
+        top)      echo 0,0,0 ;;
+        bottom)   echo 180,0,0 ;;
+        *,*,*)    tr -d '[] ' <<< "$1" ;;
+        *) return 1 ;;
+    esac
+}
 render_one() {
     local name syringe view flags out cam box bg
     IFS='|' read -r name syringe view flags out <<< "$1"
-    case "$view" in
-        iso)      cam=60,0,30 ;;
-        iso_back) cam=60,0,210 ;;
-        front)    cam=90,0,0 ;;
-        back)     cam=90,0,180 ;;
-        right)    cam=90,0,90 ;;
-        left)     cam=90,0,270 ;;
-        top)      cam=0,0,0 ;;
-        bottom)   cam=180,0,0 ;;
-        *,*,*)    cam=$(tr -d '[] ' <<< "$view") ;;
-        *) echo "FAIL  $name  no view is named $view"; return ;;
-    esac
+    cam=$(view_rotation "$view") || { echo "FAIL  $name  no view is named $view"; return; }
     mkdir -p "$(dirname "$out")"
     # shellcheck disable=SC2086
     "$OPENSCAD" --imgsize="$RENDER_SIZE" --colorscheme="$RENDER_SCHEME" --viewall --autocenter \
@@ -95,13 +100,82 @@ render_one() {
     rm -f "$out.err"
     echo "ok    $name  $out.png"
 }
-export -f render_one
+export -f render_one view_rotation
 
 # main.scad's own list, so a name it does not offer is refused here rather than drawn as an assert
 syringes=$(sed -n 's/^syringe = .*\/\/ *\[\(.*\)\]/\1/p' cad/main.scad | tr -d ' ' | tr ',' ' ')
 known_syringe() {
     [[ " $syringes " == *" $1 "* ]] || { echo "FAIL  no syringe is named $1; main.scad offers $syringes"; return 1; }
 }
+
+# ----- one turn of the crank, as a GIF -----
+#
+# The camera stays put for the whole turn: --viewall fits each frame to where its own crank is, and
+# the picture would jump. So every frame is exported as an STL first (a fraction of a second each),
+# the camera is aimed at the middle of all of them and backed off past their extent, and every frame
+# is cropped to the one box that holds them all.
+if [ "$mode" = stroke ]; then
+    view="${2:-top}"
+    syringe="${3:-5ml}"
+    flags="${4:-}"
+    : "${FRAMES:=36}"
+    known_syringe "$syringe" || exit 1
+    cam=$(view_rotation "$view") || { echo "FAIL  no view is named $view"; exit 1; }
+    [ "$MAGICK" = 1 ] || { echo "FAIL  a GIF needs ImageMagick, which is not installed"; exit 1; }
+    d="$tmp/stroke"
+    mkdir -p "$d"
+    for ((i = 0; i < FRAMES; i++)); do printf '%03d\n' $((i * 360 / FRAMES)); done > "$d/angles"
+    # shellcheck disable=SC2016 # the child shell expands them
+    xargs -P "$JOBS" -I{} bash -c '"$OPENSCAD" -D "syringe=\"$1\"" $3 -D angle="$((10#$2))" \
+        -o "$4/$2.stl" cad/main.scad 2>"$4/$2.err" >/dev/null' _ "$syringe" {} "$flags" "$d" < "$d/angles"
+    if grep -qE '^(ERROR|WARNING)' "$d"/*.err; then
+        echo "FAIL  stroke  $(grep -h -m1 -E '^(ERROR|WARNING)' "$d"/*.err | head -1)"
+        exit 1
+    fi
+    # The middle of every frame's bounds, and a distance that shows all of them: an orthographic view
+    # shows about 0.4 of its distance across, so 3 diagonals leave room, and the crop takes it back.
+    cam_at=$(/usr/bin/python3 -c 'import sys, math
+lo, hi = [math.inf] * 3, [-math.inf] * 3
+for f in sys.argv[1:]:
+    for line in open(f):
+        w = line.split()
+        if w[:1] == ["vertex"]:
+            for k in range(3):
+                v = float(w[k + 1]); lo[k] = min(lo[k], v); hi[k] = max(hi[k], v)
+if lo[0] == math.inf:
+    sys.exit("the frames drew nothing")
+c = [(a + b) / 2 for a, b in zip(lo, hi)]
+print("%g,%g,%g" % tuple(c), "%g" % (3 * math.dist(lo, hi)))' "$d"/*.stl) || { echo "FAIL  stroke  $cam_at"; exit 1; }
+    read -r centre dist <<< "$cam_at"
+    # shellcheck disable=SC2016
+    xargs -P "$JOBS" -I{} bash -c '"$OPENSCAD" --imgsize="$RENDER_SIZE" --colorscheme="$RENDER_SCHEME" \
+        --camera="$5,$6,$7" --projection=o -D "syringe=\"$1\"" $3 -D angle="$((10#$2))" \
+        -o "$4/$2.png" cad/main.scad 2>"$4/$2.err" >/dev/null' _ "$syringe" {} "$flags" "$d" "$centre" "$cam" "$dist" < "$d/angles"
+    if grep -qE '^(ERROR|WARNING)' "$d"/*.err || [ "$(find "$d" -name '*.png' -size +0 | wc -l)" -ne "$FRAMES" ]; then
+        echo "FAIL  stroke  a frame did not render"
+        exit 1
+    fi
+    # One crop for every frame: the union of each frame's own box
+    box=$(for f in "$d"/*.png; do magick "$f" -fuzz 2% -format '%@\n' info:; done | /usr/bin/python3 -c 'import sys, re
+b = [tuple(map(int, re.match(r"(\d+)x(\d+)\+(\d+)\+(\d+)", l).groups())) for l in sys.stdin if l.strip()]
+b = [x for x in b if x[0] > 0]
+if not b:
+    sys.exit("every frame is empty")
+x0 = min(x[2] for x in b); y0 = min(x[3] for x in b)
+x1 = max(x[2] + x[0] for x in b); y1 = max(x[3] + x[1] for x in b)
+print(f"{x1 - x0}x{y1 - y0}+{x0}+{y0}")') || { echo "FAIL  stroke  drew nothing"; exit 1; }
+    # the settings go in the name, so a housed turn does not overwrite the bare one: part-housed
+    slug=$(sed -E 's/-D +//g; s/[^A-Za-z0-9.]+/-/g; s/^-+|-+$//g' <<< "$flags")
+    out="$OUT/$syringe/stroke_$view${slug:+_$slug}.gif"
+    mkdir -p "$(dirname "$out")"
+    bg=$(magick "$d/000.png" -format '%[pixel:p{0,0}]' info:)
+    # A turn in about three seconds: GIF delays are in hundredths
+    # +dither: a GIF has 256 colours, and dithering the glass to fit them speckles it frame to frame
+    magick -delay $((300 / FRAMES)) -loop 0 "$d"/*.png -crop "$box" +repage -bordercolor "$bg" \
+        -border 40 +dither -layers Optimize "$out"
+    echo "ok    stroke  $out  ($FRAMES frames, $(du -h "$out" | cut -f1))"
+    exit 0
+fi
 
 jobs="$tmp/jobs"
 : > "$jobs"
@@ -117,14 +191,14 @@ case "$mode" in
         done < cad/views.tsv
         ;;
     parts)
-        syringe="${syringe:-3ml}"
+        syringe="${syringe:-5ml}"
         for p in $PARTS; do
             # shellcheck disable=SC2053
             [[ "$p" == $filter ]] || continue
             echo "$p|$syringe|iso|-D part=\"$p\"|$OUT/$syringe/parts/$p" >> "$jobs"
         done
         ;;
-    *) echo "FAIL  the mode is views or parts, not $mode"; exit 1 ;;
+    *) echo "FAIL  the mode is views, parts or stroke, not $mode"; exit 1 ;;
 esac
 
 if [ ! -s "$jobs" ]; then
