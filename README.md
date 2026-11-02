@@ -80,7 +80,8 @@ dimensions and their sources, and what is open.
 - `cad/` — the OpenSCAD source: `main.scad` draws the assembly or any printed part,
   `purchased/` holds the syringes, motors and fasteners, `parts/` the printed parts
 - `docs/` — the design record and the measuring guide
-- `tools/` — the mesh check behind `just test`, and the geometry checks behind `just qa`
+- `tools/` — the mesh check behind `just test`, the geometry checks behind `just qa`, and the
+  renderer behind `just render`
 
 ## Development
 
@@ -92,6 +93,8 @@ just check   # what CI runs: formatting and every SCAD file evaluating cleanly
 just test    # every printed part, for every syringe, exports as one closed solid
 just build   # every syringe's printed parts to build/<syringe>/, stamped with the commit
 just qa      # slivers, collisions over a turn and overhangs, for every syringe
+just render  # the pictures listed in cad/views.tsv, to output/figures/<syringe>/
+just render-parts  # every printed part on its own, in its print orientation
 ```
 
 ## Contributing

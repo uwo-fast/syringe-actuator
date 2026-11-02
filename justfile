@@ -141,6 +141,16 @@ _stamp dir syringes:
       echo "made     $(date -Iseconds)"; } >"{{dir}}/BUILT_FROM"
     sed 's/^/        /' "{{dir}}/BUILT_FROM"
 
+# Pictures for the paper and the docs, from the list in cad/views.tsv, to output/figures/<syringe>/.
+# Previews, so seconds each; they need an OpenSCAD that writes a PNG without a display, not 2021.01.
+# Render the pictures in cad/views.tsv: all, or those a glob names, e.g. `just render 'stroke_*'`.
+render filter="*" syringe="":
+    @PARTS="{{PARTS}}" OPENSCAD="{{OPENSCAD}}" tools/render.sh views "{{filter}}" "{{syringe}}"
+
+# Render every printed part on its own in its print orientation, e.g. `just render-parts 10ml`.
+render-parts syringe="3ml" filter="*":
+    @PARTS="{{PARTS}}" OPENSCAD="{{OPENSCAD}}" tools/render.sh parts "{{filter}}" "{{syringe}}"
+
 # tools/qa/qa.sh says what it checks; it takes a few minutes on an OpenSCAD with the Manifold backend.
 # Geometry QA beyond test, slivers, collisions over a turn and overhangs, for every syringe or those named.
 qa *syringes:
