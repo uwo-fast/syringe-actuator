@@ -11,24 +11,24 @@
 # callouts are drawn by hand over these.
 
 # the mechanism, at the default angle (180, pushed in)
-assembly_iso	5ml	iso
-assembly_iso_back	5ml	iso_back
-assembly_front	5ml	front
-assembly_top	5ml	top
-assembly_printed_iso	5ml	iso	-D show_bought=false
+assembly_iso	5ml-gnr2	iso
+assembly_iso_back	5ml-gnr2	iso_back
+assembly_front	5ml-gnr2	front
+assembly_top	5ml-gnr2	top
+assembly_printed_iso	5ml-gnr2	iso	-D show_bought=false
 
 # one stroke, from above: the crank at 0, 90, 180 and 270 degrees
-stroke_000_top	5ml	top	-D angle=0
-stroke_090_top	5ml	top	-D angle=90
-stroke_180_top	5ml	top	-D angle=180
-stroke_270_top	5ml	top	-D angle=270
+stroke_000_top	5ml-gnr2	top	-D angle=0
+stroke_090_top	5ml-gnr2	top	-D angle=90
+stroke_180_top	5ml-gnr2	top	-D angle=180
+stroke_270_top	5ml-gnr2	top	-D angle=270
 
 # in its body, whole and cut along the syringe's axis; section="y" keeps the -y half, so the
 # cut face is seen from behind
-housed_iso	5ml	iso	-D part="housed"
-housed_top	5ml	top	-D part="housed"
-housed_section_iso	5ml	iso_back	-D part="housed" -D section="y"
-housed_section_back	5ml	back	-D part="housed" -D section="y"
+housed_iso	5ml-gnr2	iso	-D part="housed"
+housed_top	5ml-gnr2	top	-D part="housed"
+housed_section_iso	5ml-gnr2	iso_back	-D part="housed" -D section="y"
+housed_section_back	5ml-gnr2	back	-D part="housed" -D section="y"
 
 # the GA25 motor, which drives 10 mL and up
 ga25_assembly_iso	10ml	iso

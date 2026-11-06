@@ -9,6 +9,8 @@ and [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- A second generic 5 mL syringe, shorter than the first; the presets are now `5ml-gnr1` and
+  `5ml-gnr2`, and a unit printed for the first takes the second with a new crank and rod
 - The printed crank-slider: frame, crank, rod and plunger clip (`cad/`), with an animated assembly
   and a report of the screws to buy
 - The body: a shell fitted round the mechanism, with a sliding lid over the syringe's window and a

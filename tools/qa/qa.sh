@@ -12,7 +12,7 @@
 # that fails; slivers and overhangs are printed for review, since a section through a sloped face
 # shows thin material that is not there in print.
 #
-# usage: tools/qa/qa.sh syringe [...]        e.g. tools/qa/qa.sh 3ml 5ml
+# usage: tools/qa/qa.sh syringe [...]        e.g. tools/qa/qa.sh 3ml 5ml-gnr2
 #        OPENSCAD=/path/to/openscad J=8 QA_KEEP=1 tools/qa/qa.sh 3ml
 #        MOTOR=n20 tools/qa/qa.sh 10ml       (a motor other than the syringe's default)
 

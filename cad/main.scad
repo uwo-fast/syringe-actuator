@@ -36,7 +36,7 @@ include <lib/section.scad>;
 // clang-format off
 /* [View] */
 part = "assembly"; // [assembly, housed, frame, crank, rod, clip, body, lid, cap, ring_test, report]
-syringe = "3ml";   // [1ml, 3ml, 5ml, 10ml, 20ml, 30ml]
+syringe = "3ml";   // [1ml, 3ml, 5ml-gnr1, 5ml-gnr2, 10ml, 20ml, 30ml]
 motor = "auto";    // [auto, n20, ga25]
 angle = 180;       // [0:5:355]
 show_bought = true;
@@ -128,7 +128,7 @@ function layout(syringe, motor, pin, pin_washer, fit, press, hole, wall, grip, r
                 margin = 1, pin_l = 10, window = 3.5, friction = 3) =
     let (
         throw = get(syringe, "stroke") / 2 - margin,
-        rod_l = max(rod_min, ceil(3 * throw)),
+        rod_l = max(has(syringe, "rod_min") ? get(syringe, "rod_min") : rod_min, ceil(3 * throw)),
         boss = [boss_d, rod_t + play],
         rod_bore = boss_d + 2 * fit,
         tap = get(pin, "tap") + 2 * hole,

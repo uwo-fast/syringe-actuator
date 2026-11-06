@@ -55,7 +55,7 @@ just export   # one syringe's printed parts to output/*.stl (default 3ml)
 just build    # every syringe's printed parts to build/<syringe>/*.stl
 just qa       # slivers, collisions and overhangs, every syringe or those named (a few minutes)
 just render   # the pictures in cad/views.tsv to output/figures/<syringe>/, or those a glob names
-just render-parts  # every printed part on its own, for a syringe (5ml unless named)
+just render-parts  # every printed part on its own, for a syringe (5ml-gnr2 unless named)
 just render-stroke # one turn of the crank as a GIF, from a view (top unless named)
 ```
 

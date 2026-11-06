@@ -6,9 +6,9 @@
 #          is drawn. $2 is a glob over the names, "*" for all; $3 a syringe that replaces every
 #          row's own.
 #   parts  every printed part in PARTS on its own, in its print orientation. $2 is a glob over the
-#          part names, $3 the syringe (5ml unless given).
+#          part names, $3 the syringe (5ml-gnr2 unless given).
 #   stroke one turn of the crank as an animated GIF, FRAMES frames (36 unless set). $2 is the view
-#          (top unless given), $3 the syringe (5ml unless given), $4 any further -D settings.
+#          (top unless given), $3 the syringe (5ml-gnr2 unless given), $4 any further -D settings.
 #
 # Pictures land in output/figures/<syringe>/, parts under parts/, and are not committed: a change
 # to the CAD makes a committed picture stale without anything noticing, so the list is what is
@@ -116,7 +116,7 @@ known_syringe() {
 # is cropped to the one box that holds them all.
 if [ "$mode" = stroke ]; then
     view="${2:-top}"
-    syringe="${3:-5ml}"
+    syringe="${3:-5ml-gnr2}"
     flags="${4:-}"
     : "${FRAMES:=36}"
     known_syringe "$syringe" || exit 1
@@ -191,7 +191,7 @@ case "$mode" in
         done < cad/views.tsv
         ;;
     parts)
-        syringe="${syringe:-5ml}"
+        syringe="${syringe:-5ml-gnr2}"
         for p in $PARTS; do
             # shellcheck disable=SC2053
             [[ "$p" == $filter ]] || continue

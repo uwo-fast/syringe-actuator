@@ -12,7 +12,7 @@ PARTS := "frame crank rod clip body lid cap ring_test"
 
 # The builds, by main.scad's `syringe` names. `test` checks every part of each; `build` writes each to
 # build/<syringe>/.
-SYRINGES := "1ml 3ml 5ml 10ml 20ml 30ml"
+SYRINGES := "1ml 3ml 5ml-gnr1 5ml-gnr2 10ml 20ml 30ml"
 
 default:
     @just --list
@@ -148,11 +148,11 @@ render filter="*" syringe="":
     @PARTS="{{PARTS}}" OPENSCAD="{{OPENSCAD}}" tools/render.sh views "{{filter}}" "{{syringe}}"
 
 # Render every printed part on its own in its print orientation, e.g. `just render-parts 10ml`.
-render-parts syringe="5ml" filter="*":
+render-parts syringe="5ml-gnr2" filter="*":
     @PARTS="{{PARTS}}" OPENSCAD="{{OPENSCAD}}" tools/render.sh parts "{{filter}}" "{{syringe}}"
 
-# Render one turn of the crank as a GIF, e.g. `just render-stroke iso 5ml '-D part="housed"'`.
-render-stroke view="top" syringe="5ml" flags="":
+# Render one turn of the crank as a GIF, e.g. `just render-stroke iso 5ml-gnr2 '-D part="housed"'`.
+render-stroke view="top" syringe="5ml-gnr2" flags="":
     @PARTS="{{PARTS}}" OPENSCAD="{{OPENSCAD}}" tools/render.sh stroke "{{view}}" "{{syringe}}" '{{flags}}'
 
 # tools/qa/qa.sh says what it checks; it takes a few minutes on an OpenSCAD with the Manifold backend.

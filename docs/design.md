@@ -140,6 +140,11 @@ a syringe from elsewhere is measured and added as its own entry ([`measuring.md`
 | Plunger, widest across (each narrows a little towards the push-button) | 3.8 mm, a solid rod | 7.5 mm, ribs about 1 mm thick; the last 9 mm before the push-button tapers to 6.6 mm | 11.5 mm | 18.3 mm |
 | Nozzle, the barrel's shoulder to the syringe's front end | not measured | not measured | 10.2 mm, derived from the assembled unit, not measured | not measured |
 
+A second generic 5 mL (`5ml-gnr2`) matches the table's across the axis and is shorter: stroke 47.3,
+exposed 13.6, barrel 56.8 and nozzle 10.0 mm. Its crank and a 93.3 mm rod fit a unit printed for the
+first (`5ml-gnr1`), with the crank in the same place, so the frame, clip, body, lid and cap carry
+over. The table's 5 mL column is the first.
+
 ### Syringes (BD, estimated)
 
 BD Plastipak luer-lock syringes, estimated and not measured: from BD's photo of its range, scaled
