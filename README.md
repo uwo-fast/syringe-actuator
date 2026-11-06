@@ -26,7 +26,7 @@ dimensions and their sources, and what is open.
 
    | Syringe | Motor | Source |
    | --- | --- | --- |
-   | 1, 3, 5 mL | N20 | measured unbranded luer-lock syringes |
+   | 1, 3, 5 mL (two makes of 5 mL) | N20 | measured unbranded luer-lock syringes |
    | 20 mL | GA25 | measured |
    | 10, 30 mL | GA25 | BD Plastipak, estimated to about a millimetre |
 
