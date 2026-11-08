@@ -125,7 +125,7 @@ throughout, so for the 20 and 30 mL it gives less than the table.
 ### Syringes (measured)
 
 The 3 mL measured 2026-09-29 (its barrel length and stroke 2026-10-02), the 1, 5 and 20 mL
-2026-10-02. They are not BD's: the 3 and 5 mL carry no maker's mark (BD prints its logo at the
+2026-10-02, a second 5 mL before 2026-11-06. They are not BD's: the 3 and 5 mL carry no maker's mark (BD prints its logo at the
 scale's end), and another maker's syringe of the same volume can differ by most of a millimetre, so
 a syringe from elsewhere is measured and added as its own entry ([`measuring.md`](measuring.md)).
 
@@ -141,9 +141,12 @@ a syringe from elsewhere is measured and added as its own entry ([`measuring.md`
 | Nozzle, the barrel's shoulder to the syringe's front end | not measured | not measured | 10.2 mm, derived from the assembled unit, not measured | not measured |
 
 A second generic 5 mL (`5ml-gnr2`) matches the table's across the axis and is shorter: stroke 47.3,
-exposed 13.6, barrel 56.8 and nozzle 10.0 mm. Its crank and a 93.3 mm rod fit a unit printed for the
-first (`5ml-gnr1`), with the crank in the same place, so the frame, clip, body, lid and cap carry
-over. The table's 5 mL column is the first.
+exposed 13.6, barrel 56.8 and nozzle 10.0 mm, measured. Its row names the first (`5ml-gnr1`) in
+`crank_as`, so `layout()` gives it the rod, 93.3 mm, that keeps the crank where the first has it: a
+unit printed for the first takes it with only a new crank and rod, and the frame, clip, body, lid
+and cap carry over. Its nozzle's tip then sits 6.9 mm further back from the body's front face
+(39.6 mm past it against 46.5), so an adapter drawn to the first's `tip_x()` does not reach it. The
+table's 5 mL column is the first.
 
 ### Syringes (BD, estimated)
 
@@ -231,7 +234,7 @@ No usable OpenSCAD model of either motor was found (NopSCADlib has none), so
 1. **Measure the 10 and 30 mL** syringes in hand and replace their estimates.
 2. **Measure the GA25's mounting holes' depth.** Its screws are sized to Seeed's 3.5 mm.
 3. **Measure the N20's end boss and terminals** past its can; the body allows 3 mm, nominal.
-4. **Measure `nozzle_l`**, the barrel's shoulder to the syringe's front end, on every syringe but
-   the 5 mL, whose figure is derived: `tip_x()` stops the build without it.
+4. **Measure `nozzle_l`**, the barrel's shoulder to the syringe's front end, on the 1, 3, 10, 20 and
+   30 mL, where `tip_x()` stops the build without it, and on the first 5 mL, whose figure is derived.
 5. **Measure the plan shape of the barrel flanges.** The slot is open at the sides and sized only by
    the flanges' width, height and thickness.

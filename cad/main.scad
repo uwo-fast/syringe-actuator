@@ -128,17 +128,22 @@ function layout(syringe, motor, pin, pin_washer, fit, press, hole, wall, grip, r
                 margin = 1, pin_l = 10, window = 3.5, friction = 3) =
     let (
         throw = get(syringe, "stroke") / 2 - margin,
-        rod_l = max(has(syringe, "rod_min") ? get(syringe, "rod_min") : rod_min, ceil(3 * throw)),
         boss = [boss_d, rod_t + play],
         rod_bore = boss_d + 2 * fit,
         tap = get(pin, "tap") + 2 * hole,
         clip = clip_spec(syringe, tap, fit, clip_wall, boss, rod_w, sled, grip),
+        button_in = get(syringe, "exposed") + margin,
+        // a row's crank_as: another syringe's layout, whose crank this one keeps, by the rod's length
+        like = has(syringe, "crank_as") ? layout(get(syringe, "crank_as"), motor, pin, pin_washer, fit, press, hole,
+                                                wall, grip, ring_grip)
+                                         : undef,
+        rod_l = is_undef(like) ? max(rod_min, ceil(3 * throw))
+                               : get(like, "crank_x") - button_in - get(clip, "pin_x") - throw,
         axis_z = plate_t + float + get(clip, "half_w"),
         hub_z = plate_t + gap,
         bore = pocket + get(motor, "shaft_l") - hub_z,
         crank = crank_spec(motor, tap, press, throw, axis_z - hub_z, boss, bore, rod_w, m3_set, m3_nut, fit),
         rod = rod_spec(rod_bore, rod_l, rod_t, rod_w),
-        button_in = get(syringe, "exposed") + margin,
         crank_x = button_in + get(clip, "pin_x") + rod_l + throw,
         rails = [button_in + 2 * throw + get(clip, "sled_end") + 1, get(clip, "half_w") + slide, axis_z - sled[1]],
         sweep_x = crank_x - throw - rod_w / 2,
@@ -188,6 +193,10 @@ function layout(syringe, motor, pin, pin_washer, fit, press, hole, wall, grip, r
                          motor_z + 5, fit, mount_front = [ mount_w, 10, 15 ])
     )
     assert(bore >= 5, str("the shaft reaches only ", bore, " into the crank"))
+    assert(rod_l >= ceil(3 * throw), str("the rod is ", rod_l, ", under three throws, to keep the crank of ",
+                                         is_undef(like) ? "" : get(get(like, "syringe"), "name")))
+    assert(is_undef(like) || (get(like, "axis_z") == axis_z && get(get(like, "frame"), "w") == get(frame, "w")),
+           "crank_as names a syringe of another axis height or frame width")
     assert(axis_z - hub_z - bore >= 1.5, "the crank's blind bore leaves under 1.5 over the shaft's tip")
     assert(pin_tip >= hub_z, str("the pin screws reach ", hub_z - pin_tip, " too low: they would drag on the plate"))
     assert(pin_l - stack >= 4, "the pin screws have under 4 of thread")
