@@ -94,7 +94,7 @@ test:
             elif ! edges=$(python3 tools/stl_edges.py "$tmp/out.stl"); then
                 echo "FAIL  $s $p  ${edges#*out.stl  }"; failed=1
             else
-                printf 'ok    %-4s %-13s one closed solid, every edge manifold\n' "$s" "$p"
+                printf 'ok    %-8s %-13s one closed solid, every edge manifold\n' "$s" "$p"
             fi
         done
     done

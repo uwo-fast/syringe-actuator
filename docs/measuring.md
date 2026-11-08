@@ -6,7 +6,7 @@ and ISO 7886-2 notes that diameters overlap between makers and that lengths and 
 vary from mould to mould. A "3 mL syringe" is therefore not one shape; a 3 mL Norm-Ject is 10.8 mm
 across the barrel where a 3 mL BD is about 10.1. The measured presets are the unbranded syringes
 this was built and tested with; the BD 10, 30 and 50 mL are estimates. Measure the syringe you will
-use, and enter it as its own preset, named for its maker and size.
+use, and enter it as its own preset, named for its volume and maker.
 
 ## The numbers
 
@@ -44,7 +44,8 @@ comes out a tenth or so small. So:
 
 ## Adding one
 
-Copy an entry in `cad/purchased/syringes.scad`, name it for the maker and size (`terumo_3ml`, say),
+Copy an entry in `cad/purchased/syringes.scad`, name it for the volume and maker (`syringe_3ml_terumo`, say, picked as `3ml-terumo`: the picked name
+takes a hyphen, not an underscore, which `tools/qa/qa.sh` splits its job names on),
 and say in its comment how and when it was measured. Add it to the `syringes` list at the bottom of
 that file, to the `syringe` choice in `cad/main.scad`, and to `SYRINGES` in the justfile, then run
 `just check` and `just test`: `layout()` stops the build with a message if the numbers cannot work
