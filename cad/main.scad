@@ -112,7 +112,8 @@ function tip_x(L) = let(s = get(L, "syringe")) - get(s, "flange_t") - get(s, "ba
 // plate_t: stiff enough over the frame's length; pocket: the gearbox's depth into it, which locates it square. gap:
 // the crank's underside over the plate, set by the shaft's tip bottoming in the crank's blind bore. float: the
 // clip's underside over the plate. clip_wall: the clip's cup, which bears only the stroke on the push-button's rim.
-// rod_min: the rod's shortest; it is at least three throws long, so it leans at most asin(1/3) = 19.5 degrees.
+// rod_min: the rod's shortest, unless the syringe keeps another's crank (its row's crank_as); it is at least three
+// throws long, so it leans at most asin(1/3) = 19.5 degrees.
 // rod_w: wide enough for 2 of wall round a boss's bore. boss_d: the washer overlaps the rod's bore round it by at
 // least 0.5 a side. play: the rod's end float between its seat and the washer. sled: [reach past the clip's pin,
 // depth of its top and the rails' under the rod]. slide: per side, the sled between the rails. recess: the motor
@@ -134,9 +135,15 @@ function layout(syringe, motor, pin, pin_washer, fit, press, hole, wall, grip, r
         clip = clip_spec(syringe, tap, fit, clip_wall, boss, rod_w, sled, grip),
         button_in = get(syringe, "exposed") + margin,
         // a row's crank_as: another syringe's layout, whose crank this one keeps, by the rod's length
-        like = has(syringe, "crank_as") ? layout(get(syringe, "crank_as"), motor, pin, pin_washer, fit, press, hole,
-                                                wall, grip, ring_grip)
+        like = has(syringe, "crank_as")
+                   ? layout(get(syringe, "crank_as"), motor, pin, pin_washer, fit, press, hole, wall, grip, ring_grip,
+                            plate_t, pocket, gap, float, clip_wall, rod_t, rod_min, rod_w, boss_d, play, sled, slide,
+                            recess, margin, pin_l, window, friction)
                                          : undef,
+        // the frame and the clip are built from these alone, so a crank_as syringe that matches them reuses both
+        differ = is_undef(like) ? []
+                                : [for (f = ["barrel_od", "flange", "flange_t", "button_d", "button_t", "plunger_span"])
+                                        if (get(get(like, "syringe"), f) != get(syringe, f)) f],
         rod_l = is_undef(like) ? max(rod_min, ceil(3 * throw))
                                : get(like, "crank_x") - button_in - get(clip, "pin_x") - throw,
         axis_z = plate_t + float + get(clip, "half_w"),
@@ -195,8 +202,8 @@ function layout(syringe, motor, pin, pin_washer, fit, press, hole, wall, grip, r
     assert(bore >= 5, str("the shaft reaches only ", bore, " into the crank"))
     assert(rod_l >= ceil(3 * throw), str("the rod is ", rod_l, ", under three throws, to keep the crank of ",
                                          is_undef(like) ? "" : get(get(like, "syringe"), "name")))
-    assert(is_undef(like) || (get(like, "axis_z") == axis_z && get(get(like, "frame"), "w") == get(frame, "w")),
-           "crank_as names a syringe of another axis height or frame width")
+    assert(differ == [], str("crank_as names ", is_undef(like) ? "" : get(get(like, "syringe"), "name"),
+                             ", which differs in ", differ))
     assert(axis_z - hub_z - bore >= 1.5, "the crank's blind bore leaves under 1.5 over the shaft's tip")
     assert(pin_tip >= hub_z, str("the pin screws reach ", hub_z - pin_tip, " too low: they would drag on the plate"))
     assert(pin_l - stack >= 4, "the pin screws have under 4 of thread")
