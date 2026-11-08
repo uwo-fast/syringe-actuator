@@ -27,8 +27,9 @@ use <syringe.scad>;
 // the 36.3 the shoulder sits behind it. bore_d: NOMINAL on every row, BD's published bores, for the report's torque
 // estimate only.
 // crank_as, which a row may carry: another syringe whose crank position it keeps, so a unit printed for that syringe
-// takes this one with only a new crank and rod; layout() derives the rod, and stops the build unless the two share the
-// axis's height and the frame's width.
+// takes this one with only a new crank and rod; layout() derives the rod, and stops the build unless the two match
+// across the axis: barrel_od, flange, flange_t, button_d, button_t and plunger_span, which the frame and clip are
+// built from.
 syringe_1ml_gnr1 = [
     [ "name", "1 mL luer syringe generic 1" ], [ "bore_d", 4.78 ], [ "barrel_od", 9.45 ], [ "flange", [ 24.6, 12.6 ] ],
     [ "flange_t", 2.0 ], [ "button_d", 10.2 ], [ "button_t", 1.8 ], [ "stroke", 64.25 ], [ "exposed", 10.75 ],

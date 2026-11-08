@@ -108,7 +108,8 @@ from 20 mL (assumed, bar the 20 mL's scale test) and BD's published bores:
 | --- | --- | --- |
 | 1 mL | 1.0 kg·cm | 1.5 kg·cm |
 | 3 mL | 0.8 kg·cm | 2.5 kg·cm |
-| 5 mL | 0.8 | 3.8 |
+| 5 mL, the first | 0.8 | 3.8 |
+| 5 mL, the second | 0.7 | 3.4 |
 | 10 mL | 1.1 | 6.9 |
 | 20 mL | 2.0 | 13.6 |
 | 30 mL | 2.3 | 19.6 |
@@ -125,9 +126,10 @@ throughout, so for the 20 and 30 mL it gives less than the table.
 ### Syringes (measured)
 
 The 3 mL measured 2026-09-29 (its barrel length and stroke 2026-10-02), the 1, 5 and 20 mL
-2026-10-02, a second 5 mL before 2026-11-06. They are not BD's: the 3 and 5 mL carry no maker's mark (BD prints its logo at the
-scale's end), and another maker's syringe of the same volume can differ by most of a millimetre, so
-a syringe from elsewhere is measured and added as its own entry ([`measuring.md`](measuring.md)).
+2026-10-02, a second 5 mL before 2026-11-06. They are not BD's: the 3 and 5 mL carry no maker's mark
+(BD prints its logo at the scale's end), and another maker's syringe of the same volume can differ
+by most of a millimetre, so a syringe from elsewhere is measured and added as its own entry
+([`measuring.md`](measuring.md)).
 
 | Feature | 1 mL | 3 mL | 5 mL | 20 mL |
 | --- | --- | --- | --- | --- |
@@ -141,10 +143,10 @@ a syringe from elsewhere is measured and added as its own entry ([`measuring.md`
 | Nozzle, the barrel's shoulder to the syringe's front end | not measured | not measured | 10.2 mm, derived from the assembled unit, not measured | not measured |
 
 A second generic 5 mL (`5ml-gnr2`) matches the table's across the axis and is shorter: stroke 47.3,
-exposed 13.6, barrel 56.8 and nozzle 10.0 mm, measured. Its row names the first (`5ml-gnr1`) in
-`crank_as`, so `layout()` gives it the rod, 93.3 mm, that keeps the crank where the first has it: a
-unit printed for the first takes it with only a new crank and rod, and the frame, clip, body, lid
-and cap carry over. Its nozzle's tip then sits 6.9 mm further back from the body's front face
+exposed 13.6, barrel 56.8 and nozzle 10.0 mm, measured. Its row's `crank_as` points at the first's
+row (`5ml-gnr1`), so `layout()` gives it the rod, 93.3 mm, that keeps the crank where the first has
+it: a unit printed for the first takes it with only a new crank and rod, and the frame, clip, body,
+lid and cap carry over. Its nozzle's tip then sits 6.9 mm further back from the body's front face
 (39.6 mm past it against 46.5), so an adapter drawn to the first's `tip_x()` does not reach it. The
 table's 5 mL column is the first.
 

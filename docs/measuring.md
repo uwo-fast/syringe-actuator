@@ -44,11 +44,11 @@ comes out a tenth or so small. So:
 
 ## Adding one
 
-Copy an entry in `cad/purchased/syringes.scad`, name it for the volume and maker (`syringe_3ml_terumo`, say, picked as `3ml-terumo`: the picked name
-takes a hyphen, not an underscore, which `tools/qa/qa.sh` splits its job names on),
-and say in its comment how and when it was measured. Add it to the `syringes` list at the bottom of
-that file, to the `syringe` choice in `cad/main.scad`, and to `SYRINGES` in the justfile, then run
-`just check` and `just test`: `layout()` stops the build with a message if the numbers cannot work
-(a barrel shorter than its stroke, say). Print the clip and check the push-button snaps in, then the
-rest; if it is loose or will not go in, raise or lower `grip` in the Customizer and print the clip
-again.
+Copy an entry in `cad/purchased/syringes.scad`, name it for the volume and maker
+(`syringe_3ml_terumo`, say, picked as `3ml-terumo`: the picked name takes a hyphen, not an
+underscore, which `tools/qa/qa.sh` splits its job names on), and say in its comment how and when it
+was measured. Add it to the `syringes` list at the bottom of that file, to the `syringe` choice in
+`cad/main.scad`, and to `SYRINGES` in the justfile, then run `just check` and `just test`:
+`layout()` stops the build with a message if the numbers cannot work (a barrel shorter than its
+stroke, say). Print the clip and check the push-button snaps in, then the rest; if it is loose or
+will not go in, raise or lower `grip` in the Customizer and print the clip again.
