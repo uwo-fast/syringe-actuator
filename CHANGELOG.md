@@ -9,6 +9,8 @@ and [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- One body, lid and cap for the N20 syringes (1, 3 and both 5 mL): switching between them
+  reprints only the frame, clip, crank and rod
 - A second generic 5 mL syringe, shorter than the first; the presets are now `5ml-gnr1` and
   `5ml-gnr2`, and a unit printed for the first takes the second with a new crank and rod
 - The printed crank-slider: frame, crank, rod and plunger clip (`cad/`), with an animated assembly

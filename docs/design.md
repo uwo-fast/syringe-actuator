@@ -42,6 +42,11 @@ mL's; `part="report"` gives any syringe's.
 - **Body.** A shell fitted round what the frame carries, symmetric about the axis's vertical plane,
   square at the top and chamfered at the bottom as far as its contents allow. `layout()` sizes each
   section from the extremes of what the frame carries over a whole turn.
+  - _Shared._ The N20 syringes (1, 3 and both 5 mL) share one body, lid and cap, sized for the
+    largest of what each needs, measured from the motor's shaft. Their axis height and plate width
+    are the group's largest, and each frame's plate runs forward to the shared front wall, so
+    swapping syringes reprints only the frame, clip, crank and rod. The group is the fourth column
+    of `syringes`; the GA25 syringes still get a body each.
   - _Shape._ Narrow and shallow at the front, where there is only the syringe, the plate and the
     clip; full width and the motor's depth where the crank turns; a taper between, which `layout()`
     checks against the rod's swing and keeps within 45° of the body's axis.
@@ -57,18 +62,18 @@ mL's; `part="report"` gives any syringe's.
   - _Mounting._ Two patterns of four M3 clearance holes, each sealed by a 0.6 mm knockout skin at
     the outer face until a user drills or punches the ones they use; the screws' heads sit inside.
     One is through the front wall beside the barrel's slot, 10 up and the narrowest multiple of 10
-    across whose heads clear the frame's snap ring: 20 for the 1 mL, 30 up to the 10 mL, 40 for the
-    20 and 30 mL, centred 15 mm over the plate's underside; the other through the roof's shoulders,
-    60 across by 20 along, centred 15 mm in front of the back end, behind the crank's sweep. Another
-    OpenSCAD project draws its adapter from the layout with `use <cad/main.scad>`:
+    across whose heads clear the frame's snap ring: 30 for the N20 syringes and the 10 mL, 40 for
+    the 20 and 30 mL, centred 15 mm over the plate's underside; the other through the roof's
+    shoulders, 60 across by 20 along, centred 15 mm in front of the back end, behind the crank's
+    sweep. Another OpenSCAD project draws its adapter from the layout with `use <cad/main.scad>`:
     `actuator(syringe, motor)` gives it, `front_x()` and the body's `front_face()` the front wall's
     outer face, the body's `mount_front` and `mount_top` the holes, and `tip_x()` the syringe's
     front end, from its `nozzle_l`.
-  - _Printing._ The body prints standing on its back end with no supports: 211 mm tall for the 3 mL,
-    its walls leaning in at most 45°, and its front wall bridges about 27 mm (39 on the 30 mL). Its
-    rails start at the bed, so turn on the slicer's elephant-foot compensation, and use a brim. No
-    edge on the body, the lid or the plate comes to a knife edge: the dovetails and the lid's bevels
-    stand on short lands.
+  - _Printing._ The body prints standing on its back end with no supports: 226 mm tall for the N20
+    syringes, its walls leaning in at most 45°, and its front wall bridges about 30 mm (39 on the 30
+    mL). Its rails start at the bed, so turn on the slicer's elephant-foot compensation, and use a
+    brim. No edge on the body, the lid or the plate comes to a knife edge: the dovetails and the
+    lid's bevels stand on short lands.
   - _Assembly._ Front mounting screws, if any; the frame into the body from the back; the lid onto
     its rails from the back; then the cap. Top mounting screws go in after the frame, or before it
     if the frame slides in with its crank along the axis, as a crank turned across carries its pin
@@ -147,7 +152,7 @@ exposed 13.6, barrel 56.8 and nozzle 10.0 mm, measured. Its row's `crank_as` poi
 row (`5ml-gnr1`), so `layout()` gives it the rod, 93.3 mm, that keeps the crank where the first has
 it: a unit printed for the first takes it with only a new crank and rod, and the frame, clip, body,
 lid and cap carry over. Its nozzle's tip then sits 6.9 mm further back from the body's front face
-(39.6 mm past it against 46.5), so an adapter drawn to the first's `tip_x()` does not reach it. The
+(32.7 mm past it against 39.6), so an adapter drawn to the first's `tip_x()` does not reach it. The
 table's 5 mL column is the first.
 
 ### Syringes (BD, estimated)
