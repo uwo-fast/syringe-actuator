@@ -4,23 +4,23 @@
  * @author Cameron K. Brooks
  * @copyright 2026
  *
- * The button drops in from above, the plunger through a slot in the front wall; the front wall
- * pulls and the back wall pushes. A sled under the clip runs between the frame's rails, which take
- * the rod's side load and keep the clip square to the axis; the plunger carries only the stroke.
- * The rod lies on the tongue's top face and turns on its boss. The cup's side walls stand free of
- * its end walls above the axis, and lips at their tops snap over the push-button, so it stays in
- * whichever way up the unit is. x = 0 at the button's front face, z = 0 on the syringe axis, which
- * is the tongue's top face. Prints as it stands.
+ * The button drops in from above, the plunger through a slot in the front wall. Front wall pulls,
+ * back wall pushes.
+ * The sled runs between the frame's rails, which take the rod's side load and keep the clip square;
+ * the plunger carries only the stroke. The rod lies on the tongue and turns on its boss.
+ * The cup's side walls stand free of its end walls above the axis; lips on top snap over the
+ * push-button, so it stays in whichever way up the unit is.
+ * x = 0 at the button's front face, z = 0 on the syringe axis (the tongue's top). Prints as it stands.
  */
 
 // clang-format off
 include <../lib/struct.scad>;
 // clang-format on
 
-// tap: the pin screw's hole, which it threads itself into. boss: [d, h] of the pin's boss. end_d: the tongue's round
-// end, the rod's width. sled: [its reach past the pin, which sets how long the rails hold it square; its top's depth
-// under the rod]. grip: per side, how far the lips reach over the push-button. clear: back wall to
-// the rod's end.
+// tap: the pin screw's self-threading hole. boss: the pin boss [d, h].
+// end_d: the tongue's round end, the rod's width.
+// sled: [reach past the pin (how long the rails hold it square), its top's depth under the rod].
+// grip: per side, how far the lips reach over the push-button. clear: back wall to the rod's end.
 // clang-format off
 function clip_spec(syringe, tap, fit, wall, boss, end_d, sled, grip = 0.15, clear = 1) =
     let (r = get(syringe, "button_d") / 2 + fit, back = get(syringe, "button_t") + fit + wall,
@@ -64,8 +64,8 @@ module clip(s)
             translate([ front - 1, side > 0 ? top - 0.6 : -top, 0 ]) cube([ back - front + 2, 0.6, top + 1 ]);
         translate([ pin_x, 0, bottom - 1 ]) cylinder(d = get(s, "tap"), h = -bottom + boss[1] + 2);
     }
-    // the lips, over the button's slot near the side walls' tops. A polyhedron, not an extruded polygon: 2D
-    // polygons are snapped to a grid, which leaves a sliver against the wall when top is off it (the 1 mL's 5.3).
+    // the lips, near the side walls' tops. A polyhedron, not an extruded polygon: 2D polygons snap to a
+    // grid, which leaves a sliver against the wall when top is off it (the 1 mL's 5.3).
     for (side = [ -1, 1 ])
     {
         yz = [[side * (top + 0.5), top - 3], [side * top, top - 2.5], [side * (top - fit - get(s, "grip")), top - 1],

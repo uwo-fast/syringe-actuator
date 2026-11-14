@@ -9,9 +9,9 @@
 include <../lib/struct.scad>;
 // clang-format on
 
-// Syringe s on its axis, x along it from the flanges' rear face, with its push-button's front face at x = button_x. Its
-// bore is cut through the barrel and the flanges, drawn as one solid so no two faces lie on each other, with a nominal
-// wall (unmeasured, drawing only); the stopper is a hair smaller than the bore, and nominally 5 long.
+// Syringe s on its axis, x from the flanges' rear face, push-button front face at x = button_x.
+// One solid with the bore cut through barrel and flanges, so no two faces coincide. Wall NOMINAL
+// (drawing only); stopper a hair under the bore, nominally 5 long.
 module syringe(s, button_x)
 {
     ft = get(s, "flange_t");

@@ -14,16 +14,16 @@ include <fasteners.scad>;
 use <motor.scad>;
 // clang-format on
 
-// shape: the gearbox's and the can's section, "rect" (w across y by h across x) or "round" (gearbox_d, can_d). mount:
-// [screw, its length, [d, depth] of the counterbore over its head in the plate] that holds the gearbox to the plate.
-// torque: the most the gearbox should see, kg.cm, the guide the report compares the crank's load against.
+// shape: gearbox and can section, "rect" (w across y, h across x) or "round" (gearbox_d, can_d).
+// mount: [screw, length, counterbore [d, depth] in the plate] holding the gearbox to the plate.
+// torque: the most the gearbox should see, kg.cm; the report compares the crank's load against it.
 
-// Pololu micro metal gearmotor dimension drawing, 2024-04-03 (the N20 form factor), 1000:1 gearbox.
-// Section w x h throughout; the M1.6 holes are pitch apart across w. shaft_l from the gearbox face,
-// measured on the motor in hand 2026-09-29, D-profile over its whole length. tail_l: the end cap's
-// boss and the terminals past the can, NOMINAL. Its counterbore is the room an ISO 7045 pan head takes; the flat
-// heads bought sit in it on the clearance hole's rim, as printed and proven. torque: Pololu's advice for this gearbox,
-// instantaneous.
+// N20, 1000:1. Source: Pololu micro metal gearmotor dimension drawing, 2024-04-03.
+// Section w x h throughout; M1.6 holes hole_pitch apart across w.
+// shaft_l: from the gearbox face, measured 2026-09-29; D-profile over its whole length.
+// tail_l: end cap boss and terminals past the can, NOMINAL.
+// Counterbore: room for an ISO 7045 pan head; the flat heads bought sit on the hole's rim (printed, works).
+// torque: Pololu's advice for this gearbox, instantaneous.
 n20_1000 = [
     [ "name", "N20 inline gearmotor, 12 V 1000:1" ], [ "shape", "rect" ], [ "w", 12 ], [ "h", 10 ],
     [ "gearbox_l", 12.5 ], [ "can_l", 16.2 ], [ "shaft_d", 3 ], [ "shaft_flat", 2.5 ], [ "shaft_l", 9 ],
@@ -31,14 +31,18 @@ n20_1000 = [
     [ "mount", [ m1_6_flat, 3, [ 3.2, 1.3 ] ] ], [ "torque", 2.5 ]
 ];
 
-// The round 25 mm gearmotor for the larger syringes: a GA25YN370, 12 V 30 rpm (HERCHR, Amazon.ca B0BX6B91L9), sold also
-// as JGA25-370 and 25GA-370. Measured on the motor in hand 2026-10-03, which agrees with Seeed's JGA25-370 drawing (SKU
-// 114090046) bar the gearbox's length, longer at this ratio: gearbox d x gearbox_l, the can can_d x can_l behind it, a
-// bushing (boss) bushing_d across standing bushing_h proud round the shaft, which is centred. shaft_l from the gearbox
-// face, 10 past the bushing; the D-flat runs flat_l back from the tip. tail_l: the can's end boss and terminals. 2 x M3
-// tapped holes hole_pitch apart across the shaft, hole_depth deep at most (Seeed's drawing; not measured), so its M3
-// button heads put under 3 into them; the face's other two screws hold the gearbox together and must stay in. torque:
-// Pololu's continuous advice for its 25 mm metal gearboxes; this one's seller gives 12 kgf.cm at stall.
+// GA25YN370, 12 V 30 rpm, round 25 mm, for the larger syringes. HERCHR, Amazon.ca B0BX6B91L9; also sold
+// as JGA25-370 and 25GA-370.
+// Measured 2026-10-03; matches Seeed's JGA25-370 drawing (SKU 114090046) except the gearbox is longer
+// at this ratio.
+// Gearbox gearbox_d x gearbox_l; can can_d x can_l behind it; bushing bushing_d across, bushing_h proud
+// round the centred shaft.
+// shaft_l: from the gearbox face, 10 past the bushing; the D-flat runs flat_l back from the tip.
+// tail_l: the can's end boss and terminals.
+// Holes: 2 x M3 tapped, hole_pitch apart across the shaft, hole_depth deep at most (Seeed's drawing,
+// not measured), so the M3 button heads go under 3 in. The face's other two screws hold the gearbox
+// together: leave them in.
+// torque: Pololu's continuous advice for its 25 mm metal gearboxes; the seller gives 12 kgf.cm at stall.
 ga25_30 = [
     [ "name", "GA25YN370 gearmotor, 12 V 30 rpm" ], [ "shape", "round" ], [ "gearbox_d", 25 ], [ "gearbox_l", 26.8 ],
     [ "can_d", 24.3 ], [ "can_l", 30.8 ], [ "shaft_d", 4 ], [ "shaft_flat", 3.5 ], [ "shaft_l", 12.5 ], [ "flat_l", 8 ],

@@ -4,21 +4,19 @@
  * @author Cameron K. Brooks
  * @copyright 2026
  *
- * The one file that draws. Open it in OpenSCAD and use the Customizer, or pass -D:
+ * The only file that draws. Use the Customizer, or -D:
  *   openscad -D 'part="crank"' -o crank.stl cad/main.scad
- * The assembly turns with View > Animate; `angle` sets where it starts. `report` echoes the screws and
- * the derived figures.
+ * View > Animate turns the assembly; `angle` sets the start. `report` echoes screws and derived figures.
  *
- * An in-line crank-slider: the motor shaft stands vertical on the syringe axis's line, so the crank,
- * the rod and the plunger move in one horizontal plane. The rod lies on the crank's top face and on
- * the clip's tongue, both at the axis's height, and its ends turn on bosses that the pin screws clamp
- * through washers. The clip's sled runs between rails on the frame, which take the rod's side load
- * off the plunger. Numbers in layout() without a derivation are choices, and each says why.
+ * In-line crank-slider: motor shaft vertical, on the syringe axis's line, so crank, rod and plunger
+ * move in one horizontal plane. The rod lies on the crank's top face and the clip's tongue, both at
+ * axis height; its ends turn on bosses clamped by the pin screws through washers. The clip's sled runs
+ * between the frame's rails, which take the rod's side load off the plunger.
+ * Numbers in layout() without a derivation are choices, and each says why.
  *
- * FRAME: x along the syringe axis, 0 at the flange's rear face, the nozzle towards -x; z = 0 at the
- * plate's underside. The crank angle a is 0 with the pin pointing +x, away from the syringe, which is
- * the plunger pulled out; a = 180 is it pushed in. Printed parts each have their own colour; the
- * bought parts are drawn from their catalog figures, simplified.
+ * Frame of reference: x along the syringe axis, 0 at the flange's rear face, nozzle towards -x;
+ * z = 0 at the plate's underside. Crank angle a = 0: pin towards +x, plunger pulled out; a = 180:
+ * pushed in. Bought parts are drawn from catalog figures, simplified.
  */
 
 // clang-format off
@@ -92,9 +90,10 @@ section(section, section_at)
 
 // ---- Layout
 
-// The layout for a syringe and a motor by their Customizer names, at the print settings above; motor "auto" is the one
-// syringes.scad pairs the syringe with. Another project that mounts the actuator reads its layout here, with
-// `use <cad/main.scad>`, and front_x(), tip_x() and the body's front_face() and mount_front.
+// The layout for a syringe and motor by Customizer name, at the print settings above.
+// motor "auto": the motor syringes.scad pairs with the syringe.
+// For an adapter in another project: `use <cad/main.scad>`, then front_x(), tip_x(), and the body's
+// front_face() and mount_front.
 function actuator(syringe,
                   motor = "auto") = let(chosen = syringe_by_name(syringe),
                                         driven = motor_by_name(motor == "auto" ? syringe_motor(syringe) : motor))
@@ -109,19 +108,21 @@ function front_x(L) = let(b = get(L, "body")) get(b, "x")[0] - get(b, "end_t");
 // The x of the syringe's front end: the nozzle's, or its luer-lock collar's if that reaches further.
 function tip_x(L) = let(s = get(L, "syringe")) - get(s, "flange_t") - get(s, "barrel_l") - get(s, "nozzle_l");
 
-// plate_t: stiff enough over the frame's length; pocket: the gearbox's depth into it, which locates it square. gap:
-// the crank's underside over the plate, set by the shaft's tip bottoming in the crank's blind bore. float: the
-// clip's underside over the plate. clip_wall: the clip's cup, which bears only the stroke on the push-button's rim.
-// rod_min: the rod's shortest, unless the syringe keeps another's crank (its row's crank_as); it is at least three
-// throws long, so it leans at most asin(1/3) = 19.5 degrees.
-// rod_w: wide enough for 2 of wall round a boss's bore. boss_d: the washer overlaps the rod's bore round it by at
-// least 0.5 a side. play: the rod's end float between its seat and the washer. sled: [reach past the clip's pin,
-// depth of its top and the rails' under the rod]. slide: per side, the sled between the rails. recess: the motor
-// screws' heads under the plate's top; the motor's own row gives its screws, their length and their counterbore.
-// margin: the stopper stops this short of each end of its travel, the barrel's end and the plunger's stop, for the
-// error in exposed and stroke and the print. friction: the plunger's seal friction, N, assumed, for the report's
-// torque estimate. pin_l: the pin screws' length. window: how much wider the body's window is than the barrel's
-// flanges, room for fingers round them.
+// plate_t: stiff enough over the frame's length.
+// pocket: the gearbox's depth into the plate, which locates it square.
+// gap: crank underside over the plate, set by the shaft's tip bottoming in the crank's blind bore.
+// float: clip underside over the plate.
+// clip_wall: the clip's cup; it bears only the stroke on the push-button's rim.
+// rod_min: shortest rod, unless the row has crank_as. At least 3 throws, so the rod leans at most
+// asin(1/3) = 19.5 degrees.
+// rod_w: 2 of wall round a boss's bore. boss_d: the washer overlaps the rod's bore by at least 0.5 a side.
+// play: the rod's end float between its seat and the washer.
+// sled: [reach past the clip's pin, depth of its top and the rails' under the rod].
+// slide: per side, sled between the rails.
+// recess: motor screw heads below the plate's top; the motor's row gives its screws and counterbore.
+// margin: the stopper stops this short of each end of travel, for error in exposed, stroke and print.
+// friction: seal friction, N, assumed, for the report's torque estimate.
+// pin_l: pin screw length. window: body window wider than the flanges by this, room for fingers.
 // clang-format off
 function layout(syringe, motor, pin, pin_washer, fit, press, hole, wall, grip, ring_grip,
                 plate_t = 5, pocket = 2, gap = 1, float = 1.5, clip_wall = 2, rod_t = 4, rod_min = 90,
@@ -162,16 +163,14 @@ function layout(syringe, motor, pin, pin_washer, fit, press, hole, wall, grip, r
         motor_bore = mount[2],
         motor_seat_z = plate_t - motor_bore[1] - recess,
         flat_head = get(motor_screw, "head") == "flat",
-        // a flat head's cone rests where it is as wide as the clearance hole, this far under its top; any other head
-        // sits on the counterbore's floor
+        // a flat head seats where its cone matches the clearance hole; other heads sit on the counterbore's floor
         motor_head_z = flat_head ? motor_seat_z + (get(motor_screw, "head_d") - get(motor_screw, "clear") - 2 * fit) / 2
                                  : motor_seat_z,
         // a flat head's length is overall, any other's under its head
         motor_thread = pocket - (motor_head_z - motor_screw_l),
         frame = frame_spec(syringe, motor, motor_screw, fit, wall, plate_t, pocket, axis_z, crank_x, rails, motor_seat_z,
                            motor_bore[0], ring_grip),
-        // the front mounting holes' spacing across: the narrowest multiple of 10 whose screws' heads, inside the front
-        // wall, clear the frame's snap ring round the barrel by 0.5
+        // front mounting holes, spacing across: the narrowest multiple of 10 whose heads clear the snap ring by 0.5
         ring_half = (get(syringe, "barrel_od") + 2 * fit) / 2 + get(frame, "ring")[2],
         mount_w = 10 * ceil(2 * (ring_half + get(pin, "head_d") / 2 + 0.5) / 10),
         // what the frame carries at its extremes over a turn, [y, z], for the body to clear
@@ -272,8 +271,8 @@ module assembly(L, a, bought = true, body = false)
     }
 }
 
-// The pin screws and washers on their bosses at pins [[x, y], ...], and the motor screws seated in
-// their counterbores. A pin screw's length is under its head.
+// Pin screws and washers on their bosses at pins [[x, y], ...]; motor screws in their counterbores.
+// A pin screw's length is under its head.
 module screws(L, pins)
 {
     pin = get(L, "pin");
@@ -291,9 +290,9 @@ module screws(L, pins)
     else screw(ms, get(L, "motor_screw_l"), 0);
 }
 
-// M3 socket heads through the body's mounting holes, knocked out, their heads inside, as a user would fit them into an
-// adapter; shown 6 past the body. The front ones can go in first; the top ones too if the frame slides in with its
-// crank along the axis, as one turned across carries its pin screws into them.
+// M3 socket heads through the knocked-out mounting holes, heads inside, shown 6 past the body.
+// Fit the front ones first. The top ones can go in first too, if the frame slides in with its crank
+// along the axis; turned across, the crank's pin screws hit them.
 module mount_screws(L)
 {
     b = get(L, "body");

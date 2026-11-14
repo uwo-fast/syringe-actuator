@@ -13,23 +13,21 @@ include <../lib/struct.scad>;
 use <syringe.scad>;
 // clang-format on
 
-// Luer-lock syringes, barrel axis along x, nozzle towards -x, in mm. Rows are named by volume and maker: gnr for a
-// generic, unbranded syringe, measured by hand; bd for BD Plastipak, estimated. Another maker's syringe of the same
-// volume can differ by most of a millimetre: measure the one you use (docs/measuring.md).
-// Measured: the 3 mL 2026-09-29, the 1 mL, 5 mL gnr1 and 20 mL 2026-10-02, the 5 mL gnr2 before 2026-11-06. The bd
-// rows are estimates from BD's photo of its range, scaled against the 5 and 20 mL, with outside diameters from
-// published figures (Fisher's 16.21 for the 10 mL; 23.77 and 29.5 for the 30 and 50 mL) and exposed from a Terumo pump
-// manual's flange-to-plunger-end figures less the push-button; good to about a millimetre. The 50 mL is not built.
-// flange: [width, height] across the axis. exposed: the flange's rear face to the push-button's front face, stopper
-// bottomed. plunger_span: the widest the plunger reaches across the axis. barrel_l: the flange's front face to the
-// barrel's shoulder at the nozzle's root. nozzle_l: that shoulder to the furthest of the nozzle's tip and its luer-lock
-// collar's face; the 5 mL gnr1's is derived, not measured: the tip's 46.5 past the assembled body's front face less
-// the 36.3 the shoulder sits behind it. bore_d: NOMINAL on every row, BD's published bores, for the report's torque
-// estimate only.
-// crank_as, which a row may carry: another syringe whose crank position it keeps, so a unit printed for that syringe
-// takes this one with only a new crank and rod; layout() derives the rod, and stops the build unless the two match
-// across the axis: barrel_od, flange, flange_t, button_d, button_t and plunger_span, which the frame and clip are
-// built from.
+// Luer-lock syringes. Axis: X; nozzle: -X. Dimensions in mm.
+// Rows: <volume>_<maker>. gnr = generic, hand-measured; bd = BD Plastipak, estimated.
+// Same volume from another maker can differ by ~1 mm: measure yours (docs/measuring.md).
+//
+// Measured: 3 mL 2026-09-29; 1 mL, 5 mL gnr1, 20 mL 2026-10-02; 5 mL gnr2 before 2026-11-06.
+// bd: scaled from BD's range photo against the 5 and 20 mL; ODs published (Fisher's 16.21 for 10 mL,
+// 23.77 for 30 mL, 29.5 for 50 mL); exposed from a Terumo pump manual. Good to ~1 mm. 50 mL not built.
+//
+// flange: [width, height]; exposed: flange rear to button front, stopper bottomed;
+// plunger_span: max plunger width across the axis; barrel_l: flange front to nozzle shoulder;
+// nozzle_l: shoulder to the nozzle tip or luer collar, whichever is further
+// (5 mL gnr1: derived, 46.5 - 36.3, not measured).
+// bore_d: nominal BD values, for the torque estimate only.
+// crank_as: keep another syringe's crank position, so only the crank and rod are reprinted.
+// The build stops unless barrel_od, flange, flange_t, button_d, button_t and plunger_span match.
 syringe_1ml_gnr1 = [
     [ "name", "1 mL luer syringe generic 1" ], [ "bore_d", 4.78 ], [ "barrel_od", 9.45 ], [ "flange", [ 24.6, 12.6 ] ],
     [ "flange_t", 2.0 ], [ "button_d", 10.2 ], [ "button_t", 1.8 ], [ "stroke", 64.25 ], [ "exposed", 10.75 ],
