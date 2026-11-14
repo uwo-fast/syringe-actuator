@@ -13,9 +13,11 @@ include <../lib/struct.scad>;
 use <fastener.scad>;
 // clang-format on
 
-// ISO 4762 socket head, ISO 7380 button head and ISO 7089 washer table values. head: how a screw's length is measured
-// and how it seats: "flat" overall, its cone in the hole's mouth; the others under the head, on its underside. The
-// N20's screws as bought: JIS flat heads, 90 degree countersunk, M1.6 x 3 (McMaster 91305A002, its page 2026-10-03).
+// Table values: ISO 4762 socket head, ISO 7380 button head, ISO 7089 washer.
+// head: how length is measured and how it seats. "flat": overall, cone in the hole's mouth; others:
+// under the head, seated on its underside.
+// N20 screws as bought: JIS flat head, 90 degree countersunk, M1.6 x 3 (McMaster 91305A002, page read
+// 2026-10-03).
 m3_shcs = [
     [ "name", "ISO 4762 M3" ], [ "head", "socket" ], [ "d", 3 ], [ "clear", 3.4 ], [ "tap", 2.5 ], [ "head_d", 5.5 ],
     [ "head_h", 3 ]
