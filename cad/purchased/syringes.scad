@@ -76,12 +76,15 @@ syringe_50ml_bd = [
     [ "plunger_span", 25.7 ], [ "barrel_l", 130.0 ], [ "nozzle_l", undef ]
 ];
 
-// The syringes the parts can be built for, by the Customizer's names, each with the motor it gets by default: the
-// N20 up to the 5 mL, the GA25 from the 10 mL, whose bore makes any vacuum or back-pressure too much for an N20.
+// The syringes the parts can be built for: [Customizer name, row, default motor, body group].
+// Motor: N20 up to 5 mL; GA25 from 10 mL, whose bore makes vacuum or back-pressure too much for an N20.
+// Body group: syringes in one group share a body, lid and cap, sized for the largest of them; each
+// still gets its own frame, clip, crank and rod. Adding a bigger syringe to a group changes its body.
+// No group: the body is sized for that syringe alone.
 syringes = [
-    [ "1ml", syringe_1ml_gnr1, "n20" ], [ "3ml", syringe_3ml_gnr1, "n20" ], [ "5ml-gnr1", syringe_5ml_gnr1, "n20" ],
-    [ "5ml-gnr2", syringe_5ml_gnr2, "n20" ], [ "10ml", syringe_10ml_bd, "ga25" ], [ "20ml", syringe_20ml_gnr1, "ga25" ],
-    [ "30ml", syringe_30ml_bd, "ga25" ]
+    [ "1ml", syringe_1ml_gnr1, "n20", "n20" ], [ "3ml", syringe_3ml_gnr1, "n20", "n20" ],
+    [ "5ml-gnr1", syringe_5ml_gnr1, "n20", "n20" ], [ "5ml-gnr2", syringe_5ml_gnr2, "n20", "n20" ],
+    [ "10ml", syringe_10ml_bd, "ga25" ], [ "20ml", syringe_20ml_gnr1, "ga25" ], [ "30ml", syringe_30ml_bd, "ga25" ]
 ];
 
 // The syringe the Customizer names, or undef.
@@ -89,3 +92,8 @@ function syringe_by_name(name) = [for (r = syringes) if (r[0] == name) r[1]][0];
 
 // The name of the motor the Customizer's syringe gets by default, or undef.
 function syringe_motor(name) = [for (r = syringes) if (r[0] == name) r[2]][0];
+
+// The rows that share a body with the named syringe, itself included; [] if it has no group.
+function body_family(name) = let(g = [for (r = syringes) if (r[0] == name) r[3]][0]) is_undef(g)
+                                 ? []
+                                 : [for (r = syringes) if (r[3] == g) r[1]];
