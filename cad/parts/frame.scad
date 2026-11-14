@@ -36,7 +36,7 @@ function frame_spec(syringe, motor, screw, fit, wall, plate_t, pocket, axis_z, c
                     front = undef) =
     let (block = [-get(syringe, "flange_t") - fit - wall, fit + wall],
          ring_x = block[0] - ring[0] - ring[1],
-         own_w = get(syringe, "flange")[0] + 2 * fit)
+         own_w = plate_w(syringe, fit))
     assert(is_undef(w) || w >= own_w, "the plate is narrower than the flange")
     assert(is_undef(front) || front <= ring_x, "the plate ends behind the snap ring") [
         ["name", "frame"], ["syringe", syringe], ["motor", motor], ["screw", screw], ["fit", fit],
@@ -47,6 +47,9 @@ function frame_spec(syringe, motor, screw, fit, wall, plate_t, pocket, axis_z, c
         ["x", [is_undef(front) ? ring_x : front, crank_x + motor_size(motor)[0] / 2 + fit + wall]],
     ];
 // clang-format on
+
+// The plate's width for a syringe alone: its flange's, with fit a side.
+function plate_w(syringe, fit) = get(syringe, "flange")[0] + 2 * fit;
 
 // A cylinder of diameter d along +x from x = 0 to len, on the syringe axis.
 module on_axis(s, d, len) translate([ 0, 0, get(s, "axis_z") ]) rotate([ 0, 90, 0 ]) cylinder(d = d, h = len);
