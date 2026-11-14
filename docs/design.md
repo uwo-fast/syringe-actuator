@@ -21,14 +21,14 @@ An in-line crank-slider. The motor's shaft stands vertical on the line of the sy
 crank, the rod and the plunger all move in one horizontal plane. Figures for one syringe are the 3
 mL's; `part="report"` gives any syringe's.
 
-- **Frame.** A 5 mm plate as wide as the barrel's flanges (27.3 mm for every N20 syringe, the 5
-  mL's), which drop into a slot at one end; the slot's walls take both the push and the pull. The
-  barrel snaps into a ring 15 mm in front of the flange's block, past two arms 1.6 mm thick that
-  stand free from 45° below the axis, so they bend over a long arc. The opening is `ring_grip` (0.5
-  mm) a side narrower than the barrel, with a 45° lead-in at each tip. Two rails, 10 mm tall, run
-  from the slot's back wall either side of the clip's travel. The motor hangs under the plate's
-  other end, its gearbox 2 mm up into a pocket, located by its bushing and held by two screws
-  counterbored under the crank's hub.
+- **Frame.** A 5 mm plate as wide as the widest barrel flanges in its body's group (27.3 mm for the
+  N20 syringes, the 5 mL's), which drop into a slot at one end; the slot's walls take both the push
+  and the pull. The barrel snaps into a ring 15 mm in front of the flange's block, past two arms 1.6
+  mm thick that stand free from 45° below the axis, so they bend over a long arc. The opening is
+  `ring_grip` (0.5 mm) a side narrower than the barrel, with a 45° lead-in at each tip. Two rails,
+  10 mm tall, run from the slot's back wall either side of the clip's travel. The motor hangs under
+  the plate's other end, its gearbox 2 mm up into a pocket, located by its bushing and held by two
+  screws counterbored under the crank's hub.
 - **Crank.** It presses onto the motor's D-shaft and carries the pin at a throw of half the
   syringe's stroke less a 1 mm margin at each end: 27.6 mm for the 3 mL. Its D-bore is blind, so it
   stops on the shaft's tip, 1 mm over the plate. An M3 × 6 grub screw (ISO 4026, cup point) runs
