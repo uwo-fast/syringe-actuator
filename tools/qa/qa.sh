@@ -60,19 +60,19 @@ run() { xargs -P "$J" -L 1 bash -c 'job "$@"' _ <"$1"; }
 r() { python3 -c "print('%g' % round($1, 2))"; }
 ANGLES=$(seq 0 15 345)
 
-# per syringe: the body's x range, the lid's travel to open, the roof's underside T and the lid's
-# underside; then every part, for the overhangs
+# per syringe: the body's x range, the lid's travel to open, the roof's underside T, the lid's
+# underside and its back end; then every part, for the overhangs
 for sy in "$@"; do
-    read -r bx0 bx1 open T lid0 < <($SCAD -D "syringe=\"$sy\"" -D 'part="report"' -o "$W/$sy.csg" "$Q/body.scad" 2>&1 |
-        grep -oE 'qa-body [-0-9.]+ [-0-9.]+ [-0-9.]+ [-0-9.]+ [-0-9.]+' | cut -d' ' -f2-)
-    [ -n "${lid0:-}" ] || { echo "BROKEN: no body for syringe '$sy'"; exit 1; }
-    echo "$bx0 $bx1 $open $T $lid0" >"$W/body_$sy"
+    read -r bx0 bx1 open T lid0 lidx < <($SCAD -D "syringe=\"$sy\"" -D 'part="report"' -o "$W/$sy.csg" "$Q/body.scad" 2>&1 |
+        grep -oE 'qa-body [-0-9.]+ [-0-9.]+ [-0-9.]+ [-0-9.]+ [-0-9.]+ [-0-9.]+' | cut -d' ' -f2-)
+    [ -n "${lidx:-}" ] || { echo "BROKEN: no body for syringe '$sy'"; exit 1; }
+    echo "$bx0 $bx1 $open $T $lid0 $lidx" >"$W/body_$sy"
     for p in frame crank rod clip body lid cap; do echo "e_${sy}_$p export $sy $p"; done
 done >"$W/jobs1"
 run "$W/jobs1"
 
 for sy in "$@"; do
-    read -r bx0 bx1 open T lid0 <"$W/body_$sy"
+    read -r bx0 bx1 open T lid0 lidx <"$W/body_$sy"
     for x in $(python3 -c "import math; print(' '.join('%g' % x for x in range(math.floor($bx0 / 4) * 4, math.ceil($bx1), 4)))") $(r "$bx1+1"); do
         echo "s_${sy}_body_x_$x"; done
     for y in 0 1 1.4 2 5 10 11.4 12 12.5 13 13.5 14 14.5 15 15.5 16 16.5 17 17.5 18 18.5 19 19.5 20 21 22 25 30 35; do
@@ -82,7 +82,7 @@ for sy in "$@"; do
     # the roof, its rails and the lid, measured from each body's own roof
     for dz in -0.8 0.2 1.2 2 2.3 2.7 3.1 3.5 4 4.4; do echo "s_${sy}_body_z_$(r "$T+$dz")"; done
     for dz in 0.1 0.7 1.2 1.9; do echo "s_${sy}_lid_z_$(r "$lid0+$dz")"; done
-    for c in "lid_x_-25" lid_x_0 lid_x_40 lid_x_80 lid_x_81 lid_y_0 lid_y_10 lid_y_15.5 lid_y_16.5 \
+    for c in "lid_x_-25" lid_x_0 lid_x_40 "lid_x_$(r "$lidx-6")" "lid_x_$(r "$lidx-5")" lid_y_0 lid_y_10 lid_y_15.5 lid_y_16.5 \
         "cap_x_$(r "$bx1+2.2")" "cap_x_$(r "$bx1-15.8")" "cap_x_$(r "$bx1-35.8")" cap_y_0 cap_y_6 \
         cap_y_15 cap_y_19 cap_z_2 cap_z_-15 cap_z_-20 cap_z_20 cap_z_28 frame_x_0 frame_x_50 frame_x_120 frame_z_0.3 \
         frame_z_1 frame_z_2; do echo "s_${sy}_$c"; done
@@ -93,7 +93,7 @@ while read -r k; do
     [ "$part" = lid ] && echo "${k}_section slice $sy $part $axis $at section"
 done <"$W/slices" >"$W/jobs2"
 for sy in "$@"; do
-    read -r bx0 bx1 open T lid0 <"$W/body_$sy"
+    read -r bx0 bx1 open T lid0 lidx <"$W/body_$sy"
     echo "c_${sy}_probe chk $sy 0 probe 0 false 0"
     echo "c_${sy}_lidprobe chk $sy 0 lidprobe 0 true 0"
     for o in crank rod clip screws frame motor syringe; do for a in $ANGLES; do echo "c_${sy}_${o}_$a chk $sy $a $o 0 false 0.05"; done; done
@@ -108,7 +108,7 @@ failed=0
 v() { cat "$W/$1" 2>/dev/null || echo MISSING; }
 bad() { echo "  FAIL  $*"; failed=1; }
 for sy in "$@"; do
-    read -r bx0 bx1 open T lid0 <"$W/body_$sy"
+    read -r bx0 bx1 open T lid0 lidx <"$W/body_$sy"
     echo "######## $sy"
     echo "== slivers (material or air under 0.5 across; a section through a sloped face shows some that print fine)"
     while read -r k; do
@@ -117,7 +117,7 @@ for sy in "$@"; do
         [ "$m$g" = nonenone ] || echo "${k#s_${sy}_}  material: $m  gap: $g" | sed -E 's/^(body|lid|cap|frame)_([xyz])_/\1 \2 /'
     done < <(grep "^s_${sy}_" "$W/slices")
     # a slice through nothing reports nothing, like a clean one: the lid's must cut it
-    for k in $(grep "^s_${sy}_lid_z_" "$W/slices"); do
+    for k in $(grep "^s_${sy}_lid_" "$W/slices"); do
         s=$(v "${k}_section")
         [[ $s == none || $s == MISSING || $s == BROKEN ]] && bad "slice ${k#s_${sy}_} cuts no lid: $s"
     done
