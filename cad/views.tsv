@@ -8,7 +8,8 @@
 #
 # `just render-parts` draws every printed part without a row, and `just render-stroke` one turn of
 # the crank as a GIF. The rows are the second 5 mL (5ml-gnr2), the syringe the bioreactor's sampler
-# drives, each drawn with its own frame and body. Labels and callouts are drawn by hand over these.
+# drives, each drawn with its own frame in its body group's shared body. Labels and callouts are
+# drawn by hand over these.
 
 # the mechanism, at the default angle (180, pushed in)
 assembly_iso	5ml-gnr2	iso

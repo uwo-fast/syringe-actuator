@@ -37,6 +37,13 @@ and [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
+- The N20 syringes' body is longer, to fit all four: 229.4 mm against the 3 mL's 214, and 226.4 mm
+  tall as it prints. Every N20 frame, body, lid, cap and ring test is new, and the 1 and 3 mL
+  cranks, as their axis rose to the 5 mL's 17 mm; units printed before take none of them. The front
+  wall moved 6.9 mm forward of the 5 mL syringes, so their nozzles sit that much closer to its face
+  (the second's tip 32.7 mm past it, against 39.6), and an adapter drawn to the old `tip_x()` no
+  longer meets them
+- The lid exports from the body's back end, like the body and the cap
 - The bought parts' rows moved from `cad/catalog.scad` to `cad/purchased/`
 - `just test` judges each part from its exported mesh, so it reads the same on any OpenSCAD
 - The body's roof shoulders are filled flush with the lid's rails

@@ -52,7 +52,8 @@ function loft_w(st, x) = let(i = max([for (k = [0:len(st) - 2]) if (st[k][0] <= 
 //   front: across y, up z, centred on the axis plane at a height over the plate's underside.
 //   top: across y, along x, centred a distance in front of the back end, through the roof's
 //   shoulders outboard of the lid rails, behind the crank's sweep. Same for every syringe.
-//   layout() sets the front's spacing: the narrowest multiple of 10 that clears the snap ring.
+//   layout() sets the front's spacing: the narrowest multiple of 10 that clears the widest snap
+//   ring in the body's group.
 // knockout: holes are blind from inside, stopping this short of the outer face; the user drills or
 // punches out the ones they use.
 // clang-format off

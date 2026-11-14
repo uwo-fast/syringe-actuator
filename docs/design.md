@@ -1,9 +1,10 @@
 # Design
 
 **Status:** working prototype. Every syringe builds and passes `just test` and `just qa`. N20 units
-run as designed, one for 2 hours with no wear (2026-10-07); the 10 and 30 mL are built from
-estimates and not yet printed. The syringe figures below were measured by hand unless marked as
-estimates; the motor figures are measured or come from the drawings named beside them.
+of the per-syringe design ran as designed, one for 2 hours with no wear (2026-10-07); the shared N20
+body is not yet printed; the 10 and 30 mL are built from estimates and not yet printed. The syringe
+figures below were measured by hand unless marked as estimates; the motor figures are measured or
+come from the drawings named beside them.
 
 ## Scope
 
@@ -20,13 +21,14 @@ An in-line crank-slider. The motor's shaft stands vertical on the line of the sy
 crank, the rod and the plunger all move in one horizontal plane. Figures for one syringe are the 3
 mL's; `part="report"` gives any syringe's.
 
-- **Frame.** A 5 mm plate as wide as the barrel's flanges, which drop into a slot at one end; the
-  slot's walls take both the push and the pull. The barrel snaps into a ring 15 mm in front of the
-  flange's block, past two arms 1.6 mm thick that stand free from 45° below the axis, so they bend
-  over a long arc. The opening is `ring_grip` (0.5 mm) a side narrower than the barrel, with a 45°
-  lead-in at each tip. Two rails, 8 mm tall, run from the slot's back wall either side of the clip's
-  travel. The motor hangs under the plate's other end, its gearbox 2 mm up into a pocket, located by
-  its bushing and held by two screws counterbored under the crank's hub.
+- **Frame.** A 5 mm plate as wide as the barrel's flanges (27.3 mm for every N20 syringe, the 5
+  mL's), which drop into a slot at one end; the slot's walls take both the push and the pull. The
+  barrel snaps into a ring 15 mm in front of the flange's block, past two arms 1.6 mm thick that
+  stand free from 45° below the axis, so they bend over a long arc. The opening is `ring_grip` (0.5
+  mm) a side narrower than the barrel, with a 45° lead-in at each tip. Two rails, 10 mm tall, run
+  from the slot's back wall either side of the clip's travel. The motor hangs under the plate's
+  other end, its gearbox 2 mm up into a pocket, located by its bushing and held by two screws
+  counterbored under the crank's hub.
 - **Crank.** It presses onto the motor's D-shaft and carries the pin at a throw of half the
   syringe's stroke less a 1 mm margin at each end: 27.6 mm for the 3 mL. Its D-bore is blind, so it
   stops on the shaft's tip, 1 mm over the plate. An M3 × 6 grub screw (ISO 4026, cup point) runs
@@ -62,13 +64,13 @@ mL's; `part="report"` gives any syringe's.
   - _Mounting._ Two patterns of four M3 clearance holes, each sealed by a 0.6 mm knockout skin at
     the outer face until a user drills or punches the ones they use; the screws' heads sit inside.
     One is through the front wall beside the barrel's slot, 10 up and the narrowest multiple of 10
-    across whose heads clear the frame's snap ring: 30 for the N20 syringes and the 10 mL, 40 for
-    the 20 and 30 mL, centred 15 mm over the plate's underside; the other through the roof's
-    shoulders, 60 across by 20 along, centred 15 mm in front of the back end, behind the crank's
-    sweep. Another OpenSCAD project draws its adapter from the layout with `use <cad/main.scad>`:
-    `actuator(syringe, motor)` gives it, `front_x()` and the body's `front_face()` the front wall's
-    outer face, the body's `mount_front` and `mount_top` the holes, and `tip_x()` the syringe's
-    front end, from its `nozzle_l`.
+    across whose heads clear the frame's snap ring, for the widest ring in the body's group: 30 for
+    the N20 syringes and the 10 mL, 40 for the 20 and 30 mL, centred 15 mm over the plate's
+    underside; the other through the roof's shoulders, 60 across by 20 along, centred 15 mm in front
+    of the back end, behind the crank's sweep. Another OpenSCAD project draws its adapter from the
+    layout with `use <cad/main.scad>`: `actuator(syringe, motor)` gives it, `front_x()` and the
+    body's `front_face()` the front wall's outer face, the body's `mount_front` and `mount_top` the
+    holes, and `tip_x()` the syringe's front end, from its `nozzle_l`.
   - _Printing._ The body prints standing on its back end with no supports: 226 mm tall for the N20
     syringes, its walls leaning in at most 45°, and its front wall bridges about 30 mm (39 on the 30
     mL). Its rails start at the bed, so turn on the slicer's elephant-foot compensation, and use a
