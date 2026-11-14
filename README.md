@@ -22,7 +22,8 @@ dimensions and their sources, and what is open.
 
 ## Build one
 
-1. **Pick the syringe.** The parts are built for one syringe at a time. Presets:
+1. **Pick the syringe.** Each syringe gets its own frame, clip, crank and rod. The N20 syringes
+   share one body, lid and cap, so switching between them reprints only those four. Presets:
 
    | Syringe | Motor | Source |
    | --- | --- | --- |
@@ -51,9 +52,9 @@ dimensions and their sources, and what is open.
    | Cap screws | all | 2 × M3 × 10 |
    | Crank | all | 1 × M3 × 6 set screw, cup point (ISO 4026), and 1 × M3 nut |
 
-4. **Print.** PLA or PETG, no supports. The body stands on its back end, 208 to 289 mm tall by
-   syringe, so check your printer's height first; turn on the slicer's elephant-foot compensation
-   and use a brim, since its rails start at the bed.
+4. **Print.** PLA or PETG, no supports. The body stands on its back end: 226 mm tall for the N20
+   syringes, 239 to 289 mm for the GA25's, so check your printer's height first; turn on the
+   slicer's elephant-foot compensation and use a brim, since its rails start at the bed.
 
 5. **Assemble.**
    - **Motor:** screw it under the plate first: its shaft comes up through the plate, and the crank

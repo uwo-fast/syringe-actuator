@@ -28,19 +28,28 @@ include <../lib/struct.scad>;
 // rails: [end x, half the gap between them, top z]; from the flange block out to the plate's edges.
 // seat_z: motor screw head seat; screw_bore: counterbore diameter.
 // dovetail: how far each long edge's foot reaches out, at 45 degrees.
+// w, front: the plate's width and front end x, when a shared body fixes them; by default the flange's
+// width and the snap ring's front.
 // clang-format off
 function frame_spec(syringe, motor, screw, fit, wall, plate_t, pocket, axis_z, crank_x, rails, seat_z, screw_bore,
-                    ring_grip, ring = [15, 6, 1.6], ring_root = 45, chamfer = 0.5, dovetail = 2.5) =
+                    ring_grip, ring = [15, 6, 1.6], ring_root = 45, chamfer = 0.5, dovetail = 2.5, w = undef,
+                    front = undef) =
     let (block = [-get(syringe, "flange_t") - fit - wall, fit + wall],
-         ring_x = block[0] - ring[0] - ring[1]) [
+         ring_x = block[0] - ring[0] - ring[1],
+         own_w = plate_w(syringe, fit))
+    assert(is_undef(w) || w >= own_w, "the plate is narrower than the flange")
+    assert(is_undef(front) || front <= ring_x, "the plate ends behind the snap ring") [
         ["name", "frame"], ["syringe", syringe], ["motor", motor], ["screw", screw], ["fit", fit],
         ["plate_t", plate_t], ["pocket", pocket], ["axis_z", axis_z], ["crank_x", crank_x],
         ["ring", ring], ["ring_grip", ring_grip], ["ring_root", ring_root], ["chamfer", chamfer], ["block", block], ["ring_x", ring_x],
         ["rail_end", rails[0]], ["rail_gap", rails[1]], ["rail_top", rails[2]], ["seat_z", seat_z], ["screw_bore", screw_bore], ["dovetail", dovetail],
-        ["w", get(syringe, "flange")[0] + 2 * fit],
-        ["x", [ring_x, crank_x + motor_size(motor)[0] / 2 + fit + wall]],
+        ["w", is_undef(w) ? own_w : w],
+        ["x", [is_undef(front) ? ring_x : front, crank_x + motor_size(motor)[0] / 2 + fit + wall]],
     ];
 // clang-format on
+
+// The plate's width for a syringe alone: its flange's, with fit a side.
+function plate_w(syringe, fit) = get(syringe, "flange")[0] + 2 * fit;
 
 // A cylinder of diameter d along +x from x = 0 to len, on the syringe axis.
 module on_axis(s, d, len) translate([ 0, 0, get(s, "axis_z") ]) rotate([ 0, 90, 0 ]) cylinder(d = d, h = len);
