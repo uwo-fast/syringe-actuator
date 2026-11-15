@@ -10,10 +10,10 @@
 
 ## Overview
 
-An N20 gearmotor drives 1 to 5 mL luer syringes, a 25 mm GA25 10 to 30 mL, each straight off a
-supply. A printed crank and connecting rod stroke the plunger over nearly its whole travel, the
-plunger's clip guided on rails. The mechanism sits in a printed body: the syringe loads through a
-lidded window in the roof, the motor's two wires come out the back, and two patterns of knockout
+An N20 gearmotor drives 1 to 5 mL luer syringes and a 25 mm GA25 drives 10 to 30 mL, each straight
+off a supply. A printed crank and connecting rod stroke the plunger over nearly its whole travel,
+the plunger's clip guided on rails. The mechanism sits in a printed body: the syringe loads through
+a lidded window in the roof, the motor's two wires come out the back, and two patterns of knockout
 holes take whatever you mount it to. The bought hardware is the syringe, the motor and a few screws.
 
 **Status:** working prototype; [`docs/design.md`](docs/design.md) says what has been printed and
@@ -90,6 +90,7 @@ Tasks run through [`just`](https://github.com/casey/just); `just --list` shows t
 ```sh
 just setup   # verify the toolchain: OpenSCAD, clang-format
 just check   # formatting and every SCAD file evaluating cleanly; CI runs setup, check and test
+             # when anything outside the docs changes
 just test    # every printed part, for every syringe, exports as one closed solid
 just build   # every syringe's printed parts to build/<syringe>/, stamped with the commit
 just qa      # slivers, collisions over a turn and overhangs, for every syringe
@@ -111,7 +112,7 @@ GitHub, or see
 
 ## License
 
-Copyright © 2026 Syringe Actuator and its contributors.
+Copyright (c) 2026 Syringe Actuator and its contributors.
 
 This project is free software: you may redistribute it and/or modify it under the terms of the GNU
 General Public License as published by the Free Software Foundation, either version 3 of the

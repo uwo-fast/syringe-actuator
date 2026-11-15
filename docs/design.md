@@ -85,7 +85,7 @@ The motor never reverses. At a = 180 deg the plunger is in, stopping 1 mm short 
 and at 0 deg it is out, stopping 1 mm short of the plunger's stop. The margin at each end takes up
 error in the measured exposed length and stroke, and in the print.
 
-**Side load.** The rod's angle `phi` puts a side load `F x tan(phi)` on the clip, where `F` is the
+**Side load.** The rod's angle `phi` puts a side load `F * tan(phi)` on the clip, where `F` is the
 force along the stroke. The rod is at least three throws long, so `phi` peaks under 19.5 deg:
 `asin(27.6/90)` = 17.9 deg on the 3 mL. The rails take that load; the plunger cannot carry a side
 load in compression.
@@ -112,7 +112,7 @@ bore's area, which grows fast: the 10 mL's is nearly three times the 3 mL's. Pea
 about the plunger's force times the throw; estimated from 3 N of seal friction up to 10 mL and 5 N
 from 20 mL (assumed, bar the 20 mL's scale test) and BD's published bores:
 
-| Syringe | Open line | Against full vacuum, or 1 bar of back-pressure |
+| Syringe | Open line | Against full vacuum (1.013 bar) |
 | --- | --- | --- |
 | 1 mL | 1.0 kg.cm | 1.5 kg.cm |
 | 3 mL | 0.8 kg.cm | 2.5 kg.cm |
