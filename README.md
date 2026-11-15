@@ -3,22 +3,21 @@
 > A printed crank that drives a syringe plunger back and forth from a continuously running
 > gearmotor.
 
-[![Licensing](https://img.shields.io/badge/Licensing-by_component-lightgrey.svg)](LICENSING.md)
+[![Licensing](https://img.shields.io/badge/Licensing-by_component-lightgrey.svg)](https://github.com/uwo-fast/syringe-actuator/blob/main/LICENSING.md)
 [![Contributions welcome](https://img.shields.io/badge/Contributions-welcome-brightgreen.svg)](https://github.com/uwo-fast/.github/blob/main/CONTRIBUTING.md)
 
 ![The mechanism for a 3 mL syringe: the frame holds the syringe at one end and the motor under the other; the crank turns the rod, which drives the plunger's clip along its rails](docs/images/mechanism.png)
 
 ## Overview
 
-A gearmotor runs in one direction straight off a supply: an N20 for 1 to 5 mL syringes, a 25 mm GA25
-for 10 to 30 mL. A printed crank and connecting rod turn that into a continuous pull and push over
-nearly the whole stroke of a luer syringe, the plunger's clip guided on rails. The mechanism sits in
-a printed body: the syringe loads through a lidded window in the roof, the motor's two wires come
-out the back, and two patterns of knockout holes take whatever you mount it to. The bought hardware
-is the syringe, the motor and a few screws.
+An N20 gearmotor drives 1 to 5 mL luer syringes, a 25 mm GA25 10 to 30 mL, each straight off a
+supply. A printed crank and connecting rod stroke the plunger over nearly its whole travel, the
+plunger's clip guided on rails. The mechanism sits in a printed body: the syringe loads through a
+lidded window in the roof, the motor's two wires come out the back, and two patterns of knockout
+holes take whatever you mount it to. The bought hardware is the syringe, the motor and a few screws.
 
-**Status:** working prototype. [`docs/design.md`](docs/design.md) records the mechanism, the part
-dimensions and their sources, and what is open.
+**Status:** working prototype; [`docs/design.md`](docs/design.md) says what has been printed and
+run, and records the mechanism, the part dimensions and their sources, and what is open.
 
 ## Build one
 
@@ -44,13 +43,13 @@ dimensions and their sources, and what is open.
 
    | Part | For | What |
    | --- | --- | --- |
-   | Gearmotor | 1–5 mL | N20, 12 V, about 30 rpm (1000:1), such as Pololu #3046 |
-   | Gearmotor | 10–30 mL | GA25YN370 (also JGA25-370), 12 V, 30 rpm |
-   | Motor screws | N20 | 2 × M1.6 × 3 flat head |
-   | Motor screws | GA25 | 2 × M3 × 4 button head (ISO 7380) |
-   | Pin screws | all | 2 × M3 × 10 socket head, with 2 × M3 washers |
-   | Cap screws | all | 2 × M3 × 10 |
-   | Crank | all | 1 × M3 × 6 set screw, cup point (ISO 4026), and 1 × M3 nut |
+   | Gearmotor | 1 to 5 mL | N20, 12 V, about 30 rpm (1000:1), such as Pololu #3046 |
+   | Gearmotor | 10 to 30 mL | GA25YN370 (also JGA25-370), 12 V, 30 rpm |
+   | Motor screws | N20 | 2 x M1.6 x 3 flat head |
+   | Motor screws | GA25 | 2 x M3 x 4 button head (ISO 7380) |
+   | Pin screws | all | 2 x M3 x 10 socket head, with 2 x M3 washers |
+   | Cap screws | all | 2 x M3 x 10 |
+   | Crank | all | 1 x M3 x 6 set screw, cup point (ISO 4026), and 1 x M3 nut |
 
 4. **Print.** PLA or PETG, no supports. The body stands on its back end: 226 mm tall for the N20
    syringes, 239 to 289 mm for the GA25's, so check your printer's height first; turn on the
@@ -78,10 +77,10 @@ dimensions and their sources, and what is open.
 
 ## Repository layout
 
-- `cad/` — the OpenSCAD source: `main.scad` draws the assembly or any printed part,
+- `cad/`: the OpenSCAD source; `main.scad` draws the assembly or any printed part,
   `purchased/` holds the syringes, motors and fasteners, `parts/` the printed parts
-- `docs/` — the design record and the measuring guide
-- `tools/` — the mesh check behind `just test`, the geometry checks behind `just qa`, and the
+- `docs/`: the design record and the measuring guide
+- `tools/`: the mesh check behind `just test`, the geometry checks behind `just qa`, and the
   renderer behind `just render`
 
 ## Development
@@ -90,7 +89,7 @@ Tasks run through [`just`](https://github.com/casey/just); `just --list` shows t
 
 ```sh
 just setup   # verify the toolchain: OpenSCAD, clang-format
-just check   # what CI runs: formatting and every SCAD file evaluating cleanly
+just check   # formatting and every SCAD file evaluating cleanly; CI runs setup, check and test
 just test    # every printed part, for every syringe, exports as one closed solid
 just build   # every syringe's printed parts to build/<syringe>/, stamped with the commit
 just qa      # slivers, collisions over a turn and overhangs, for every syringe
@@ -107,7 +106,8 @@ Contributions are welcome. See the organization
 ## Citation
 
 If you use this project in your work, please cite it. Use the **Cite this repository** button on
-GitHub, or see [`CITATION.cff`](CITATION.cff).
+GitHub, or see
+[`CITATION.cff`](https://github.com/uwo-fast/syringe-actuator/blob/main/CITATION.cff).
 
 ## License
 
@@ -115,10 +115,12 @@ Copyright © 2026 Syringe Actuator and its contributors.
 
 This project is free software: you may redistribute it and/or modify it under the terms of the GNU
 General Public License as published by the Free Software Foundation, either version 3 of the
-License, or (at your option) any later version. Hardware design files and the outputs generated
-from them are licensed instead under [CERN-OHL-S-2.0](LICENSES/CERN-OHL-S-2.0.txt). See
-[`LICENSING.md`](LICENSING.md) for what applies where, and the organization
-[licensing policy](https://github.com/uwo-fast/.github/blob/main/LICENSING.md) for why.
+License, or (at your option) any later version. Hardware design files and the outputs generated from
+them are licensed instead under
+[CERN-OHL-S-2.0](https://github.com/uwo-fast/syringe-actuator/blob/main/LICENSES/CERN-OHL-S-2.0.txt).
+See [`LICENSING.md`](https://github.com/uwo-fast/syringe-actuator/blob/main/LICENSING.md) for what
+applies where, and the organization [licensing
+policy](https://github.com/uwo-fast/.github/blob/main/LICENSING.md) for why.
 
 ## Contact
 
