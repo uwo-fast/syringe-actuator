@@ -24,7 +24,7 @@ All in millimetres. The barrel's axis runs front (the nozzle) to back (the push-
 | `flange` | Flange `[width, height]` | Across the flanges the long way, and across them the short way | Low. Sets the frame's width and the window's |
 | `plunger_span` | The plunger's widest | Across the plunger's ribs (or its rod, if solid), in front of the push-button | Low. Sets slots with clearance |
 | `barrel_l` | Barrel length | Flange's front face to the shoulder at the nozzle's root | Low. Checked against `stroke`, and drawn |
-| `bore_d` | Barrel's bore | Not measured: BD's published bore for the volume, NOMINAL on every row | Only for the report's torque estimate |
+| `bore_d` | Barrel's bore | Not measured: BD's published bore for the volume | Only for the report's torque estimate |
 | `nozzle_l` | Nozzle length | The barrel's shoulder to the syringe's front end, the nozzle's tip or its luer-lock collar's face, whichever reaches further | Only for `tip_x()`, where a mounting adapter finds the tip; may stay `undef` |
 
 ## How
