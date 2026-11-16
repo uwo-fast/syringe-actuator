@@ -51,9 +51,10 @@ run, and records the mechanism, the part dimensions and their sources, and what 
    | Cap screws | all | 2 x M3 x 10 |
    | Crank | all | 1 x M3 x 6 set screw, cup point (ISO 4026), and 1 x M3 nut |
 
-4. **Print.** PLA or PETG, no supports. The body stands on its back end: 226 mm tall for the N20
-   syringes, 239 to 289 mm for the GA25's, so check your printer's height first; turn on the
-   slicer's elephant-foot compensation and use a brim, since its rails start at the bed.
+4. **Print.** PLA or PETG, no supports. The body stands on its front wall: 242 mm tall for the N20
+   syringes, 256 to 313 mm for the GA25's, so check your printer's height first. The front wall is
+   what the frame stops against, so it prints flat on the bed; turn on the slicer's elephant-foot
+   compensation, and use a brim, as it stands tall on a small footprint.
 
 5. **Assemble.**
    - **Motor:** screw it under the plate first: its shaft comes up through the plate, and the crank

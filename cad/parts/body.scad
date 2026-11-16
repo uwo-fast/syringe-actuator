@@ -18,7 +18,9 @@
  * is the inside grown by the wall, edge for edge, so the wall keeps its thickness.
  *
  * Coordinates: the frame's (x along the syringe axis, z = 0 at the frame's underside).
- * Printing: body on its open back end, walls near vertical; lid top down; cap outer face down.
+ * Printing: body on its front wall, walls near vertical, so the face the frame stops against prints
+ * flat on the bed; lid top down; cap outer face down. Nothing overhangs past 45 degrees that way up:
+ * the window ends in a 45 degree point, and the cap's bosses taper into the wall.
  */
 
 // clang-format off
@@ -42,7 +44,9 @@ function loft_w(st, x) = let(i = max([for (k = [0:len(st) - 2]) if (st[k][0] <= 
 // rod: [x, y] of the rod's edge at its widest over a turn, sampled along x from the front.
 // sweep_x: where the crank's sweep starts.
 // x: [front, back] of the inside; the back is a minimum, grown to let the lid open.
-// window: [end x, width]. plate: the frame's [w, dovetail, t]. frame_end: the plate's back end x.
+// window: [x where its end starts to narrow, width]; it ends in a 45 degree point window[1] / 2
+//   further back, which body_spec stores as its end. plate: the frame's [w, dovetail, t]. frame_end: the plate's back
+//   end x.
 // screw: the cap's screws; tap: their holes in the bosses. wire_z: the wire hole in the cap.
 // clr: clearance round the frame's contents. slide: per side, dovetails in rails and lid in its rails.
 // wall: shell wall; end_t: front wall and cap thickness.
@@ -65,11 +69,14 @@ function body_spec(front_pts, back_pts, rod, sweep_x, x, window, axis_z, barrel_
          front = section_fit(front_pts, T, clr),
          back = section_fit(back_pts, T, clr),
          // narrow front: as far as the rod's edge keeps clr inside it, and no further than keeps the taper
-         // within 45 degrees (the body prints upright); the full section starts clr before the crank's sweep
+         // within 45 degrees (the body prints standing on its front); the full section starts clr before the crank's sweep
          x2 = sweep_x - clr,
          x1 = min(max([for (r = rod) if (r[1] + clr <= front[0]) r[0]]),
                   x2 - max(back[0] - front[0], front[1] - back[1])),
-         lid_x = [x[0] + slide, window[0] + lid[2]],
+         // the window's end, at its point
+         win = [window[0] + window[1] / 2, window[1]],
+         lid_x = [x[0] + slide, win[0] + lid[2]],
+         // open, the lid need only clear the window up to its point
          x_back = max(x[1], window[0] + lid_x[1] - lid_x[0] + slide + 1),
          stations = [[x[0] - end_t, front], [x1, front], [x2, back], [x_back, back]],
          // the cap's screws, on the back section's bottom chamfers, their bosses merging into the walls
@@ -82,7 +89,7 @@ function body_spec(front_pts, back_pts, rod, sweep_x, x, window, axis_z, barrel_
            "the taper does not clear the rod's swing")
     [
         ["name", "body"], ["T", T], ["stations", stations], ["front", front], ["back", back],
-        ["x", [x[0], x_back]], ["window", window], ["axis_z", axis_z], ["barrel_d", barrel_d + 2 * clr],
+        ["x", [x[0], x_back]], ["window", win], ["window_v", window[0]], ["axis_z", axis_z], ["barrel_d", barrel_d + 2 * clr],
         ["plate", plate], ["frame_end", frame_end], ["screw", screw], ["tap", tap], ["wire_z", wire_z], ["fit", fit],
         ["slide", slide], ["wall", wall], ["end_t", end_t], ["boss_d", boss_d], ["boss_l", boss_l], ["wire_d", wire_d],
         ["lid", lid], ["lid_x", lid_x], ["lid_grip", lid_grip], ["knockout", knockout],
@@ -236,33 +243,54 @@ module body_shell(s)
     {
         union()
         {
+            // the window is cut before the front wall goes on, so it can overshoot into the wall's place
             difference()
-            {
-                loft(s, wall, x[0] - end_t, x[1]);
-                loft(s, 0, x[0], x[1] + 1);
-            }
-            intersection()
             {
                 union()
                 {
-                    along_x(x[0] - 1, x[1] - x[0] + 1) for (side = [ 0, 1 ]) mirror([ side, 0 ]) rail_section(s);
-                    for (b = get(s, "bosses"))
-                        along_x(x[1] - get(s, "boss_l"), get(s, "boss_l")) hull()
+                    difference()
+                    {
+                        loft(s, wall, x[0] - end_t, x[1]);
+                        loft(s, 0, x[0], x[1] + 1);
+                    }
+                    intersection()
+                    {
+                        union()
                         {
-                            // a wide foot along the chamfered wall, so the boss's flanks meet it steeply
-                            translate(b) circle(d = get(s, "boss_d"));
-                            for (k = [ -1, 1 ])
-                                translate(b + ([ sign(b[0]), -1 ] * 5 + [ sign(b[0]), 1 ] * k * get(s, "boss_d")) /
-                                                  sqrt(2)) circle(d = 1);
+                            along_x(x[0] - 1, x[1] - x[0] + 1) for (side = [ 0, 1 ]) mirror([ side, 0 ])
+                                rail_section(s);
+                            for (b = get(s, "bosses"))
+                                hull()
+                                {
+                                    along_x(x[1] - get(s, "boss_l"), get(s, "boss_l")) hull()
+                                    {
+                                        // a wide foot along the chamfered wall, so the boss's flanks meet it steeply
+                                        translate(b) circle(d = get(s, "boss_d"));
+                                        for (k = [ -1, 1 ])
+                                            translate(b + ([ sign(b[0]), -1 ] * 5 +
+                                                           [ sign(b[0]), 1 ] * k * get(s, "boss_d")) /
+                                                              sqrt(2)) circle(d = 1);
+                                    }
+                                    // its front end tapers into the wall: every point of the section is within 9 of
+                                    // this one, so 10 in front of it keeps the taper under 45 degrees, printing front
+                                    // end down
+                                    along_x(x[1] - get(s, "boss_l") - 10, 0.01)
+                                        translate(b + [ sign(b[0]), -1 ] * 5 / sqrt(2)) circle(d = 1);
+                                }
                         }
+                        loft(s, wall / 2, x[0] - end_t, x[1]);
+                    }
                 }
-                loft(s, wall / 2, x[0] - end_t, x[1]);
+                // the window in the roof over the barrel and the clip's travel, its end a 45 degree point, so
+                // standing on the front wall it prints without a bridge
+                translate([ 0, 0, T - 1 ]) linear_extrude(100)
+                    polygon([[x [0] - 1, -win [1] / 2], [get(s, "window_v"), -win [1] / 2], [win [0], 0],
+                             [get(s, "window_v"), win [1] / 2], [x [0] - 1, win [1] / 2]]);
             }
-            // the front wall and the lip on it the lid stops against; the barrel's slot cuts through it
+            // the front wall and the lip on it the lid stops against
             along_x(x[0] - end_t, end_t) polygon(front_face(s));
         }
-        // the window in the roof over the barrel and the clip's travel, and the barrel's slot through the front wall
-        translate([ x[0], -win[1] / 2, T - 1 ]) cube([ win[0] - x[0], win[1], 100 ]);
+        // the barrel's slot through the front wall
         along_x(x[0] - end_t - 1, end_t + 2) translate([ 0, z ]) circle(d = bd);
         translate([ x[0] - end_t - 1, -bd / 2, z ]) cube([ end_t + 2, bd, 100 ]);
         // detent: notch under the bump when shut, a ridge behind it, then a groove the bump runs free in

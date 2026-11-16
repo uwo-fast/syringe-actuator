@@ -55,12 +55,12 @@ mL's; `part="report"` gives any syringe's.
   - _Frame and cap._ The frame slides in from the back on rails that take the plate's dovetailed
     edges, up to the front wall. A cap screwed to the back end (2 x M3 x 10) holds it there with a
     post in the same rails, and lets the motor's wires out.
-  - _Window and lid._ The syringe goes in and out through a window in the roof at any clip
-    position, the barrel through a slot in the front wall. A lid slides on rails along the roof
-    between a lip on the front wall and the cap; a bump under its back end clicks into a notch when
-    it is shut and runs in a groove the rest of its travel. Over the wider back the rails run out to
-    the sides, filling the roof's shoulders flush with their tops, so they cannot snap off and leave
-    no inside corner to clean.
+  - _Window and lid._ The syringe goes in and out through a window in the roof at any clip position,
+    the barrel through a slot in the front wall; the window ends in a 45 deg point. A lid slides on
+    rails along the roof between a lip on the front wall and the cap; a bump under its back end
+    clicks into a notch when it is shut and runs in a groove the rest of its travel. Over the wider
+    back the rails run out to the sides, filling the roof's shoulders flush with their tops, so they
+    cannot snap off and leave no inside corner to clean.
   - _Mounting._ Two patterns of four M3 clearance holes, each sealed by a 0.6 mm knockout skin at
     the outer face until a user drills or punches the ones they use; the screws' heads sit inside.
     One is through the front wall beside the barrel's slot, 10 up and the narrowest multiple of 10
@@ -71,11 +71,13 @@ mL's; `part="report"` gives any syringe's.
     layout with `use <cad/main.scad>`: `actuator(syringe, motor)` gives it, `front_x()` and the
     body's `front_face()` the front wall's outer face, the body's `mount_front` and `mount_top` the
     holes, and `tip_x()` the syringe's front end, from its `nozzle_l`.
-  - _Printing._ The body prints standing on its back end with no supports: 226 mm tall for the N20
-    syringes, its walls leaning in at most 45 deg, and its front wall bridges about 30 mm (39 on the
-    30 mL). Its rails start at the bed, so turn on the slicer's elephant-foot compensation, and use
-    a brim. No edge on the body, the lid or the plate comes to a knife edge: the dovetails and the
-    lid's bevels stand on short lands.
+  - _Printing._ The body prints standing on its front wall with no supports: 242 mm tall for the N20
+    syringes. The front wall is what the frame stops against, so it prints flat on the bed rather
+    than bridged. Standing that way, nothing overhangs past 45 deg: the walls lean in at most that,
+    the window ends in a 45 deg point, and the cap's bosses taper into the wall; the four roof
+    mounting holes print as small horizontal holes. Turn on the slicer's elephant-foot compensation,
+    and use a brim, as the body stands tall on a small footprint. No edge on the body, the lid or
+    the plate comes to a knife edge: the dovetails and the lid's bevels stand on short lands.
   - _Assembly._ Front mounting screws, if any; the frame into the body from the back; the lid onto
     its rails from the back; then the cap. Top mounting screws go in after the frame, or before it
     if the frame slides in with its crank along the axis, as a crank turned across carries its pin
@@ -221,7 +223,7 @@ gearbox's length, longer at this ratio. Ratings from the HERCHR listing.
 Its gearbox goes 2 mm up into a round pocket, held by two M3 x 4 button heads (ISO 7380), 2.85 mm
 into its holes: the plate over the pocket is 3 mm, too thin for socket heads. The crank's bore is
 D-shaped only as far as the shaft's flat runs, round below. The motor hangs 57 mm under the plate,
-so its bodies are deep: the 10, 20 and 30 mL's stand 239, 257 and 289 mm tall as they print.
+so its bodies are deep: the 10, 20 and 30 mL's stand 256, 277 and 313 mm tall as they print.
 
 No usable OpenSCAD model of either motor was found (NopSCADlib has none), so
 `cad/purchased/motor.scad` draws them, simplified, from the figures above.
