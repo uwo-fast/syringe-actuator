@@ -116,9 +116,10 @@ Copyright (c) 2026 Syringe Actuator and its contributors.
 
 This project is free software: you may redistribute it and/or modify it under the terms of the GNU
 General Public License as published by the Free Software Foundation, either version 3 of the
-License, or (at your option) any later version. Hardware design files and the outputs generated from
-them are licensed instead under
-[CERN-OHL-S-2.0](https://github.com/uwo-fast/syringe-actuator/blob/main/LICENSES/CERN-OHL-S-2.0.txt).
+License, or (at your option) any later version. The parametric CAD source (`.scad`) is also
+licensed under
+[CERN-OHL-S-2.0](https://github.com/uwo-fast/syringe-actuator/blob/main/LICENSES/CERN-OHL-S-2.0.txt),
+and the geometry, drawings and bill of materials generated from it under CERN-OHL-S-2.0 alone.
 See [`LICENSING.md`](https://github.com/uwo-fast/syringe-actuator/blob/main/LICENSING.md) for what
 applies where, and the organization [licensing
 policy](https://github.com/uwo-fast/.github/blob/main/LICENSING.md) for why.
