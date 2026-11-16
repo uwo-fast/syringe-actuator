@@ -69,7 +69,7 @@ section(section, section_at)
     else if (part == "clip")
         translate([ 0, 0, get(get(L, "clip"), "half_w") ]) clip(get(L, "clip"));
     else if (part == "body")
-        let(b = get(L, "body")) rotate([ 0, 90, 0 ]) translate([ -get(b, "x")[1], 0, 0 ]) body(b);
+        let(b = get(L, "body")) rotate([ 0, -90, 0 ]) translate([ -get(b, "x")[0] + get(b, "end_t"), 0, 0 ]) body(b);
     else if (part == "lid")
         let(b = get(L, "body")) translate([ -get(b, "x")[1], 0, get(b, "T") + get(b, "wall") + get(b, "lid")[0] ])
             rotate([ 180, 0, 0 ]) lid(b);

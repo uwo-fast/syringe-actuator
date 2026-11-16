@@ -37,6 +37,10 @@ and [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
+- The body prints standing on its front wall, which the frame stops against, so it prints flat
+  rather than bridged. For that the window ends in a 45 degree point and the cap's bosses taper
+  into the wall; the lid grows to cover the point, and every body grows 15 to 24 mm (the N20
+  syringes' 226.4 to 241.6 mm tall as it prints)
 - The N20 syringes' body is longer, to fit all four: 229.4 mm against the 3 mL's 214, and 226.4 mm
   tall as it prints. Every N20 frame, body, lid, cap and ring test is new, and the 1 and 3 mL
   cranks, as their axis rose to the 5 mL's 17 mm; units printed before take none of them. An
