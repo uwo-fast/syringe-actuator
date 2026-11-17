@@ -251,13 +251,19 @@ No usable OpenSCAD model of either motor was found (NopSCADlib has none), so
   crank's bore wore round and rode up an N20's shaft within an hour, as the load reverses every
   stroke (reported 2026-10-05). With the grub screw, cranks printed in PLA and in PETG held, and a
   2-hour run left the bore unworn (2026-10-07).
-- **Two screws do not hold a motor against a reversing load.** A 5 mL unit on an N20, run for 18.5 s
-  every 15 minutes for 7 days drawing a full 5 mL from an unpressurized vessel, loosened its motor's
-  screws until the motor rocked, and the rocking wore out the crank's D-bore (reported 2026-11-16).
-  Threadlocker only delayed it. The screws then lay across the stroke, on the line the motor tipped
-  about, so only the 2 mm pocket held it. The motor now stands with its screws along the stroke, and
-  the cradle grips the gearbox; the 5 mL also builds on the GA25 (`5ml-gnr1-ga25`, `5ml-gnr2-ga25`)
-  while both are tested.
+- **A crank's set screw, tightened hard, tips the crank.** On the unit below, an overtightened grub
+  screw tipped the crank on its shaft and stalled the stroke (2026-11-06 to 11-07).
+- **Two screws do not hold a motor against a reversing load.** A 5 mL unit (`5ml-gnr2`) on an N20
+  drove a turbidity column's sampler, drawing a full 5 mL of algae culture from an unpressurized,
+  sparged column through a 3 mm riser: one 18.5 s burst every 15 minutes, 1 s at full throttle then
+  17.5 s at half. From its first burst, 2026-11-06 22:46, to the last that moved liquid, 2026-11-15
+  08:19, it ran 8.40 days, 863 bursts, 4.43 h with the motor on. Its motor's screws worked loose
+  until the motor rocked, and the crank's D-bore cammed out on the shaft; threadlocker only delayed
+  it. Each burst's time is from its own 50 Hz log rows, in
+  [turbidity-sensor](https://github.com/uwo-fast/turbidity-sensor/tree/9afcb18/data/bench/2026-11-05).
+  The screws then lay across the stroke, on the line the motor tipped about, so only the 2 mm pocket
+  held it. The motor now stands with its screws along the stroke, and the cradle grips the gearbox;
+  the 5 mL also builds on the GA25 (`5ml-gnr1-ga25`, `5ml-gnr2-ga25`) while both are tested.
 
 ## Open
 
