@@ -35,8 +35,8 @@ run, and records the mechanism, the part dimensions and their sources, and what 
 
 2. **Export the parts.** `just build` writes every preset's printed parts to `build/<syringe>/`, or
    open `cad/main.scad` in OpenSCAD and pick the syringe and the `part` in the Customizer. The parts
-   are the frame, crank, rod, clip, body, lid and cap; `ring_test` prints the syringe's snap ring
-   alone, to try it first.
+   are the frame, crank, rod, clip, body, lid and cap. `ring_test`, not in `build/` but in the
+   Customizer and `just export`, prints the syringe's snap ring alone, to try it first.
 
 3. **Buy the hardware.** `openscad -D 'syringe="3ml"' -D 'part="report"' -o r.csg cad/main.scad`
    lists it for a syringe:

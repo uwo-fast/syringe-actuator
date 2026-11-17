@@ -114,7 +114,7 @@ export syringe="3ml" motor="auto":
     done
     just _stamp output "{{syringe}}, motor {{motor}}"
 
-# Export every printed part for every syringe to build/<syringe>/<part>.stl.
+# Export every printed part for every syringe to build/<syringe>/<part>.stl, but ring_test.
 build:
     #!/usr/bin/env bash
     set -uo pipefail
@@ -123,6 +123,8 @@ build:
         mkdir -p "build/$s"
         for p in {{PARTS}}; do
             rm -f "build/$s/$p.stl"
+            # ring_test only tries a snap ring, so a unit's set leaves it out; `just export` has it
+            [ "$p" = ring_test ] && continue
             {{OPENSCAD}} -o "build/$s/$p.stl" -D "syringe=\"$s\"" -D "part=\"$p\"" {{MAIN}} 2>"build/$s/$p.err"
             if grep -qE '^(ERROR|WARNING)' "build/$s/$p.err"; then echo "FAIL  $s $p"; exit 1; fi
             rm -f "build/$s/$p.err"; printf 'ok    build/%s/%s.stl\n' "$s" "$p"
