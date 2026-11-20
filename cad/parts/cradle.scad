@@ -25,34 +25,67 @@ include <../purchased/motor.scad>;
 // round each screw. set, nut: the set screws and their nuts; fit: per side, round bought stock.
 // wall: the sleeve's; skin: the boss past each nut's slot. set_lengths: stock set screw lengths.
 // clang-format off
-function cradle_spec(motor, pocket, screw, set, nut, fit, wall = 2.5, ear = 4, ear_r = 3.5, skin = 1.5,
-                     set_lengths = [ 3, 4, 5, 6, 8, 10, 12 ]) =
-    let (round = motor_round(motor),
-         size = motor_size(motor) + [ 2, 2 ] * fit,
-         depth = get(motor, "gearbox_l") - pocket,
-         // each set screw's direction, and how far out the bore's wall is that way
-         sets = round ? [ 150, 210 ] : [ 180, 270 ],
-         reach = [for (a = sets) round ? size[0] / 2 : abs(cos(a)) * size[0] / 2 + abs(sin(a)) * size[1] / 2],
-         slot_t = get(nut, "m") + 2 * fit,
-         boss_l = slot_t + skin,
-         boss_hw = get(nut, "e") / 2 + fit + 1.2,
-         // the plate screws: one behind the gearbox, one in front beside the front boss
-         back = [size[0] / 2 + wall + ear_r, 0],
-         front = [-size[0] / 2 - wall - ear_r, boss_hw + ear_r],
-         // the shortest stock set screw that spans the nut's slot and the wall; once on the gearbox it stays inside
-         set_l = min([for (l = set_lengths) if (l >= slot_t + wall + fit) l]),
-         // the furthest any part reaches across y, for the plate between the body's rails
-         half_y = max(concat([size[1] / 2 + wall, front[1] + ear_r],
-                             [for (i = [0:len(sets) - 1]) abs(sin(sets[i])) * (reach[i] + wall + boss_l) +
-                                                          abs(cos(sets[i])) * boss_hw])))
-    assert(depth >= 5, "the gearbox reaches under 5 below the plate: too little for the cradle to hold")
+function cradle_spec(
+    motor,
+    pocket,
+    screw,
+    set,
+    nut,
+    fit,
+    wall = 2.5,
+    ear = 4,
+    ear_r = 3.5,
+    skin = 1.5,
+    set_lengths = [3, 4, 5, 6, 8, 10, 12]
+) =
+    let (
+        round = motor_round(motor),
+        size = motor_size(motor) + [2, 2] * fit,
+        depth = get(motor, "gearbox_l") - pocket,
+        // each set screw's direction, and how far out the bore's wall is that way
+        sets = round ? [150, 210] : [180, 270],
+        reach = [for (a = sets) round ? size[0] / 2 : abs(cos(a)) * size[0] / 2 + abs(sin(a)) * size[1] / 2],
+        slot_t = get(nut, "m") + 2 * fit,
+        boss_l = slot_t + skin,
+        boss_hw = get(nut, "e") / 2 + fit + 1.2,
+        // the plate screws: one behind the gearbox, one in front beside the front boss
+        back = [size[0] / 2 + wall + ear_r, 0],
+        front = [-size[0] / 2 - wall - ear_r, boss_hw + ear_r],
+        // the shortest stock set screw that spans the nut's slot and the wall; once on the gearbox it stays inside
+        set_l = min([for (l = set_lengths) if (l >= slot_t + wall + fit) l]),
+        // the furthest any part reaches across y, for the plate between the body's rails
+        half_y = max(
+            concat(
+                [size[1] / 2 + wall, front[1] + ear_r],
+                [
+                    for (i = [0:len(sets) - 1]) abs(sin(sets[i])) * (reach[i] + wall + boss_l) + abs(cos(sets[i])) * boss_hw,
+                ]
+            )
+        )
+    ) assert(depth >= 5, "the gearbox reaches under 5 below the plate: too little for the cradle to hold")
     assert(set_l <= wall + boss_l, "the set screws stand out of their bosses")
     assert(get(nut, "s") / 2 + fit + 1 <= depth / 2, "the cradle is too shallow for its set screws' nuts")
     [
-        ["name", "cradle"], ["motor", motor], ["fit", fit], ["size", size], ["depth", depth], ["wall", wall],
-        ["screw", screw], ["ear", ear], ["ear_r", ear_r], ["set", set], ["nut", nut], ["sets", sets],
-        ["reach", reach], ["slot_t", slot_t], ["boss_l", boss_l], ["boss_hw", boss_hw], ["set_l", set_l],
-        ["holes", [back, front]], ["back_x", back[0] + ear_r], ["half_y", half_y],
+        ["name", "cradle"],
+        ["motor", motor],
+        ["fit", fit],
+        ["size", size],
+        ["depth", depth],
+        ["wall", wall],
+        ["screw", screw],
+        ["ear", ear],
+        ["ear_r", ear_r],
+        ["set", set],
+        ["nut", nut],
+        ["sets", sets],
+        ["reach", reach],
+        ["slot_t", slot_t],
+        ["boss_l", boss_l],
+        ["boss_hw", boss_hw],
+        ["set_l", set_l],
+        ["holes", [back, front]],
+        ["back_x", back[0] + ear_r],
+        ["half_y", half_y],
     ];
 // clang-format on
 

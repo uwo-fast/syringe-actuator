@@ -23,12 +23,25 @@ include <../lib/struct.scad>;
 // grip: per side, how far the lips reach over the push-button. clear: back wall to the rod's end.
 // clang-format off
 function clip_spec(syringe, tap, fit, wall, boss, end_d, sled, grip = 0.15, clear = 1) =
-    let (r = get(syringe, "button_d") / 2 + fit, back = get(syringe, "button_t") + fit + wall,
-         pin_x = back + clear + end_d / 2) [
-        ["name", "plunger clip"], ["syringe", syringe], ["tap", tap], ["fit", fit],
-        ["boss", boss], ["end_d", end_d], ["back", back], ["pin_x", pin_x], ["front", -fit - wall],
-        ["sled", sled], ["grip", grip], ["sled_end", pin_x + sled[0]],
-        ["half_w", r + wall], ["top", r],
+    let (
+        r = get(syringe, "button_d") / 2 + fit,
+        back = get(syringe, "button_t") + fit + wall,
+        pin_x = back + clear + end_d / 2
+    ) [
+            ["name", "plunger clip"],
+            ["syringe", syringe],
+            ["tap", tap],
+            ["fit", fit],
+            ["boss", boss],
+            ["end_d", end_d],
+            ["back", back],
+            ["pin_x", pin_x],
+            ["front", -fit - wall],
+            ["sled", sled],
+            ["grip", grip],
+            ["sled_end", pin_x + sled[0]],
+            ["half_w", r + wall],
+            ["top", r],
     ];
 // clang-format on
 
@@ -68,8 +81,13 @@ module clip(s)
     // grid, which leaves a sliver against the wall when top is off it (the 1 mL's 5.3).
     for (side = [ -1, 1 ])
     {
-        yz = [[side * (top + 0.5), top - 3], [side * top, top - 2.5], [side * (top - fit - get(s, "grip")), top - 1],
-              [side * top, top], [side * (top + 0.5), top]];
+        yz = [
+            [ side * (top + 0.5), top - 3 ],
+            [ side * top, top - 2.5 ],
+            [ side * (top - fit - get(s, "grip")), top - 1 ],
+            [ side * top, top ],
+            [ side * (top + 0.5), top ],
+        ];
         cw = side > 0 ? yz : [for (i = [len(yz) - 1:-1:0]) yz[i]]; // clockwise seen from +x
         n = len(cw);
         polyhedron(points = [for (x = [ -fit, get(sy, "button_t") + fit ]) for (p = cw)[x, p[0], p[1]]],
