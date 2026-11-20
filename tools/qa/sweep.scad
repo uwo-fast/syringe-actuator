@@ -18,7 +18,10 @@ B = get(L, "body");
 module placed(n)
 {
     if (n == "frame")
+    {
         frame(get(L, "frame"));
+        translate([ get(L, "crank_x"), 0, 0 ]) cradle(get(L, "cradle"));
+    }
     if (n == "crank")
         translate([ get(L, "crank_x"), 0, get(L, "hub_z") ]) rotate([ 0, 0, a ]) crank(get(L, "crank"));
     if (n == "rod")
@@ -37,6 +40,7 @@ module placed(n)
             translate([ dx, 0, 0 ])
             {
                 frame(get(L, "frame"));
+        translate([ get(L, "crank_x"), 0, 0 ]) cradle(get(L, "cradle"));
                 translate([ get(L, "crank_x"), 0, get(L, "hub_z") ]) rotate([ 0, 0, a ]) crank(get(L, "crank"));
                 translate([ px, 0, z ]) rotate([ 0, 0, atan2(cp[1], cp[0] - px) ]) rod(get(L, "rod"));
                 translate([ bx, 0, z ]) clip(cl);
@@ -56,6 +60,7 @@ module placed(n)
     if (n == "core")
     {
         frame(get(L, "frame"));
+        translate([ get(L, "crank_x"), 0, 0 ]) cradle(get(L, "cradle"));
         translate([ get(L, "crank_x"), 0, get(L, "hub_z") ]) rotate([ 0, 0, a ]) crank(get(L, "crank"));
         translate([ px, 0, z ]) rotate([ 0, 0, atan2(cp[1], cp[0] - px) ]) rod(get(L, "rod"));
         translate([ bx, 0, z ]) clip(cl);

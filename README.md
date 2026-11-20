@@ -27,6 +27,7 @@ run, and records the mechanism, the part dimensions and their sources, and what 
    | Syringe | Motor | Source |
    | --- | --- | --- |
    | 1, 3, 5 mL (two makes of 5 mL) | N20 | measured unbranded luer-lock syringes |
+   | 5 mL, both makes (`5ml-gnr1-ga25`, `5ml-gnr2-ga25`) | GA25 | the same syringes on the larger motor |
    | 20 mL | GA25 | measured |
    | 10, 30 mL | GA25 | BD Plastipak, estimated to about a millimetre |
 
@@ -35,8 +36,8 @@ run, and records the mechanism, the part dimensions and their sources, and what 
 
 2. **Export the parts.** `just build` writes every preset's printed parts to `build/<syringe>/`, or
    open `cad/main.scad` in OpenSCAD and pick the syringe and the `part` in the Customizer. The parts
-   are the frame, crank, rod, clip, body, lid and cap. `ring_test`, not in `build/` but in the
-   Customizer and `just export`, prints the syringe's snap ring alone, to try it first.
+   are the frame, crank, rod, clip, cradle, body, lid and cap. `ring_test`, not in `build/` but in
+   the Customizer and `just export`, prints the syringe's snap ring alone, to try it first.
 
 3. **Buy the hardware.** `openscad -D 'syringe="3ml"' -D 'part="report"' -o r.csg cad/main.scad`
    lists it for a syringe:
@@ -50,15 +51,20 @@ run, and records the mechanism, the part dimensions and their sources, and what 
    | Pin screws | all | 2 x M3 x 10 socket head, with 2 x M3 washers |
    | Cap screws | all | 2 x M3 x 10 |
    | Crank | all | 1 x M3 x 6 set screw, cup point (ISO 4026), and 1 x M3 nut |
+   | Cradle | all | 2 x M3 x 8 socket head; 2 x M3 x 6 set screw, cup point, and 2 x M3 nut |
+   | Threadlocker | all | blue (medium strength), on every motor and cradle screw |
 
 4. **Print.** PLA or PETG, no supports. The body stands on its front wall: 242 mm tall for the N20
-   syringes, 256 to 313 mm for the GA25's, so check your printer's height first. The front wall is
+   syringes, 223 to 313 mm for the GA25's, so check your printer's height first. The front wall is
    what the frame stops against, so it prints flat on the bed; turn on the slicer's elephant-foot
    compensation, and use a brim, as it stands tall on a small footprint.
 
 5. **Assemble.**
-   - **Motor:** screw it under the plate first: its shaft comes up through the plate, and the crank
-     goes on after.
+   - **Motor:** screw it under the plate first, with threadlocker: its shaft comes up through the
+     plate, and the crank goes on after.
+   - **Cradle:** slide it up over the motor to the plate and screw it on from below. Drop the nuts
+     into its slots, then turn the set screws in until the gearbox cannot move. Tighten them again
+     after the first day of running, as the print settles.
    - **Crank:** drop the nut into its slot, press the crank onto the motor's shaft through the
      plate, and tighten the set screw onto the shaft's flat. Join the rod to the crank and the clip
      with the pin screws over their washers.

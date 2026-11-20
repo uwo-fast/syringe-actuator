@@ -12,11 +12,12 @@ include <../lib/struct.scad>;
 // Whether motor m is round, a GA25 say, or rectangular, an N20.
 function motor_round(m) = get(m, "shape") == "round";
 
-// The gearbox's extent, [across x, across y], the shaft at its centre.
-function motor_size(m) = motor_round(m) ? [ get(m, "gearbox_d"), get(m, "gearbox_d") ] : [ get(m, "h"), get(m, "w") ];
+// The gearbox's extent, [across x, across y], the shaft at its centre. A rectangular one stands with
+// its w along x, so its two screws, w apart, lie along the stroke and resist the rod's push and pull.
+function motor_size(m) = motor_round(m) ? [ get(m, "gearbox_d"), get(m, "gearbox_d") ] : [ get(m, "w"), get(m, "h") ];
 
 // How far the gearbox or the can reaches out from the shaft's axis across y, whichever is further.
-function motor_half_w(m) = motor_round(m) ? max(get(m, "gearbox_d"), get(m, "can_d")) / 2 : get(m, "w") / 2;
+function motor_half_w(m) = motor_round(m) ? max(get(m, "gearbox_d"), get(m, "can_d")) / 2 : get(m, "h") / 2;
 
 // The gearbox's section, grown by g all round, centred on the shaft.
 module motor_outline(m, g = 0)

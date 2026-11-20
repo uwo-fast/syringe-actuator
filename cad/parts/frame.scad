@@ -30,21 +30,28 @@ include <../lib/struct.scad>;
 // dovetail: how far each long edge's foot reaches out, at 45 degrees.
 // w, front: the plate's width and front end x, when a shared body fixes them; by default the flange's
 // width and the snap ring's front.
+// cradle: the motor's cradle; the plate widens to let it pass between the body's rails, reaches back
+// over its rear flange, and takes its screws in holes of tap.
 // clang-format off
 function frame_spec(syringe, motor, screw, fit, wall, plate_t, pocket, axis_z, crank_x, rails, seat_z, screw_bore,
                     ring_grip, ring = [15, 6, 1.6], ring_root = 45, chamfer = 0.5, dovetail = 2.5, w = undef,
-                    front = undef) =
+                    front = undef, cradle = undef, tap = undef) =
     let (block = [-get(syringe, "flange_t") - fit - wall, fit + wall],
          ring_x = block[0] - ring[0] - ring[1],
-         own_w = plate_w(syringe, fit))
+         own_w = plate_w(syringe, fit),
+         // between the body's rails, which reach 1 in under each edge, with 0.8 to spare
+         cradle_w = is_undef(cradle) ? 0 : 2 * (get(cradle, "half_y") + 1.8),
+         back = motor_size(motor)[0] / 2 + fit + wall)
     assert(is_undef(w) || w >= own_w, "the plate is narrower than the flange")
     assert(is_undef(front) || front <= ring_x, "the plate ends behind the snap ring") [
         ["name", "frame"], ["syringe", syringe], ["motor", motor], ["screw", screw], ["fit", fit],
         ["plate_t", plate_t], ["pocket", pocket], ["axis_z", axis_z], ["crank_x", crank_x],
         ["ring", ring], ["ring_grip", ring_grip], ["ring_root", ring_root], ["chamfer", chamfer], ["block", block], ["ring_x", ring_x],
         ["rail_end", rails[0]], ["rail_gap", rails[1]], ["rail_top", rails[2]], ["seat_z", seat_z], ["screw_bore", screw_bore], ["dovetail", dovetail],
-        ["w", is_undef(w) ? own_w : w],
-        ["x", [is_undef(front) ? ring_x : front, crank_x + motor_size(motor)[0] / 2 + fit + wall]],
+        ["w", max(is_undef(w) ? own_w : w, cradle_w)],
+        ["x", [is_undef(front) ? ring_x : front,
+               crank_x + (is_undef(cradle) ? back : max(back, get(cradle, "back_x") + 1.5))]],
+        ["cradle", cradle], ["cradle_tap", tap],
     ];
 // clang-format on
 
@@ -127,11 +134,15 @@ module frame(s)
         translate([ cx, 0, -1 ]) linear_extrude(1 + chamfer, scale = [for (p = pocket) p / (p + 2 * chamfer + 2)])
             motor_outline(m, fit + chamfer + 1);
         translate([ cx, 0, -1 ]) cylinder(d = get(m, "bushing_d") + 2 * fit, h = t + 2);
-        for (y = [ -1, 1 ] * get(m, "hole_pitch") / 2)
-            translate([ cx, y, 0 ])
+        for (dx = [ -1, 1 ] * get(m, "hole_pitch") / 2)
+            translate([ cx + dx, 0, 0 ])
             {
                 translate([ 0, 0, -1 ]) cylinder(d = get(sc, "clear") + 2 * fit, h = t + 2);
                 translate([ 0, 0, get(s, "seat_z") ]) cylinder(d = get(s, "screw_bore") + 2 * fit, h = t);
             }
+        // the cradle's screws, threaded in from below, 0.6 short of the plate's top
+        if (!is_undef(get_or(s, "cradle")))
+            for (h = get(get(s, "cradle"), "holes"))
+                translate([ cx + h[0], h[1], -1 ]) cylinder(d = get(s, "cradle_tap"), h = t - 0.6 + 1);
     }
 }
