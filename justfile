@@ -8,11 +8,11 @@ OPENSCAD := env("OPENSCAD", "openscad")
 MAIN := "cad/main.scad"
 
 # Printed parts, by main.scad's `part` names. `test` checks each; `export` writes each to output/.
-PARTS := "frame crank rod clip body lid cap ring_test"
+PARTS := "frame crank rod clip body lid cap cradle ring_test"
 
 # The builds, by main.scad's `syringe` names. `test` checks every part of each; `build` writes each to
 # build/<syringe>/.
-SYRINGES := "1ml 3ml 5ml-gnr1 5ml-gnr2 10ml 20ml 30ml"
+SYRINGES := "1ml 3ml 5ml-gnr1 5ml-gnr2 5ml-gnr1-ga25 5ml-gnr2-ga25 10ml 20ml 30ml"
 
 default:
     @just --list

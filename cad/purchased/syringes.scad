@@ -84,7 +84,9 @@ syringe_50ml_bd = [
 syringes = [
     [ "1ml", syringe_1ml_gnr1, "n20", "n20" ], [ "3ml", syringe_3ml_gnr1, "n20", "n20" ],
     [ "5ml-gnr1", syringe_5ml_gnr1, "n20", "n20" ], [ "5ml-gnr2", syringe_5ml_gnr2, "n20", "n20" ],
-    [ "10ml", syringe_10ml_bd, "ga25" ], [ "20ml", syringe_20ml_gnr1, "ga25" ], [ "30ml", syringe_30ml_bd, "ga25" ]
+    [ "5ml-gnr1-ga25", syringe_5ml_gnr1, "ga25", "5ml-ga25" ],
+    [ "5ml-gnr2-ga25", syringe_5ml_gnr2, "ga25", "5ml-ga25" ], [ "10ml", syringe_10ml_bd, "ga25" ],
+    [ "20ml", syringe_20ml_gnr1, "ga25" ], [ "30ml", syringe_30ml_bd, "ga25" ]
 ];
 
 // The syringe the Customizer names, or undef.

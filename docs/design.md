@@ -28,7 +28,16 @@ mL's; `part="report"` gives any syringe's.
   `ring_grip` (0.5 mm) a side narrower than the barrel, with a 45 deg lead-in at each tip. Two
   rails, 10 mm tall, run from the slot's back wall either side of the clip's travel. The motor hangs
   under the plate's other end, its gearbox 2 mm up into a pocket, located by its bushing and held by
-  two screws counterbored under the crank's hub.
+  two screws counterbored under the crank's hub. The screws lie along the stroke, so they resist the
+  rod's push and pull: an N20 stands with its 12 mm side along x.
+- **Cradle.** A sleeve under the plate that grips the gearbox for its whole length below the plate,
+  10.5 mm on an N20 and 24.8 on a GA25. The rod's force acts about 15 mm above the gearbox's face
+  and reverses every stroke; with only the 2 mm pocket and the two screws to stop it, the motor
+  rocks, and the screws work loose. Two set screws through trapped nuts push the gearbox against the
+  far walls, so it has no play to rock in: on an N20, one through the front wall and one through the
+  -y wall; on a GA25, two through the front, 30 deg either side of -x. Two M3 x 8 screws hold it to
+  the plate from below, through flanges at its front and back, threaded 4 mm into the plate. The
+  plate widens where the cradle needs it to pass between the body's rails. It prints top face down.
 - **Crank.** It presses onto the motor's D-shaft and carries the pin at a throw of half the
   syringe's stroke less a 1 mm margin at each end: 27.6 mm for the 3 mL. Its D-bore is blind, so it
   stops on the shaft's tip, 1 mm over the plate. An M3 x 6 grub screw (ISO 4026, cup point) runs
@@ -201,8 +210,9 @@ shaft's length, measured on the motor in hand (2026-09-29):
 | Bushing | dia 4.0, 0.7 proud |
 | Mounting | 2 x M1.6 tapped, 9.0 apart, either side of the shaft |
 
-Held by two M1.6 x 3 JIS flat heads (McMaster 91305A002), which sit in counterbores sized for an
-ISO 7045 pan head, their cone on the clearance hole's rim, 1.4 mm into the gearbox.
+Held by two M1.6 x 3 JIS flat heads (McMaster 91305A002), which sit in counterbores sized for an ISO
+7045 pan head, their cone on the clearance hole's rim, 1.4 mm into the gearbox, and by the cradle
+under the plate.
 
 ### GA25YN370 gearmotor, 12 V 30 rpm
 
@@ -223,7 +233,7 @@ gearbox's length, longer at this ratio. Ratings from the HERCHR listing.
 Its gearbox goes 2 mm up into a round pocket, held by two M3 x 4 button heads (ISO 7380), 2.85 mm
 into its holes: the plate over the pocket is 3 mm, too thin for socket heads. The crank's bore is
 D-shaped only as far as the shaft's flat runs, round below. The motor hangs 57 mm under the plate,
-so its bodies are deep: the 10, 20 and 30 mL's stand 256, 277 and 313 mm tall as they print.
+so its bodies are deep: the 5, 10, 20 and 30 mL's stand 223, 256, 277 and 313 mm tall as they print.
 
 No usable OpenSCAD model of either motor was found (NopSCADlib has none), so
 `cad/purchased/motor.scad` draws them, simplified, from the figures above.
@@ -241,6 +251,13 @@ No usable OpenSCAD model of either motor was found (NopSCADlib has none), so
   crank's bore wore round and rode up an N20's shaft within an hour, as the load reverses every
   stroke (reported 2026-10-05). With the grub screw, cranks printed in PLA and in PETG held, and a
   2-hour run left the bore unworn (2026-10-07).
+- **Two screws do not hold a motor against a reversing load.** A 5 mL unit on an N20, run for 18.5 s
+  every 15 minutes for 7 days drawing a full 5 mL from an unpressurized vessel, loosened its motor's
+  screws until the motor rocked, and the rocking wore out the crank's D-bore (reported 2026-11-16).
+  Threadlocker only delayed it. The screws then lay across the stroke, on the line the motor tipped
+  about, so only the 2 mm pocket held it. The motor now stands with its screws along the stroke, and
+  the cradle grips the gearbox; the 5 mL also builds on the GA25 (`5ml-gnr1-ga25`, `5ml-gnr2-ga25`)
+  while both are tested.
 
 ## Open
 

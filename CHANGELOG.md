@@ -9,6 +9,9 @@ and [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- A cradle under the plate that grips the motor's gearbox with two set screws, so it cannot rock
+  its screws loose; the motor now stands with its screws along the stroke
+- GA25 builds of both 5 mL syringes, `5ml-gnr1-ga25` and `5ml-gnr2-ga25`, sharing one body
 - One body, lid and cap for the N20 syringes (1, 3 and both 5 mL): switching between them
   reprints only the frame, clip, crank and rod
 - A second generic 5 mL syringe, shorter than the first; the presets are now `5ml-gnr1` and
