@@ -33,25 +33,70 @@ include <../lib/struct.scad>;
 // cradle: the motor's cradle; the plate widens to let it pass between the body's rails, reaches back
 // over its rear flange, and takes its screws in holes of tap.
 // clang-format off
-function frame_spec(syringe, motor, screw, fit, wall, plate_t, pocket, axis_z, crank_x, rails, seat_z, screw_bore,
-                    ring_grip, ring = [15, 6, 1.6], ring_root = 45, chamfer = 0.5, dovetail = 2.5, w = undef,
-                    front = undef, cradle = undef, tap = undef) =
-    let (block = [-get(syringe, "flange_t") - fit - wall, fit + wall],
-         ring_x = block[0] - ring[0] - ring[1],
-         own_w = plate_w(syringe, fit),
-         // between the body's rails, which reach 1 in under each edge, with 0.8 to spare
-         cradle_w = is_undef(cradle) ? 0 : 2 * (get(cradle, "half_y") + 1.8),
-         back = motor_size(motor)[0] / 2 + fit + wall)
-    assert(is_undef(w) || w >= own_w, "the plate is narrower than the flange")
-    assert(is_undef(front) || front <= ring_x, "the plate ends behind the snap ring") [
-        ["name", "frame"], ["syringe", syringe], ["motor", motor], ["screw", screw], ["fit", fit],
-        ["plate_t", plate_t], ["pocket", pocket], ["axis_z", axis_z], ["crank_x", crank_x],
-        ["ring", ring], ["ring_grip", ring_grip], ["ring_root", ring_root], ["chamfer", chamfer], ["block", block], ["ring_x", ring_x],
-        ["rail_end", rails[0]], ["rail_gap", rails[1]], ["rail_top", rails[2]], ["seat_z", seat_z], ["screw_bore", screw_bore], ["dovetail", dovetail],
+function frame_spec(
+    syringe,
+    motor,
+    screw,
+    fit,
+    wall,
+    plate_t,
+    pocket,
+    axis_z,
+    crank_x,
+    rails,
+    seat_z,
+    screw_bore,
+    ring_grip,
+    ring = [15, 6, 1.6],
+    ring_root = 45,
+    chamfer = 0.5,
+    dovetail = 2.5,
+    w = undef,
+    front = undef,
+    cradle = undef,
+    tap = undef
+) =
+    let (
+        block = [-get(syringe, "flange_t") - fit - wall, fit + wall],
+        ring_x = block[0] - ring[0] - ring[1],
+        own_w = plate_w(syringe, fit),
+        // between the body's rails, which reach 1 in under each edge, with 0.8 to spare
+        cradle_w = is_undef(cradle) ? 0 : 2 * (get(cradle, "half_y") + 1.8),
+        back = motor_size(motor)[0] / 2 + fit + wall
+    ) assert(is_undef(w) || w >= own_w, "the plate is narrower than the flange")
+    assert(is_undef(front) || front <= ring_x, "the plate ends behind the snap ring")
+    [
+        ["name", "frame"],
+        ["syringe", syringe],
+        ["motor", motor],
+        ["screw", screw],
+        ["fit", fit],
+        ["plate_t", plate_t],
+        ["pocket", pocket],
+        ["axis_z", axis_z],
+        ["crank_x", crank_x],
+        ["ring", ring],
+        ["ring_grip", ring_grip],
+        ["ring_root", ring_root],
+        ["chamfer", chamfer],
+        ["block", block],
+        ["ring_x", ring_x],
+        ["rail_end", rails[0]],
+        ["rail_gap", rails[1]],
+        ["rail_top", rails[2]],
+        ["seat_z", seat_z],
+        ["screw_bore", screw_bore],
+        ["dovetail", dovetail],
         ["w", max(is_undef(w) ? own_w : w, cradle_w)],
-        ["x", [is_undef(front) ? ring_x : front,
-               crank_x + (is_undef(cradle) ? back : max(back, get(cradle, "back_x") + 1.5))]],
-        ["cradle", cradle], ["cradle_tap", tap],
+        [
+            "x",
+            [
+                is_undef(front) ? ring_x : front,
+                crank_x + (is_undef(cradle) ? back : max(back, get(cradle, "back_x") + 1.5)),
+            ],
+        ],
+        ["cradle", cradle],
+        ["cradle_tap", tap],
     ];
 // clang-format on
 
@@ -71,8 +116,14 @@ module u_cut(s, w, len)
 // The plate's section across the axis: w wide on top, t thick, long edges dovetailed out d at 45
 // degrees, each foot on a land so its edge is square. The body's rails use the same points.
 function plate_profile(w, d, t, land = 0.6) = [
-    [ -w / 2 - d, 0 ], [ w / 2 + d, 0 ], [ w / 2 + d, land ], [ w / 2, d + land ], [ w / 2, t ], [ -w / 2, t ],
-    [ -w / 2, d + land ], [ -w / 2 - d, land ]
+    [ -w / 2 - d, 0 ],
+    [ w / 2 + d, 0 ],
+    [ w / 2 + d, land ],
+    [ w / 2, d + land ],
+    [ w / 2, t ],
+    [ -w / 2, t ],
+    [ -w / 2, d + land ],
+    [ -w / 2 - d, land ],
 ];
 
 module plate_section(s) polygon(plate_profile(get(s, "w"), get(s, "dovetail"), get(s, "plate_t")));
@@ -96,12 +147,15 @@ module frame(s)
     slot_h = get(sy, "flange")[1] + 2 * fit;
     cx = get(s, "crank_x");
     chamfer = get(s, "chamfer");
+
     difference()
     {
         union()
         {
+
             translate([ x[0], 0, 0 ]) rotate([ 90, 0, 90 ]) linear_extrude(x[1] - x[0]) plate_section(s);
             translate([ block[0], -w / 2, t - 1 ]) cube([ block[1] - block[0], w, z - t + 3 ]);
+
             // the base holds the ring only up to ring_root below the axis; above, each arm stands free and
             // springs open over a long arc. Filleted where the arms leave the base, so no crack starts there.
             translate([ ring_x, 0, 0 ]) rotate([ 90, 0, 90 ]) linear_extrude(ring[1]) offset(r = -1) offset(delta = 1)
@@ -110,16 +164,19 @@ module frame(s)
                 translate([ 0, z ]) circle(d = ring_d);
                 polygon([ [ -root[0], t - 1 ], [ root[0], t - 1 ], root, [ -root[0], root[1] ] ]);
             }
+
             // the rails run from the flange block's back wall, out to the plate's edges
             gap = get(s, "rail_gap");
             for (side = [ -1, 1 ])
                 translate([ block[1] - 1, side > 0 ? gap : -w / 2, t - 1 ])
                     cube([ get(s, "rail_end") - block[1] + 1, w / 2 - gap, get(s, "rail_top") - t + 1 ]);
         }
+
         // flange slot, open at the sides; barrel through the front wall, plunger through the back
         translate([ -ft - fit, -w / 2 - 1, z - slot_h / 2 ]) cube([ ft + 2 * fit, w + 2, 100 ]);
         translate([ block[0] - 1, 0, 0 ]) u_cut(s, od, -block[0]);
         translate([ fit - 1, 0, 0 ]) u_cut(s, get(sy, "plunger_span") + 2 * fit, block[1] - fit + 2);
+
         // snap ring bore and opening (ring_grip a side narrower than the barrel); tips bevelled 45 degrees
         // as a lead-in, so the barrel spreads the arms instead of bearing on their tips
         translate([ ring_x - 1, 0, 0 ]) on_axis(s, od, ring[1] + 2);
@@ -129,10 +186,12 @@ module frame(s)
             [ [ -a, z ], [ a, z ], [ a, z + h ], [ a + 50, z + h + 50 ], [ -a - 50, z + h + 50 ], [ -a, z + h ] ]);
         // the motor: gearbox pocket from below, bushing and shaft through, screws counterbored from above
         translate([ cx, 0, -1 ]) linear_extrude(get(s, "pocket") + 1) motor_outline(m, fit);
+
         // the pocket's mouth chamfered, against the first layer's squash
         pocket = motor_size(m) + [ 2, 2 ] * fit;
         translate([ cx, 0, -1 ]) linear_extrude(1 + chamfer, scale = [for (p = pocket) p / (p + 2 * chamfer + 2)])
             motor_outline(m, fit + chamfer + 1);
+
         translate([ cx, 0, -1 ]) cylinder(d = get(m, "bushing_d") + 2 * fit, h = t + 2);
         for (dx = [ -1, 1 ] * get(m, "hole_pitch") / 2)
             translate([ cx + dx, 0, 0 ])
@@ -140,6 +199,7 @@ module frame(s)
                 translate([ 0, 0, -1 ]) cylinder(d = get(sc, "clear") + 2 * fit, h = t + 2);
                 translate([ 0, 0, get(s, "seat_z") ]) cylinder(d = get(s, "screw_bore") + 2 * fit, h = t);
             }
+
         // the cradle's screws, threaded in from below, 0.6 short of the plate's top
         if (!is_undef(get_or(s, "cradle")))
             for (h = get(get(s, "cradle"), "holes"))

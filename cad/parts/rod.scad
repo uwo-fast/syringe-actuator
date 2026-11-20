@@ -14,9 +14,14 @@ include <../lib/struct.scad>;
 
 // clang-format off
 // hole: the bore round each boss.
-function rod_spec(hole, len, t, w) = [
-    ["name", "rod"], ["hole", hole], ["len", len], ["t", t], ["w", w],
-];
+function rod_spec(hole, len, t, w) =
+    [
+        ["name", "rod"],
+        ["hole", hole],
+        ["len", len],
+        ["t", t],
+        ["w", w],
+    ];
 // clang-format on
 
 module rod(s)

@@ -35,19 +35,19 @@ include <lib/section.scad>;
 // clang-format off
 /* [View] */
 part = "assembly"; // [assembly, housed, frame, crank, rod, clip, body, lid, cap, cradle, ring_test, report]
-syringe = "3ml";   // [1ml, 3ml, 5ml-gnr1, 5ml-gnr2, 5ml-gnr1-ga25, 5ml-gnr2-ga25, 10ml, 20ml, 30ml]
-motor = "auto";    // [auto, n20, ga25]
-angle = 180;       // [0:5:355]
+syringe = "3ml"; // [1ml, 3ml, 5ml-gnr1, 5ml-gnr2, 5ml-gnr1-ga25, 5ml-gnr2-ga25, 10ml, 20ml, 30ml]
+motor = "auto"; // [auto, n20, ga25]
+angle = 180; // [0:5:355]
 show_bought = true;
-section = "none";  // [none, x, y, z]
-section_at = 0;    // [-100:1:300]
+section = "none"; // [none, x, y, z]
+section_at = 0; // [-100:1:300]
 
 /* [Print] */
-fit = 0.2;   // per side: a printed pocket round bought stock
+fit = 0.2; // per side: a printed pocket round bought stock
 press = 0.05; // per side: the crank's bore on the steel shaft
-hole = 0.1;   // per side: a small hole a screw threads itself into, which prints undersize
-wall = 3;     // the frame's walls either side of the flange's slot and past the motor
-grip = 0.15;  // per side: how far the clip's lips reach over the push-button; more holds it tighter
+hole = 0.1; // per side: a small hole a screw threads itself into, which prints undersize
+wall = 3; // the frame's walls either side of the flange's slot and past the motor
+grip = 0.15; // per side: how far the clip's lips reach over the push-button; more holds it tighter
 ring_grip = 0.5; // per side: how much narrower than the barrel the snap ring's opening is; more holds it tighter
 // clang-format on
 
@@ -129,11 +129,39 @@ function tip_x(L) = let(s = get(L, "syringe")) - get(s, "flange_t") - get(s, "ba
 // family: the rows sharing this syringe's body, itself included; [] for a body of its own.
 // fix: [axis_z, frame width] a family sets; mech_only: skip the body. Both for layout()'s own calls.
 // clang-format off
-function layout(syringe, motor, pin, pin_washer, fit, press, hole, wall, grip, ring_grip,
-                plate_t = 5, pocket = 2, gap = 1, float = 1.5, clip_wall = 2, rod_t = 4, rod_min = 90,
-                rod_w = 10, boss_d = 5.6, play = 0.3, sled = [20, 2], slide = 0.3, recess = 0.2,
-                margin = 1, pin_l = 10, window = 3.5, friction = 3, family = [], fix = undef, mech_only = false,
-                cradle_screw_l = 8) =
+function layout(
+    syringe,
+    motor,
+    pin,
+    pin_washer,
+    fit,
+    press,
+    hole,
+    wall,
+    grip,
+    ring_grip,
+    plate_t = 5,
+    pocket = 2,
+    gap = 1,
+    float = 1.5,
+    clip_wall = 2,
+    rod_t = 4,
+    rod_min = 90,
+    rod_w = 10,
+    boss_d = 5.6,
+    play = 0.3,
+    sled = [20, 2],
+    slide = 0.3,
+    recess = 0.2,
+    margin = 1,
+    pin_l = 10,
+    window = 3.5,
+    friction = 3,
+    family = [],
+    fix = undef,
+    mech_only = false,
+    cradle_screw_l = 8
+) =
     let (
         throw = get(syringe, "stroke") / 2 - margin,
         boss = [boss_d, rod_t + play],
@@ -143,22 +171,34 @@ function layout(syringe, motor, pin, pin_washer, fit, press, hole, wall, grip, r
         button_in = get(syringe, "exposed") + margin,
         // a family fixes the axis height and plate width to its largest member's, so one body fits all
         fixed = !is_undef(fix) ? fix
-                : family == [] ? undef
-                : [max([for (r = family) axis_height(plate_t, float, clip_spec(r, tap, fit, clip_wall, boss, rod_w,
-                                                                                sled, grip))]),
-                   max([for (r = family) plate_w(r, fit)])],
+        : family == [] ? undef
+        : [
+            max(
+                [
+                    for (r = family) axis_height(
+                        plate_t, float, clip_spec(
+                            r, tap, fit, clip_wall, boss, rod_w,
+                            sled, grip
+                        )
+                    ),
+                ]
+            ),
+            max([for (r = family) plate_w(r, fit)]),
+        ],
         // a row's crank_as: another syringe's layout, whose crank this one keeps, by the rod's length
-        like = has(syringe, "crank_as")
-                   ? layout(get(syringe, "crank_as"), motor, pin, pin_washer, fit, press, hole, wall, grip, ring_grip,
-                            plate_t, pocket, gap, float, clip_wall, rod_t, rod_min, rod_w, boss_d, play, sled, slide,
-                            recess, margin, pin_l, window, friction, [], fixed, true)
-                                         : undef,
+        like = has(syringe, "crank_as") ? layout(
+                get(syringe, "crank_as"), motor, pin, pin_washer, fit, press, hole, wall, grip, ring_grip,
+                plate_t, pocket, gap, float, clip_wall, rod_t, rod_min, rod_w, boss_d, play, sled, slide,
+                recess, margin, pin_l, window, friction, [], fixed, true
+            )
+        : undef,
         // the frame and the clip are built from these alone, so a crank_as syringe that matches them reuses both
         differ = is_undef(like) ? []
-                                : [for (f = ["barrel_od", "flange", "flange_t", "button_d", "button_t", "plunger_span"])
-                                        if (get(get(like, "syringe"), f) != get(syringe, f)) f],
+        : [
+            for (f = ["barrel_od", "flange", "flange_t", "button_d", "button_t", "plunger_span"]) if (get(get(like, "syringe"), f) != get(syringe, f)) f,
+        ],
         rod_l = is_undef(like) ? max(rod_min, ceil(3 * throw))
-                               : get(like, "crank_x") - button_in - get(clip, "pin_x") - throw,
+        : get(like, "crank_x") - button_in - get(clip, "pin_x") - throw,
         axis_z = is_undef(fixed) ? axis_height(plate_t, float, clip) : fixed[0],
         hub_z = plate_t + gap,
         bore = pocket + get(motor, "shaft_l") - hub_z,
@@ -177,24 +217,35 @@ function layout(syringe, motor, pin, pin_washer, fit, press, hole, wall, grip, r
         flat_head = get(motor_screw, "head") == "flat",
         // a flat head seats where its cone matches the clearance hole; other heads sit on the counterbore's floor
         motor_head_z = flat_head ? motor_seat_z + (get(motor_screw, "head_d") - get(motor_screw, "clear") - 2 * fit) / 2
-                                 : motor_seat_z,
+        : motor_seat_z,
         // a flat head's length is overall, any other's under its head
         motor_thread = pocket - (motor_head_z - motor_screw_l),
         cradle = cradle_spec(motor, pocket, pin, m3_set, m3_nut, fit),
-        own_frame = frame_spec(syringe, motor, motor_screw, fit, wall, plate_t, pocket, axis_z, crank_x, rails,
-                               motor_seat_z, motor_bore[0], ring_grip, w = is_undef(fixed) ? undef : fixed[1],
-                               cradle = cradle, tap = tap),
+        own_frame = frame_spec(
+            syringe, motor, motor_screw, fit, wall, plate_t, pocket, axis_z, crank_x, rails,
+            motor_seat_z, motor_bore[0], ring_grip, w=is_undef(fixed) ? undef : fixed[1],
+            cradle=cradle, tap=tap
+        ),
         // each member's mechanism, for the shared body; measured from the crank, which sits alike in each
         members = family == [] || mech_only ? []
-                  : [for (r = family) layout(r, motor, pin, pin_washer, fit, press, hole, wall, grip, ring_grip, plate_t,
-                                             pocket, gap, float, clip_wall, rod_t, rod_min, rod_w, boss_d, play, sled,
-                                             slide, recess, margin, pin_l, window, friction, [], fixed, true)],
+        : [
+            for (r = family) layout(
+                r, motor, pin, pin_washer, fit, press, hole, wall, grip, ring_grip, plate_t,
+                pocket, gap, float, clip_wall, rod_t, rod_min, rod_w, boss_d, play, sled,
+                slide, recess, margin, pin_l, window, friction, [], fixed, true
+            ),
+        ],
         shift = [for (m = members) crank_x - get(m, "crank_x")],
         frame = members == [] ? own_frame
-                : frame_spec(syringe, motor, motor_screw, fit, wall, plate_t, pocket, axis_z, crank_x, rails,
-                             motor_seat_z, motor_bore[0], ring_grip, w = fixed[1], cradle = cradle, tap = tap,
-                             front = min([for (i = [0:len(members) - 1]) get(get(members[i], "frame"), "x")[0] +
-                                                                         shift[i]])),
+        : frame_spec(
+            syringe, motor, motor_screw, fit, wall, plate_t, pocket, axis_z, crank_x, rails,
+            motor_seat_z, motor_bore[0], ring_grip, w=fixed[1], cradle=cradle, tap=tap,
+            front=min(
+                [
+                    for (i = [0:len(members) - 1]) get(get(members[i], "frame"), "x")[0] + shift[i],
+                ]
+            )
+        ),
         // front mounting holes, spacing across: the narrowest multiple of 10 whose heads clear the snap ring by
         // 0.5; a shared body takes its group's widest
         ring_half = (get(syringe, "barrel_od") + 2 * fit) / 2 + get(frame, "ring")[2],
@@ -203,7 +254,8 @@ function layout(syringe, motor, pin, pin_washer, fit, press, hole, wall, grip, r
         reach = throw + rod_w / 2,
         motor_z = pocket - get(motor, "gearbox_l") - get(motor, "can_l") - get(motor, "tail_l"),
         envelope = [
-            [reach, hub_z], [reach, axis_z + rod_t],
+            [reach, hub_z],
+            [reach, axis_z + rod_t],
             [throw + get(pin_washer, "od") / 2, axis_z + stack + get(pin, "head_h")],
             [motor_half_w(motor), motor_z],
             [get(cradle, "half_y"), -get(cradle, "depth")],
@@ -220,30 +272,50 @@ function layout(syringe, motor, pin, pin_washer, fit, press, hole, wall, grip, r
         ],
         // what the body needs for this syringe: [envelope, front, sweep_x, back x, window, barrel_od, mount_w,
         // crank_x, throw, rod_l]
-        needs = [envelope, front, crank_x - reach, max(crank_x + reach, get(frame, "x")[1]) + 2,
-                 [button_in + 2 * throw + get(clip, "back") + 5, get(syringe, "flange")[0] + window],
-                 get(syringe, "barrel_od"), mount_w, crank_x, throw, rod_l],
+        needs = [
+            envelope,
+            front,
+            crank_x - reach,
+            max(crank_x + reach, get(frame, "x")[1]) + 2,
+            [button_in + 2 * throw + get(clip, "back") + 5, get(syringe, "flange")[0] + window],
+            get(syringe, "barrel_od"),
+            mount_w,
+            crank_x,
+            throw,
+            rod_l,
+        ],
         all = members == [] ? [needs] : [for (m = members) get(m, "needs")],
         sh = members == [] ? [0] : shift,
         n = len(all),
         // only the body reads the rod's edges, so a member laid out for its needs skips them
-        rod_edges = mech_only ? [] : [for (x = [get(frame, "x")[0]:1:crank_x])
-                [x, max([for (i = [0:n - 1]) rod_edge(x - sh[i], all[i][7], all[i][8], all[i][9], rod_w / 2)])]],
+        rod_edges = mech_only ? []
+        : [
+            for (x = [get(frame, "x")[0]:1:crank_x]) [x, max([for (i = [0:n - 1]) rod_edge(x - sh[i], all[i][7], all[i][8], all[i][9], rod_w / 2)])],
+        ],
         front_all = [for (a = all) each a[1]],
         body = mech_only ? undef
-               : body_spec(front_all, concat([for (a = all) each a[0]], front_all), rod_edges,
-                           min([for (i = [0:n - 1]) all[i][2] + sh[i]]),
-                           [get(frame, "x")[0], max([for (i = [0:n - 1]) all[i][3] + sh[i]])],
-                           [max([for (i = [0:n - 1]) all[i][4][0] + sh[i]]), max([for (a = all) a[4][1]])], axis_z,
-                           max([for (a = all) a[5]]), [get(frame, "w"), get(frame, "dovetail"), plate_t],
-                           get(frame, "x")[1], pin, tap, motor_z + 5, fit,
-                           mount_front = [ max([for (a = all) a[6]]), 10, 15 ])
+        : body_spec(
+            front_all, concat([for (a = all) each a[0]], front_all), rod_edges,
+            min([for (i = [0:n - 1]) all[i][2] + sh[i]]),
+            [get(frame, "x")[0], max([for (i = [0:n - 1]) all[i][3] + sh[i]])],
+            [max([for (i = [0:n - 1]) all[i][4][0] + sh[i]]), max([for (a = all) a[4][1]])], axis_z,
+            max([for (a = all) a[5]]), [get(frame, "w"), get(frame, "dovetail"), plate_t],
+            get(frame, "x")[1], pin, tap, motor_z + 5, fit,
+            mount_front=[max([for (a = all) a[6]]), 10, 15]
+        )
+    ) assert(bore >= 5, str("the shaft reaches only ", bore, " into the crank"))
+    assert(
+        rod_l >= ceil(3 * throw), str(
+            "the rod is ", rod_l, ", under three throws, to keep the crank of ",
+            is_undef(like) ? "" : get(get(like, "syringe"), "name")
+        )
     )
-    assert(bore >= 5, str("the shaft reaches only ", bore, " into the crank"))
-    assert(rod_l >= ceil(3 * throw), str("the rod is ", rod_l, ", under three throws, to keep the crank of ",
-                                         is_undef(like) ? "" : get(get(like, "syringe"), "name")))
-    assert(differ == [], str("crank_as names ", is_undef(like) ? "" : get(get(like, "syringe"), "name"),
-                             ", which differs in ", differ))
+    assert(
+        differ == [], str(
+            "crank_as names ", is_undef(like) ? "" : get(get(like, "syringe"), "name"),
+            ", which differs in ", differ
+        )
+    )
     assert(axis_z - hub_z - bore >= 1.5, "the crank's blind bore leaves under 1.5 over the shaft's tip")
     assert(pin_tip >= hub_z, str("the pin screws reach ", hub_z - pin_tip, " too low: they would drag on the plate"))
     assert(pin_l - stack >= 4, "the pin screws have under 4 of thread")
@@ -254,20 +326,43 @@ function layout(syringe, motor, pin, pin_washer, fit, press, hole, wall, grip, r
     assert(sled[1] >= 1, "the sled and the rails are under 1 below the rod")
     assert(get(frame, "w") - motor_size(motor)[1] - 2 * fit >= 3, "the plate is too narrow round the motor's gearbox")
     assert(motor_seat_z - pocket >= 1, "the motor screws' counterbores leave under 1 over the gearbox's pocket")
-    assert(get(cradle, "ear") + plate_t - 0.6 >= cradle_screw_l,
-           "the cradle's screws are longer than its flange and the plate's threads")
+    assert(
+        get(cradle, "ear") + plate_t - 0.6 >= cradle_screw_l,
+        "the cradle's screws are longer than its flange and the plate's threads"
+    )
     assert(motor_thread >= 1.2, str("the motor screws reach only ", motor_thread, " into the gearbox"))
-    assert(!has(motor, "hole_depth") || motor_thread <= get(motor, "hole_depth") - 0.5,
-           str("the motor screws reach ", motor_thread, " into the gearbox's holes, too near their bottoms"))
+    assert(
+        !has(motor, "hole_depth") || motor_thread <= get(motor, "hole_depth") - 0.5,
+        str("the motor screws reach ", motor_thread, " into the gearbox's holes, too near their bottoms")
+    )
     [
-        ["name", "layout"], ["syringe", syringe], ["motor", motor], ["pin", pin], ["pin_l", pin_l],
-        ["pin_washer", pin_washer], ["motor_screw", motor_screw], ["motor_screw_l", motor_screw_l],
-        ["motor_seat_z", motor_seat_z], ["motor_head_z", motor_head_z],
-        ["motor_thread", motor_thread], ["friction", friction],
-        ["pin_thread", pin_l - stack], ["throw", throw], ["rod_l", rod_l], ["axis_z", axis_z],
-        ["pocket", pocket], ["hub_z", hub_z], ["crank_x", crank_x],
-        ["frame", frame], ["crank", crank], ["rod", rod], ["clip", clip], ["body", body], ["needs", needs],
-        ["cradle", cradle], ["cradle_screw_l", cradle_screw_l],
+        ["name", "layout"],
+        ["syringe", syringe],
+        ["motor", motor],
+        ["pin", pin],
+        ["pin_l", pin_l],
+        ["pin_washer", pin_washer],
+        ["motor_screw", motor_screw],
+        ["motor_screw_l", motor_screw_l],
+        ["motor_seat_z", motor_seat_z],
+        ["motor_head_z", motor_head_z],
+        ["motor_thread", motor_thread],
+        ["friction", friction],
+        ["pin_thread", pin_l - stack],
+        ["throw", throw],
+        ["rod_l", rod_l],
+        ["axis_z", axis_z],
+        ["pocket", pocket],
+        ["hub_z", hub_z],
+        ["crank_x", crank_x],
+        ["frame", frame],
+        ["crank", crank],
+        ["rod", rod],
+        ["clip", clip],
+        ["body", body],
+        ["needs", needs],
+        ["cradle", cradle],
+        ["cradle_screw_l", cradle_screw_l],
     ];
 // clang-format on
 
@@ -277,11 +372,13 @@ function axis_height(plate_t, float, clip) = plate_t + float + get(clip, "half_w
 // The rod's edge at x, at its widest over a turn: how far it swings off the axis there, plus half its width.
 function rod_edge(x, crank_x, throw, rod_l,
                   half_w) = half_w +
-                            max([for (a = [0:2:358]) let(p = [ crank_x + throw *cos(a), throw *sin(a) ],
-                                                         c = p[0] - sqrt(rod_l * rod_l - p[1] * p[1])) x >= c &&
-                                         x <= p[0]
-                                     ? abs(p[1]) * (x - c) / (p[0] - c)
-                                     : 0]);
+                            max([
+                                for (a = [0:2:358]) let(p = [ crank_x + throw *cos(a), throw *sin(a) ],
+                                                        c = p[0] - sqrt(rod_l * rod_l - p[1] * p[1])) x >= c &&
+                                        x <= p[0]
+                                    ? abs(p[1]) * (x - c) / (p[0] - c)
+                                    : 0,
+                            ]);
 
 // The crank pin's [x, y] at crank angle a.
 function crank_pin(L, a) = [ get(L, "crank_x"), 0 ] + get(L, "throw") * [ cos(a), sin(a) ];
@@ -377,8 +474,13 @@ module report(L)
     b = get(L, "body");
     echo(str(
         "body ", get(b, "x")[1] - get(b, "x")[0] + 2 * get(b, "end_t"), " long; ",
-        [for (sec = [ get(b, "front"), get(b, "back") ])[2 * (sec[0] + get(b, "wall")),
-                                                         get(b, "T") + get(b, "lid")[0] - sec[1] + 2 * get(b, "wall")]],
+        [
+            for (sec =
+                     [
+                         get(b, "front"),
+                         get(b, "back"),
+                     ])[2 * (sec[0] + get(b, "wall")), get(b, "T") + get(b, "lid")[0] - sec[1] + 2 * get(b, "wall")],
+        ],
         " wide x high at the front and the back, outside, with the lid"));
     echo(str("screws: 2 x M3 x ", get(L, "pin_l"), " with 2 x M3 washer (crank pin, clip pin), ", get(L, "pin_thread"),
              " of thread; 2 x ", get(get(L, "motor_screw"), "name"), " x ", get(L, "motor_screw_l"), " (motor), ",

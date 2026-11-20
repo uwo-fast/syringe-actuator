@@ -12,37 +12,33 @@ B = get(L, "body");
 // which: the part; axis: the cut's normal
 which = "body";
 axis = "x";
-module placed()
-{
+module placed() {
     if (axis == "x")
-        rotate([ 0, -90, 0 ]) translate([ -xc, 0, 0 ]) children();
+        rotate([0, -90, 0]) translate([-xc, 0, 0]) children();
     if (axis == "y")
-        rotate([ 90, 0, 0 ]) translate([ 0, -xc, 0 ]) children();
+        rotate([90, 0, 0]) translate([0, -xc, 0]) children();
     if (axis == "z")
-        translate([ 0, 0, -xc ]) children();
+        translate([0, 0, -xc]) children();
 }
-module sect() projection(cut = true) placed()
-{
-    if (which == "body")
-        body(B);
-    if (which == "lid")
-        lid(B);
-    if (which == "cap")
-        cap(B);
-    if (which == "frame")
-        frame(get(L, "frame"));
-}
+module sect() projection(cut=true) placed() {
+            if (which == "body")
+                body(B);
+            if (which == "lid")
+                lid(B);
+            if (which == "cap")
+                cap(B);
+            if (which == "frame")
+                frame(get(L, "frame"));
+        }
 
 if (what == "material")
-    difference()
-    {
+    difference() {
         sect();
-        offset(delta = e) offset(delta = -e) sect();
+        offset(delta=e) offset(delta=-e) sect();
     }
 if (what == "gap")
-    difference()
-    {
-        offset(delta = -e) offset(delta = e) sect();
+    difference() {
+        offset(delta=-e) offset(delta=e) sect();
         sect();
     }
 if (what == "section")

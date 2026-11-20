@@ -23,22 +23,52 @@ include <../lib/struct.scad>;
 // fit: per side, round them. web: shaft flat to nut. skin: lobe past the nut. floor: under the nut slot.
 // hub_d: hub width. set_lengths: stock set screw lengths; the longest within the lobe is chosen.
 // clang-format off
-function crank_spec(motor, tap, press, throw, h, boss, bore, end_d, set, nut, fit, web = 1.5, skin = 3, floor = 0.6,
-                    hub_d = 12, set_lengths = [ 3, 4, 5, 6, 8, 10, 12 ]) =
-    let (flat_y = get(motor, "shaft_flat") - get(motor, "shaft_d") / 2,
-         // the D's bottom: where the shaft's flat starts, or the crank's underside
-         d0 = has(motor, "flat_l") ? max(0, bore - get(motor, "flat_l")) : 0,
-         set_z = max(get(nut, "s") / 2 + fit + floor, (d0 + bore) / 2),
-         // the nut's slot, and the lobe's end, measured back from the shaft's axis
-         slot = [flat_y + web, flat_y + web + get(nut, "m") + 2 * fit],
-         back = slot[1] + skin,
-         set_l = max([for (l = set_lengths) if (l <= back - flat_y) l]))
-    assert(set_z + get(set, "d") / 2 <= bore + 1, "the grub screw sits above the shaft's tip")
+function crank_spec(
+    motor,
+    tap,
+    press,
+    throw,
+    h,
+    boss,
+    bore,
+    end_d,
+    set,
+    nut,
+    fit,
+    web = 1.5,
+    skin = 3,
+    floor = 0.6,
+    hub_d = 12,
+    set_lengths = [3, 4, 5, 6, 8, 10, 12]
+) =
+    let (
+        flat_y = get(motor, "shaft_flat") - get(motor, "shaft_d") / 2,
+        // the D's bottom: where the shaft's flat starts, or the crank's underside
+        d0 = has(motor, "flat_l") ? max(0, bore - get(motor, "flat_l")) : 0,
+        set_z = max(get(nut, "s") / 2 + fit + floor, (d0 + bore) / 2),
+        // the nut's slot, and the lobe's end, measured back from the shaft's axis
+        slot = [flat_y + web, flat_y + web + get(nut, "m") + 2 * fit],
+        back = slot[1] + skin,
+        set_l = max([for (l = set_lengths) if (l <= back - flat_y) l])
+    ) assert(set_z + get(set, "d") / 2 <= bore + 1, "the grub screw sits above the shaft's tip")
     assert(get(nut, "e") + 2 * fit + 2 * 1.5 <= hub_d, "the hub is too narrow round the nut's slot")
     [
-        ["name", "crank"], ["motor", motor], ["tap", tap], ["press", press], ["throw", throw],
-        ["h", h], ["boss", boss], ["bore", bore], ["hub_d", hub_d], ["end_d", end_d],
-        ["set", set], ["nut", nut], ["fit", fit], ["set_z", set_z], ["slot", slot], ["back", back],
+        ["name", "crank"],
+        ["motor", motor],
+        ["tap", tap],
+        ["press", press],
+        ["throw", throw],
+        ["h", h],
+        ["boss", boss],
+        ["bore", bore],
+        ["hub_d", hub_d],
+        ["end_d", end_d],
+        ["set", set],
+        ["nut", nut],
+        ["fit", fit],
+        ["set_z", set_z],
+        ["slot", slot],
+        ["back", back],
         // the grub screw's length, its tip on the flat and its end inside the lobe
         ["set_l", set_l],
     ];

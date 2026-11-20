@@ -6,5 +6,9 @@ include <../../cad/main.scad>;
 // clang-format on
 
 B = get(L, "body");
-echo(str("qa-body ", get(B, "x")[0], " ", get(B, "x")[1], " ", get(B, "window_v") - get(B, "lid_x")[0], " ",
-         get(B, "T"), " ", get(B, "T") + get(B, "wall"), " ", get(B, "lid_x")[1]));
+echo(
+    str(
+        "qa-body ", get(B, "x")[0], " ", get(B, "x")[1], " ", get(B, "window_v") - get(B, "lid_x")[0], " ",
+        get(B, "T"), " ", get(B, "T") + get(B, "wall"), " ", get(B, "lid_x")[1]
+    )
+);
