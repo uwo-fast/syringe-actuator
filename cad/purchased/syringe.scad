@@ -5,37 +5,31 @@
  * @copyright 2026
  */
 
-// clang-format off
 include <../lib/struct.scad>;
-// clang-format on
 
 // Syringe s on its axis, x from the flanges' rear face, push-button front face at x = button_x.
 // One solid with the bore cut through barrel and flanges, so no two faces coincide. Wall NOMINAL
 // (drawing only); stopper a hair under the bore, nominally 5 long.
-module syringe(s, button_x)
-{
+module syringe(s, button_x) {
     ft = get(s, "flange_t");
     front = -ft - get(s, "barrel_l");
     stopper = front + button_x - get(s, "exposed");
     span = get(s, "plunger_span");
     bore = get(s, "barrel_od") - 2 * 0.8;
     {
-        color("white", 0.4) difference()
-        {
-            union()
-            {
-                translate([ front, 0, 0 ]) rotate([ 0, 90, 0 ]) cylinder(d = get(s, "barrel_od"), h = -front);
-                translate([ -ft, -get(s, "flange")[0] / 2, -get(s, "flange")[1] / 2 ])
-                    cube([ ft, get(s, "flange")[0], get(s, "flange")[1] ]);
+        color("white", 0.4) difference() {
+                union() {
+                    translate([front, 0, 0]) rotate([0, 90, 0]) cylinder(d=get(s, "barrel_od"), h=-front);
+                    translate([-ft, -get(s, "flange")[0] / 2, -get(s, "flange")[1] / 2])
+                        cube([ft, get(s, "flange")[0], get(s, "flange")[1]]);
+                }
+                translate([front - 1, 0, 0]) rotate([0, 90, 0]) cylinder(d=bore, h=-front + 2);
             }
-            translate([ front - 1, 0, 0 ]) rotate([ 0, 90, 0 ]) cylinder(d = bore, h = -front + 2);
+        color("white") {
+            translate([button_x, 0, 0]) rotate([0, 90, 0]) cylinder(d=get(s, "button_d"), h=get(s, "button_t"));
+            for (r = [0, 90])
+                rotate([r, 0, 0]) translate([stopper, -span / 2, -0.6]) cube([button_x - stopper, span, 1.2]);
         }
-        color("white")
-        {
-            translate([ button_x, 0, 0 ]) rotate([ 0, 90, 0 ]) cylinder(d = get(s, "button_d"), h = get(s, "button_t"));
-            for (r = [ 0, 90 ])
-                rotate([ r, 0, 0 ]) translate([ stopper, -span / 2, -0.6 ]) cube([ button_x - stopper, span, 1.2 ]);
-        }
-        color("dimgray") translate([ stopper, 0, 0 ]) rotate([ 0, 90, 0 ]) cylinder(d = bore - 0.2, h = 5);
+        color("dimgray") translate([stopper, 0, 0]) rotate([0, 90, 0]) cylinder(d=bore - 0.2, h=5);
     }
 }

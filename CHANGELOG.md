@@ -40,6 +40,8 @@ and [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
+- The SCAD sources are formatted by topiary 0.8.0, which parses OpenSCAD, in place of
+  clang-format, which treated it as C; CI installs the same version
 - The body prints standing on its front wall, which the frame stops against, so it prints flat
   rather than bridged. For that the window ends in a 45 degree point and the cap's bosses taper
   into the wall; the lid grows to cover the point, and every body grows 15 to 24 mm (the N20

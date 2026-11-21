@@ -13,15 +13,12 @@
  * x = 0 at the button's front face, z = 0 on the syringe axis (the tongue's top). Prints as it stands.
  */
 
-// clang-format off
 include <../lib/struct.scad>;
-// clang-format on
 
 // tap: the pin screw's self-threading hole. boss: the pin boss [d, h].
 // end_d: the tongue's round end, the rod's width.
 // sled: [reach past the pin (how long the rails hold it square), its top's depth under the rod].
 // grip: per side, how far the lips reach over the push-button. clear: back wall to the rod's end.
-// clang-format off
 function clip_spec(syringe, tap, fit, wall, boss, end_d, sled, grip = 0.15, clear = 1) =
     let (
         r = get(syringe, "button_d") / 2 + fit,
@@ -43,10 +40,8 @@ function clip_spec(syringe, tap, fit, wall, boss, end_d, sled, grip = 0.15, clea
             ["half_w", r + wall],
             ["top", r],
     ];
-// clang-format on
 
-module clip(s)
-{
+module clip(s) {
     sy = get(s, "syringe");
     fit = get(s, "fit");
     back = get(s, "back");
@@ -57,41 +52,42 @@ module clip(s)
     bottom = -hw;
     span = get(sy, "plunger_span") / 2 + fit;
     boss = get(s, "boss");
-    difference()
-    {
-        union()
-        {
-            translate([ front, -hw, bottom ]) cube([ back - front, 2 * hw, top - bottom ]);
-            translate([ back - 1, 0, bottom ]) linear_extrude(-bottom) hull()
-            {
-                translate([ 0, -get(s, "end_d") / 2 ]) square([ 1, get(s, "end_d") ]);
-                translate([ pin_x - back + 1, 0 ]) circle(d = get(s, "end_d"));
-            }
-            translate([ pin_x, 0, -1 ]) cylinder(d = boss[0], h = boss[1] + 1);
-            translate([ front, -hw, bottom ]) cube([ get(s, "sled_end") - front, 2 * hw, -get(s, "sled")[1] - bottom ]);
+    difference() {
+        union() {
+            translate([front, -hw, bottom]) cube([back - front, 2 * hw, top - bottom]);
+            translate([back - 1, 0, bottom]) linear_extrude(-bottom) hull() {
+                        translate([0, -get(s, "end_d") / 2]) square([1, get(s, "end_d")]);
+                        translate([pin_x - back + 1, 0]) circle(d=get(s, "end_d"));
+                    }
+            translate([pin_x, 0, -1]) cylinder(d=boss[0], h=boss[1] + 1);
+            translate([front, -hw, bottom]) cube([get(s, "sled_end") - front, 2 * hw, -get(s, "sled")[1] - bottom]);
         }
-        translate([ -fit, -top, -top ]) cube([ get(sy, "button_t") + 2 * fit, 2 * top, 2 * top + 1 ]);
-        translate([ front - 1, -span, -span ]) cube([ -front - fit + 2, 2 * span, top + span + 1 ]);
+        translate([-fit, -top, -top]) cube([get(sy, "button_t") + 2 * fit, 2 * top, 2 * top + 1]);
+        translate([front - 1, -span, -span]) cube([-front - fit + 2, 2 * span, top + span + 1]);
         // slits free the side walls from the end walls above the axis, so they spring past the button
-        for (side = [ -1, 1 ])
-            translate([ front - 1, side > 0 ? top - 0.6 : -top, 0 ]) cube([ back - front + 2, 0.6, top + 1 ]);
-        translate([ pin_x, 0, bottom - 1 ]) cylinder(d = get(s, "tap"), h = -bottom + boss[1] + 2);
+        for (side = [-1, 1])
+            translate([front - 1, side > 0 ? top - 0.6 : -top, 0]) cube([back - front + 2, 0.6, top + 1]);
+        translate([pin_x, 0, bottom - 1]) cylinder(d=get(s, "tap"), h=-bottom + boss[1] + 2);
     }
     // the lips, near the side walls' tops. A polyhedron, not an extruded polygon: 2D polygons snap to a
     // grid, which leaves a sliver against the wall when top is off it (the 1 mL's 5.3).
-    for (side = [ -1, 1 ])
+    for (side = [-1, 1])
     {
         yz = [
-            [ side * (top + 0.5), top - 3 ],
-            [ side * top, top - 2.5 ],
-            [ side * (top - fit - get(s, "grip")), top - 1 ],
-            [ side * top, top ],
-            [ side * (top + 0.5), top ],
+            [side * (top + 0.5), top - 3],
+            [side * top, top - 2.5],
+            [side * (top - fit - get(s, "grip")), top - 1],
+            [side * top, top],
+            [side * (top + 0.5), top],
         ];
         cw = side > 0 ? yz : [for (i = [len(yz) - 1:-1:0]) yz[i]]; // clockwise seen from +x
         n = len(cw);
-        polyhedron(points = [for (x = [ -fit, get(sy, "button_t") + fit ]) for (p = cw)[x, p[0], p[1]]],
-                   faces = concat([[for (i = [0:n - 1]) n + i]], [[for (i = [n - 1:-1:0]) i]],
-                                  [for (i = [0:n - 1])[i, (i + 1) % n, (i + 1) % n + n, i + n]]));
+        polyhedron(
+            points=[for (x = [-fit, get(sy, "button_t") + fit]) for (p = cw) [x, p[0], p[1]]],
+            faces=concat(
+                [[for (i = [0:n - 1]) n + i]], [[for (i = [n - 1:-1:0]) i]],
+                [for (i = [0:n - 1]) [i, (i + 1) % n, (i + 1) % n + n, i + n]]
+            )
+        );
     }
 }

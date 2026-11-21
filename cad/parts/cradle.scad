@@ -15,16 +15,13 @@
  * down; the nut slots open at what is then its top.
  */
 
-// clang-format off
 include <../lib/struct.scad>;
 include <../purchased/motor.scad>;
-// clang-format on
 
 // pocket: the gearbox's depth up into the plate; the cradle holds the rest of it.
 // screw: the plate screws; ear: their flanges' thickness, under the heads; ear_r: the flanges' reach
 // round each screw. set, nut: the set screws and their nuts; fit: per side, round bought stock.
 // wall: the sleeve's; skin: the boss past each nut's slot. set_lengths: stock set screw lengths.
-// clang-format off
 function cradle_spec(
     motor,
     pocket,
@@ -87,11 +84,9 @@ function cradle_spec(
         ["back_x", back[0] + ear_r],
         ["half_y", half_y],
     ];
-// clang-format on
 
 // The cradle, its top face at z = 0, the shaft on the z axis.
-module cradle(s)
-{
+module cradle(s) {
     m = get(s, "motor");
     fit = get(s, "fit");
     depth = get(s, "depth");
@@ -100,40 +95,35 @@ module cradle(s)
     nut = get(s, "nut");
     ear = get(s, "ear");
     sc = get(s, "screw");
-    difference()
-    {
-        union()
-        {
-            translate([ 0, 0, -depth ]) linear_extrude(depth) motor_outline(m, fit + wall);
+    difference() {
+        union() {
+            translate([0, 0, -depth]) linear_extrude(depth) motor_outline(m, fit + wall);
             // a boss out from the wall for each set screw, holding its nut
             for (i = [0:len(sets) - 1])
-                rotate([ 0, 0, sets[i] ]) translate([ 0, -get(s, "boss_hw"), -depth ])
-                    cube([ get(s, "reach")[i] + wall + get(s, "boss_l"), 2 * get(s, "boss_hw"), depth ]);
+                rotate([0, 0, sets[i]]) translate([0, -get(s, "boss_hw"), -depth])
+                        cube([get(s, "reach")[i] + wall + get(s, "boss_l"), 2 * get(s, "boss_hw"), depth]);
             // the flanges the plate screws go through, at the top
             for (h = get(s, "holes"))
-                translate([ 0, 0, -ear ]) linear_extrude(ear) hull()
-                {
-                    translate(h) circle(r = get(s, "ear_r"));
-                    circle(r = 1);
-                }
+                translate([0, 0, -ear]) linear_extrude(ear) hull() {
+                            translate(h) circle(r=get(s, "ear_r"));
+                            circle(r=1);
+                        }
         }
-        translate([ 0, 0, -depth - 1 ]) linear_extrude(depth + 2) motor_outline(m, fit);
+        translate([0, 0, -depth - 1]) linear_extrude(depth + 2) motor_outline(m, fit);
         for (i = [0:len(sets) - 1])
-            rotate([ 0, 0, sets[i] ])
-            {
+            rotate([0, 0, sets[i]]) {
                 r = get(s, "reach")[i];
                 // the set screw's hole out through the wall and boss, and its nut's slot, open at the bottom
-                translate([ 0, 0, -depth / 2 ]) rotate([ 0, 90, 0 ])
-                    cylinder(d = get(get(s, "set"), "clear"), h = r + 50);
-                translate([ r + wall, -get(nut, "e") / 2 - fit, -depth - 1 ])
-                    cube([ get(s, "slot_t"), get(nut, "e") + 2 * fit, depth / 2 + get(nut, "s") / 2 + fit + 1 ]);
+                translate([0, 0, -depth / 2]) rotate([0, 90, 0])
+                        cylinder(d=get(get(s, "set"), "clear"), h=r + 50);
+                translate([r + wall, -get(nut, "e") / 2 - fit, -depth - 1])
+                    cube([get(s, "slot_t"), get(nut, "e") + 2 * fit, depth / 2 + get(nut, "s") / 2 + fit + 1]);
             }
         for (h = get(s, "holes"))
-            translate([ h[0], h[1], -depth - 1 ])
-            {
-                cylinder(d = get(sc, "clear") + 2 * fit, h = depth + 2);
+            translate([h[0], h[1], -depth - 1]) {
+                cylinder(d=get(sc, "clear") + 2 * fit, h=depth + 2);
                 // room for the head and a driver from below, up to the flange
-                cylinder(d = get(sc, "head_d") + 2 * fit + 1, h = depth + 1 - ear);
+                cylinder(d=get(sc, "head_d") + 2 * fit + 1, h=depth + 1 - ear);
             }
     }
 }

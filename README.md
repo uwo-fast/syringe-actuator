@@ -95,7 +95,7 @@ run, and records the mechanism, the part dimensions and their sources, and what 
 Tasks run through [`just`](https://github.com/casey/just); `just --list` shows them all.
 
 ```sh
-just setup   # verify the toolchain: OpenSCAD, clang-format
+just setup   # verify the toolchain: OpenSCAD, topiary
 just check   # formatting and every SCAD file evaluating cleanly; CI runs setup, check and test
              # when anything outside the docs changes
 just test    # every printed part, for every syringe, exports as one closed solid

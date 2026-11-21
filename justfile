@@ -23,23 +23,23 @@ setup:
     set -uo pipefail
     command -v {{OPENSCAD}} >/dev/null || { echo "openscad not found"; exit 1; }
     {{OPENSCAD}} --version 2>&1 | head -1
-    command -v clang-format >/dev/null || echo "warning: clang-format not found; fmt-check will skip"
+    command -v topiary >/dev/null || echo "warning: topiary not found; fmt-check will skip"
     command -v python3 >/dev/null || echo "warning: python3 not found; test cannot check edges"
 
-# Format the SCAD sources in place.
+# Format the SCAD sources in place, with topiary (its config is .topiary/languages.ncl).
 fmt:
-    @[ -d cad ] && find cad -name '*.scad' -print0 | xargs -0 -r clang-format -i; echo "formatted"
+    @git ls-files -z '*.scad' | xargs -0 -r topiary format; echo "formatted"
 
 # Verify formatting (non-mutating).
 fmt-check:
     #!/usr/bin/env bash
     set -uo pipefail
-    command -v clang-format >/dev/null || { echo "skip  formatting (clang-format not installed)"; exit 0; }
-    files=$([ -d cad ] && find cad -name '*.scad' | sort)
+    command -v topiary >/dev/null || { echo "skip  formatting (topiary not installed)"; exit 0; }
+    files=$(git ls-files '*.scad')
     [ -n "$files" ] || { echo "skip  formatting (no SCAD sources yet)"; exit 0; }
     failed=0
     while read -r f; do
-        clang-format --dry-run --Werror "$f" 2>/dev/null || { echo "FAIL  $f  not formatted"; failed=1; }
+        topiary format --check "$f" >/dev/null 2>&1 || { echo "FAIL  $f  not formatted"; failed=1; }
     done <<<"$files"
     [ "$failed" = 0 ] && echo "ok    formatting"
     exit $failed

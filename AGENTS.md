@@ -21,7 +21,7 @@ hardware has to say why a printed part cannot do the job.
 - **CAD** — OpenSCAD, no external libraries. CI runs 2021.01, what Ubuntu 24.04 packages; the gates
   read the exported mesh, so they pass the same on a current nightly, whose Manifold backend makes
   `just qa` far faster
-- **Tooling** — `just`, `clang-format` 18 for `.scad` (config in `.clang-format`), pre-commit with
+- **Tooling** — `just`, `topiary` 0.8.0 for `.scad` (config in `.topiary/languages.ncl`), pre-commit with
   gitleaks, Python 3 standard library only in `tools/`
 
 ## Layout
