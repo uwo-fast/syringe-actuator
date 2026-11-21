@@ -19,7 +19,6 @@
  * pushed in. Bought parts are drawn from catalog figures, simplified.
  */
 
-// clang-format off
 include <purchased/syringes.scad>;
 include <purchased/motors.scad>;
 include <parts/frame.scad>;
@@ -29,10 +28,8 @@ include <parts/clip.scad>;
 include <parts/body.scad>;
 include <parts/cradle.scad>;
 include <lib/section.scad>;
-// clang-format on
 
-// Customizer: one line per setting, so clang-format must leave the dropdown comments whole.
-// clang-format off
+// Customizer: one line per setting, its dropdown in the comment beside it.
 /* [View] */
 part = "assembly"; // [assembly, housed, frame, crank, rod, clip, body, lid, cap, cradle, ring_test, report]
 syringe = "3ml"; // [1ml, 3ml, 5ml-gnr1, 5ml-gnr2, 5ml-gnr1-ga25, 5ml-gnr2-ga25, 10ml, 20ml, 30ml]
@@ -49,7 +46,6 @@ hole = 0.1; // per side: a small hole a screw threads itself into, which prints 
 wall = 3; // the frame's walls either side of the flange's slot and past the motor
 grip = 0.15; // per side: how far the clip's lips reach over the push-button; more holds it tighter
 ring_grip = 0.5; // per side: how much narrower than the barrel the snap ring's opening is; more holds it tighter
-// clang-format on
 
 /* [Hidden] */
 $fn = 48;
@@ -57,10 +53,9 @@ $fn = 48;
 L = actuator(syringe, motor);
 
 // The assembly bare or in its body, or each printed part turned to how it prints; cut open if asked.
-section(section, section_at)
-{
+section(section, section_at) {
     if (part == "assembly" || part == "housed")
-        assembly(L, angle + 360 * $t, bought = show_bought, body = part == "housed");
+        assembly(L, angle + 360 * $t, bought=show_bought, body=part == "housed");
     else if (part == "frame")
         frame(get(L, "frame"));
     else if (part == "crank")
@@ -68,23 +63,22 @@ section(section, section_at)
     else if (part == "rod")
         rod(get(L, "rod"));
     else if (part == "clip")
-        translate([ 0, 0, get(get(L, "clip"), "half_w") ]) clip(get(L, "clip"));
+        translate([0, 0, get(get(L, "clip"), "half_w")]) clip(get(L, "clip"));
     else if (part == "body")
-        let(b = get(L, "body")) rotate([ 0, -90, 0 ]) translate([ -get(b, "x")[0] + get(b, "end_t"), 0, 0 ]) body(b);
+        let (b = get(L, "body")) rotate([0, -90, 0]) translate([-get(b, "x")[0] + get(b, "end_t"), 0, 0]) body(b);
     else if (part == "lid")
-        let(b = get(L, "body")) translate([ -get(b, "x")[1], 0, get(b, "T") + get(b, "wall") + get(b, "lid")[0] ])
-            rotate([ 180, 0, 0 ]) lid(b);
+        let (b = get(L, "body")) translate([-get(b, "x")[1], 0, get(b, "T") + get(b, "wall") + get(b, "lid")[0]])
+            rotate([180, 0, 0]) lid(b);
     else if (part == "cap")
-        let(b = get(L, "body")) rotate([ 0, 90, 0 ]) translate([ -get(b, "x")[1] - get(b, "end_t"), 0, 0 ]) cap(b);
+        let (b = get(L, "body")) rotate([0, 90, 0]) translate([-get(b, "x")[1] - get(b, "end_t"), 0, 0]) cap(b);
     // the frame's front end alone, its snap ring on a stub of plate: a quick print to try the snap on a syringe
     else if (part == "ring_test")
-        let(f = get(L, "frame")) intersection()
-        {
+        let (f = get(L, "frame")) intersection() {
             frame(f);
-            translate([ get(f, "ring_x") - 1, -100, -1 ]) cube([ get(f, "ring")[1] + 6, 200, 200 ]);
+            translate([get(f, "ring_x") - 1, -100, -1]) cube([get(f, "ring")[1] + 6, 200, 200]);
         }
     else if (part == "cradle")
-        rotate([ 180, 0, 0 ]) cradle(get(L, "cradle"));
+        rotate([180, 0, 0]) cradle(get(L, "cradle"));
     else if (part == "report")
         report(L);
     else
@@ -97,19 +91,27 @@ section(section, section_at)
 // motor "auto": the motor syringes.scad pairs with the syringe.
 // For an adapter in another project: `use <cad/main.scad>`, then front_x(), tip_x(), and the body's
 // front_face() and mount_front.
-function actuator(syringe, motor = "auto") = let(chosen = syringe_by_name(syringe),
-                                                 own = motor == "auto" || motor == syringe_motor(syringe),
-                                                 driven = motor_by_name(own ? syringe_motor(syringe) : motor))
-    assert(!is_undef(chosen), str("no syringe '", syringe, "'")) assert(!is_undef(driven),
-                                                                        str("no motor '", motor, "'"))
-        layout(syringe = chosen, motor = driven, pin = m3_shcs, pin_washer = m3_washer, fit = fit, press = press,
-               hole = hole, wall = wall, grip = grip, ring_grip = ring_grip, family = own ? body_family(syringe) : []);
+function actuator(syringe, motor = "auto") =
+    let (
+        chosen = syringe_by_name(syringe),
+        own = motor == "auto" || motor == syringe_motor(syringe),
+        driven = motor_by_name(own ? syringe_motor(syringe) : motor)
+    )
+    assert(!is_undef(chosen), str("no syringe '", syringe, "'"))
+    assert(
+        !is_undef(driven),
+        str("no motor '", motor, "'")
+    )
+    layout(
+        syringe=chosen, motor=driven, pin=m3_shcs, pin_washer=m3_washer, fit=fit, press=press,
+        hole=hole, wall=wall, grip=grip, ring_grip=ring_grip, family=own ? body_family(syringe) : []
+    );
 
 // The x of the front wall's outer face, the face an adapter meets.
-function front_x(L) = let(b = get(L, "body")) get(b, "x")[0] - get(b, "end_t");
+function front_x(L) = let (b = get(L, "body")) get(b, "x")[0] - get(b, "end_t");
 
 // The x of the syringe's front end: the nozzle's, or its luer-lock collar's if that reaches further.
-function tip_x(L) = let(s = get(L, "syringe")) - get(s, "flange_t") - get(s, "barrel_l") - get(s, "nozzle_l");
+function tip_x(L) = let (s = get(L, "syringe")) -get(s, "flange_t") - get(s, "barrel_l") - get(s, "nozzle_l");
 
 // plate_t: stiff enough over the frame's length.
 // pocket: the gearbox's depth into the plate, which locates it square.
@@ -128,7 +130,6 @@ function tip_x(L) = let(s = get(L, "syringe")) - get(s, "flange_t") - get(s, "ba
 // pin_l: pin screw length. window: body window wider than the flanges by this, room for fingers.
 // family: the rows sharing this syringe's body, itself included; [] for a body of its own.
 // fix: [axis_z, frame width] a family sets; mech_only: skip the body. Both for layout()'s own calls.
-// clang-format off
 function layout(
     syringe,
     motor,
@@ -364,98 +365,98 @@ function layout(
         ["cradle", cradle],
         ["cradle_screw_l", cradle_screw_l],
     ];
-// clang-format on
 
 // The syringe axis's height over the plate's underside, for a clip.
 function axis_height(plate_t, float, clip) = plate_t + float + get(clip, "half_w");
 
 // The rod's edge at x, at its widest over a turn: how far it swings off the axis there, plus half its width.
-function rod_edge(x, crank_x, throw, rod_l,
-                  half_w) = half_w +
-                            max([
-                                for (a = [0:2:358]) let(p = [ crank_x + throw *cos(a), throw *sin(a) ],
-                                                        c = p[0] - sqrt(rod_l * rod_l - p[1] * p[1])) x >= c &&
-                                        x <= p[0]
-                                    ? abs(p[1]) * (x - c) / (p[0] - c)
-                                    : 0,
-                            ]);
+function rod_edge(
+    x,
+    crank_x,
+    throw,
+    rod_l,
+    half_w
+) =
+    half_w + max(
+        [
+            for (a = [0:2:358]) let (
+                p = [crank_x + throw * cos(a), throw * sin(a)],
+                c = p[0] - sqrt(rod_l * rod_l - p[1] * p[1])
+            ) x >= c && x <= p[0] ? abs(p[1]) * (x - c) / (p[0] - c)
+            : 0,
+        ]
+    );
 
 // The crank pin's [x, y] at crank angle a.
-function crank_pin(L, a) = [ get(L, "crank_x"), 0 ] + get(L, "throw") * [ cos(a), sin(a) ];
+function crank_pin(L, a) = [get(L, "crank_x"), 0] + get(L, "throw") * [cos(a), sin(a)];
 
 // The clip pin's x at crank angle a; it stays on the axis.
 function clip_pin_x(L, a) = crank_pin(L, a)[0] - sqrt(pow(get(L, "rod_l"), 2) - pow(crank_pin(L, a)[1], 2));
 
 // ---- Assembly and report
 
-module assembly(L, a, bought = true, body = false)
-{
+module assembly(L, a, bought = true, body = false) {
     z = get(L, "axis_z");
     cp = crank_pin(L, a);
     px = clip_pin_x(L, a);
     button_x = px - get(get(L, "clip"), "pin_x");
     color("wheat") frame(get(L, "frame"));
-    color("tan") translate([ get(L, "crank_x"), 0, 0 ]) cradle(get(L, "cradle"));
-    color("gold") translate([ get(L, "crank_x"), 0, get(L, "hub_z") ]) rotate([ 0, 0, a ]) crank(get(L, "crank"));
-    color("mediumseagreen") translate([ px, 0, z ]) rotate([ 0, 0, atan2(cp[1], cp[0] - px) ]) rod(get(L, "rod"));
-    color("royalblue") translate([ button_x, 0, z ]) clip(get(L, "clip"));
+    color("tan") translate([get(L, "crank_x"), 0, 0]) cradle(get(L, "cradle"));
+    color("gold") translate([get(L, "crank_x"), 0, get(L, "hub_z")]) rotate([0, 0, a]) crank(get(L, "crank"));
+    color("mediumseagreen") translate([px, 0, z]) rotate([0, 0, atan2(cp[1], cp[0] - px)]) rod(get(L, "rod"));
+    color("royalblue") translate([button_x, 0, z]) clip(get(L, "clip"));
     if (body)
-        color("lightsteelblue", 0.35)
-        {
+        color("lightsteelblue", 0.35) {
             body(get(L, "body"));
             lid(get(L, "body"));
             cap(get(L, "body"));
         }
     if (body && bought)
         mount_screws(L);
-    if (bought)
-    {
-        translate([ 0, 0, z ]) syringe(get(L, "syringe"), button_x);
-        translate([ get(L, "crank_x"), 0, get(L, "pocket") ]) motor(get(L, "motor"));
-        screws(L, [ cp, [ px, 0 ] ]);
+    if (bought) {
+        translate([0, 0, z]) syringe(get(L, "syringe"), button_x);
+        translate([get(L, "crank_x"), 0, get(L, "pocket")]) motor(get(L, "motor"));
+        screws(L, [cp, [px, 0]]);
     }
 }
 
 // Pin screws and washers on their bosses at pins [[x, y], ...]; motor screws in their counterbores.
 // A pin screw's length is under its head.
-module screws(L, pins)
-{
+module screws(L, pins) {
     pin = get(L, "pin");
     washer = get(L, "pin_washer");
     ms = get(L, "motor_screw");
     seat = get(L, "axis_z") + get(get(L, "crank"), "boss")[1];
-    color("silver") for (p = pins) translate([ p[0], p[1], seat ])
-    {
-        washer(washer);
-        screw(pin, get(L, "pin_l"), get(washer, "h"));
-    }
-    color("dimgray") for (dx = [ -1, 1 ] * get(get(L, "motor"), "hole_pitch") / 2)
-        translate([ get(L, "crank_x") + dx, 0, get(L, "motor_head_z") ]) if (get(ms, "head") == "flat")
+    color("silver")for (p = pins)
+        translate([p[0], p[1], seat]) {
+            washer(washer);
+            screw(pin, get(L, "pin_l"), get(washer, "h"));
+        }
+    color("dimgray")for (dx = [-1, 1] * get(get(L, "motor"), "hole_pitch") / 2)
+        translate([get(L, "crank_x") + dx, 0, get(L, "motor_head_z")]) if (get(ms, "head") == "flat")
             flat_screw(ms, get(L, "motor_screw_l"));
-    else screw(ms, get(L, "motor_screw_l"), 0);
+        else
+            screw(ms, get(L, "motor_screw_l"), 0);
 }
 
 // M3 socket heads through the knocked-out mounting holes, heads inside, shown 6 past the body.
 // Fit the front ones first. The top ones can go in first too, if the frame slides in with its crank
 // along the axis; turned across, the crank's pin screws hit them.
-module mount_screws(L)
-{
+module mount_screws(L) {
     b = get(L, "body");
     sc = get(b, "screw");
     x = get(b, "x");
-    color("silver")
-    {
+    color("silver") {
         for (h = get(b, "mount_front"))
-            translate([ x[0], h[0], h[1] ]) rotate([ 0, 90, 0 ]) screw(sc, get(b, "end_t") + 6, 0);
+            translate([x[0], h[0], h[1]]) rotate([0, 90, 0]) screw(sc, get(b, "end_t") + 6, 0);
         for (h = get(b, "mount_top"))
-            translate([ h[0], h[1], get(b, "T") ]) rotate([ 180, 0, 0 ])
-                screw(sc, get(b, "wall") + get(b, "lid")[0] + 6, 0);
+            translate([h[0], h[1], get(b, "T")]) rotate([180, 0, 0])
+                    screw(sc, get(b, "wall") + get(b, "lid")[0] + 6, 0);
     }
 }
 
 // Echoes what to buy and the derived figures.
-module report(L)
-{
+module report(L) {
     f = get(L, "frame");
     throw = get(L, "throw");
     m = get(L, "motor");
@@ -464,37 +465,65 @@ module report(L)
     // the crank's peak torque is about the plunger's force times the throw; kg.cm, as gearmotors are rated
     kgcm = throw / 1000 / 0.0980665;
     area = PI * pow(get(sy, "bore_d"), 2) / 4;
-    echo(str("torque at the crank, estimated: ", get(L, "friction") * kgcm, " kg.cm on an open line (",
-             get(L, "friction"), " N of seal friction, assumed), and ", 0.1 * area * kgcm,
-             " more per bar of vacuum or back-pressure; keep it under ", get(m, "torque"), " kg.cm for this motor"));
-    echo(str("stroke ", 2 * throw, ", crank throw ", throw, ", rod ", get(L, "rod_l"), ", peak rod angle ",
-             asin(throw / get(L, "rod_l")), " deg"));
-    echo(str("frame ", get(f, "x")[1] - get(f, "x")[0], " x ", get(f, "w"), ", syringe axis ", get(L, "axis_z"),
-             " above its underside"));
+    echo(
+        str(
+            "torque at the crank, estimated: ", get(L, "friction") * kgcm, " kg.cm on an open line (",
+            get(L, "friction"), " N of seal friction, assumed), and ", 0.1 * area * kgcm,
+            " more per bar of vacuum or back-pressure; keep it under ", get(m, "torque"), " kg.cm for this motor"
+        )
+    );
+    echo(
+        str(
+            "stroke ", 2 * throw, ", crank throw ", throw, ", rod ", get(L, "rod_l"), ", peak rod angle ",
+            asin(throw / get(L, "rod_l")), " deg"
+        )
+    );
+    echo(
+        str(
+            "frame ", get(f, "x")[1] - get(f, "x")[0], " x ", get(f, "w"), ", syringe axis ", get(L, "axis_z"),
+            " above its underside"
+        )
+    );
     b = get(L, "body");
-    echo(str(
-        "body ", get(b, "x")[1] - get(b, "x")[0] + 2 * get(b, "end_t"), " long; ",
-        [
-            for (sec =
-                     [
-                         get(b, "front"),
-                         get(b, "back"),
-                     ])[2 * (sec[0] + get(b, "wall")), get(b, "T") + get(b, "lid")[0] - sec[1] + 2 * get(b, "wall")],
-        ],
-        " wide x high at the front and the back, outside, with the lid"));
-    echo(str("screws: 2 x M3 x ", get(L, "pin_l"), " with 2 x M3 washer (crank pin, clip pin), ", get(L, "pin_thread"),
-             " of thread; 2 x ", get(get(L, "motor_screw"), "name"), " x ", get(L, "motor_screw_l"), " (motor), ",
-             get(L, "motor_thread"), " of it into the gearbox; 2 x M3 x 10 (cap); 1 x M3 x ",
-             get(get(L, "crank"), "set_l"), " ", get(get(get(L, "crank"), "set"), "name"), " and 1 x M3 ",
-             get(get(get(L, "crank"), "nut"), "name"), " (crank)"));
+    echo(
+        str(
+            "body ", get(b, "x")[1] - get(b, "x")[0] + 2 * get(b, "end_t"), " long; ",
+            [
+                for (
+                    sec = [
+                        get(b, "front"),
+                        get(b, "back"),
+                    ]
+                ) [2 * (sec[0] + get(b, "wall")), get(b, "T") + get(b, "lid")[0] - sec[1] + 2 * get(b, "wall")],
+            ],
+            " wide x high at the front and the back, outside, with the lid"
+        )
+    );
+    echo(
+        str(
+            "screws: 2 x M3 x ", get(L, "pin_l"), " with 2 x M3 washer (crank pin, clip pin), ", get(L, "pin_thread"),
+            " of thread; 2 x ", get(get(L, "motor_screw"), "name"), " x ", get(L, "motor_screw_l"), " (motor), ",
+            get(L, "motor_thread"), " of it into the gearbox; 2 x M3 x 10 (cap); 1 x M3 x ",
+            get(get(L, "crank"), "set_l"), " ", get(get(get(L, "crank"), "set"), "name"), " and 1 x M3 ",
+            get(get(get(L, "crank"), "nut"), "name"), " (crank)"
+        )
+    );
     c = get(L, "cradle");
-    echo(str("cradle: 2 x M3 x ", get(L, "cradle_screw_l"), " (into the plate from below); 2 x M3 x ", get(c, "set_l"),
-             " ", get(get(c, "set"), "name"), " and 2 x M3 ", get(get(c, "nut"), "name"),
-             " (against the gearbox); blue threadlocker on every motor and cradle screw"));
+    echo(
+        str(
+            "cradle: 2 x M3 x ", get(L, "cradle_screw_l"), " (into the plate from below); 2 x M3 x ", get(c, "set_l"),
+            " ", get(get(c, "set"), "name"), " and 2 x M3 ", get(get(c, "nut"), "name"),
+            " (against the gearbox); blue threadlocker on every motor and cradle screw"
+        )
+    );
     mf = get(b, "mount_front");
     mt = get(b, "mount_top");
-    echo(str("mounting, knockouts for M3: 4 in the front, ", mf[3][0] - mf[0][0], " across x ", mf[3][1] - mf[0][1],
-             " up, centred ", (mf[0][1] + mf[3][1]) / 2, " over the plate's underside, where the syringe's axis is ",
-             get(L, "axis_z"), "; 4 in the roof's shoulders, ", mt[3][1] - mt[0][1], " across x ", mt[3][0] - mt[0][0],
-             " along, centred ", get(b, "x")[1] - (mt[0][0] + mt[3][0]) / 2, " in front of the back end"));
+    echo(
+        str(
+            "mounting, knockouts for M3: 4 in the front, ", mf[3][0] - mf[0][0], " across x ", mf[3][1] - mf[0][1],
+            " up, centred ", (mf[0][1] + mf[3][1]) / 2, " over the plate's underside, where the syringe's axis is ",
+            get(L, "axis_z"), "; 4 in the roof's shoulders, ", mt[3][1] - mt[0][1], " across x ", mt[3][0] - mt[0][0],
+            " along, centred ", get(b, "x")[1] - (mt[0][0] + mt[3][0]) / 2, " in front of the back end"
+        )
+    );
 }

@@ -8,11 +8,8 @@
  * z = 0 at the underside, the clip end at the origin, the crank end on +x. Prints flat.
  */
 
-// clang-format off
 include <../lib/struct.scad>;
-// clang-format on
 
-// clang-format off
 // hole: the bore round each boss.
 function rod_spec(hole, len, t, w) =
     [
@@ -22,20 +19,16 @@ function rod_spec(hole, len, t, w) =
         ["t", t],
         ["w", w],
     ];
-// clang-format on
 
-module rod(s)
-{
+module rod(s) {
     len = get(s, "len");
     t = get(s, "t");
-    difference()
-    {
-        linear_extrude(t) hull()
-        {
-            circle(d = get(s, "w"));
-            translate([ len, 0 ]) circle(d = get(s, "w"));
-        }
-        for (x = [ 0, len ])
-            translate([ x, 0, -1 ]) cylinder(d = get(s, "hole"), h = t + 2);
+    difference() {
+        linear_extrude(t) hull() {
+                circle(d=get(s, "w"));
+                translate([len, 0]) circle(d=get(s, "w"));
+            }
+        for (x = [0, len])
+            translate([x, 0, -1]) cylinder(d=get(s, "hole"), h=t + 2);
     }
 }

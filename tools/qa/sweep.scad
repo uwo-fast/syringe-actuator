@@ -1,8 +1,6 @@
 // The body, lid and cap against one other thing at crank angle a, for tools/qa/qa.sh: what the
 // intersection leaves is a collision. Run with -D 'part="report"' so main draws nothing of its own.
-// clang-format off
 include <../../cad/main.scad>;
-// clang-format on
 
 a = 0;
 other = "crank";

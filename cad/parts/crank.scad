@@ -12,9 +12,7 @@
  * z = 0 at the underside, shaft on the z axis, pin on +x. Prints as it stands.
  */
 
-// clang-format off
 include <../lib/struct.scad>;
-// clang-format on
 
 // tap: the pin screw's self-threading hole. throw: shaft axis to pin axis.
 // press: per side, printed bore on the steel shaft. h: underside to the top face the rod lies on.
@@ -22,7 +20,6 @@ include <../lib/struct.scad>;
 // end_d: the pin end, the rod's width. set, nut: grub screw and its nut, in a slot from the top.
 // fit: per side, round them. web: shaft flat to nut. skin: lobe past the nut. floor: under the nut slot.
 // hub_d: hub width. set_lengths: stock set screw lengths; the longest within the lobe is chosen.
-// clang-format off
 function crank_spec(
     motor,
     tap,
@@ -72,57 +69,49 @@ function crank_spec(
         // the grub screw's length, its tip on the flat and its end inside the lobe
         ["set_l", set_l],
     ];
-// clang-format on
 
 // The shaft's D section, grown by press all round: round d, flat at shaft_flat across.
-module d_shaft(motor, press)
-{
+module d_shaft(motor, press) {
     d = get(motor, "shaft_d");
     flat = get(motor, "shaft_flat") - d / 2 + press;
-    intersection()
-    {
-        circle(d = d + 2 * press);
-        translate([ -d, -d ]) square([ 2 * d, d + flat ]);
+    intersection() {
+        circle(d=d + 2 * press);
+        translate([-d, -d]) square([2 * d, d + flat]);
     }
 }
 
-module crank(s)
-{
+module crank(s) {
     h = get(s, "h");
     throw = get(s, "throw");
     boss = get(s, "boss");
-    difference()
-    {
-        union()
-        {
+    difference() {
+        union() {
             // the arm, and the lobe behind the hub that holds the grub screw
-            linear_extrude(h) hull()
-            {
-                translate([ -get(s, "back") + get(s, "hub_d") / 2, 0 ]) circle(d = get(s, "hub_d"));
-                translate([ throw, 0 ]) circle(d = get(s, "end_d"));
-            }
-            translate([ throw, 0, h - 1 ]) cylinder(d = boss[0], h = boss[1] + 1);
+            linear_extrude(h) hull() {
+                    translate([-get(s, "back") + get(s, "hub_d") / 2, 0]) circle(d=get(s, "hub_d"));
+                    translate([throw, 0]) circle(d=get(s, "end_d"));
+                }
+            translate([throw, 0, h - 1]) cylinder(d=boss[0], h=boss[1] + 1);
         }
         // D only as far as the shaft's flat runs (a GA25's stops short of its bushing); round below.
         // The flat faces -x, towards the grub screw.
         m = get(s, "motor");
         bore = get(s, "bore");
-        if (has(m, "flat_l") && get(m, "flat_l") < bore)
-        {
+        if (has(m, "flat_l") && get(m, "flat_l") < bore) {
             fl = get(m, "flat_l");
-            translate([ 0, 0, -1 ]) cylinder(d = get(m, "shaft_d") + 2 * get(s, "press"), h = bore - fl + 1);
-            translate([ 0, 0, bore - fl - 0.5 ]) linear_extrude(fl + 0.5) rotate(90) d_shaft(m, get(s, "press"));
+            translate([0, 0, -1]) cylinder(d=get(m, "shaft_d") + 2 * get(s, "press"), h=bore - fl + 1);
+            translate([0, 0, bore - fl - 0.5]) linear_extrude(fl + 0.5) rotate(90) d_shaft(m, get(s, "press"));
         }
         else
-            translate([ 0, 0, -1 ]) linear_extrude(bore + 1) rotate(90) d_shaft(m, get(s, "press"));
-        translate([ throw, 0, -1 ]) cylinder(d = get(s, "tap"), h = h + boss[1] + 2);
+            translate([0, 0, -1]) linear_extrude(bore + 1) rotate(90) d_shaft(m, get(s, "press"));
+        translate([throw, 0, -1]) cylinder(d=get(s, "tap"), h=h + boss[1] + 2);
         // the grub screw's hole back along -x through the lobe, and the nut's slot across it, open at the top
         fit = get(s, "fit");
         nut = get(s, "nut");
         slot = get(s, "slot");
-        translate([ 0, 0, get(s, "set_z") ]) rotate([ 0, -90, 0 ])
-            cylinder(d = get(get(s, "set"), "clear"), h = get(s, "back") + 1);
-        translate([ -slot[1], -get(nut, "e") / 2 - fit, get(s, "set_z") - get(nut, "s") / 2 - fit ])
-            cube([ slot[1] - slot[0], get(nut, "e") + 2 * fit, h ]);
+        translate([0, 0, get(s, "set_z")]) rotate([0, -90, 0])
+                cylinder(d=get(get(s, "set"), "clear"), h=get(s, "back") + 1);
+        translate([-slot[1], -get(nut, "e") / 2 - fit, get(s, "set_z") - get(nut, "s") / 2 - fit])
+            cube([slot[1] - slot[0], get(nut, "e") + 2 * fit, h]);
     }
 }

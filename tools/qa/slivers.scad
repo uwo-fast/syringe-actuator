@@ -1,9 +1,7 @@
 // For tools/qa/qa.sh: a printed part's section at xc along axis, in [-z, y], and what in it is
 // thinner than 2 * e: material ("material") or air ("gap") that an opening or a closing by e
 // removes. Run with -D 'part="report"' so main draws nothing itself.
-// clang-format off
 include <../../cad/main.scad>;
-// clang-format on
 
 xc = 0;
 what = "material";

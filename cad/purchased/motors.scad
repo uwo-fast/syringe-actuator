@@ -8,11 +8,9 @@
  * states it but the parts need a number today. Measure and replace both.
  */
 
-// clang-format off
 include <../lib/struct.scad>;
 include <fasteners.scad>;
 use <motor.scad>;
-// clang-format on
 
 // shape: gearbox and can section, "rect" (w across y, h across x) or "round" (gearbox_d, can_d).
 // mount: [screw, length, counterbore [d, depth] in the plate] holding the gearbox to the plate.
@@ -25,10 +23,21 @@ use <motor.scad>;
 // Counterbore: room for an ISO 7045 pan head; the flat heads bought sit on the hole's rim (printed, works).
 // torque: Pololu's advice for this gearbox, instantaneous.
 n20_1000 = [
-    [ "name", "N20 inline gearmotor, 12 V 1000:1" ], [ "shape", "rect" ], [ "w", 12 ], [ "h", 10 ],
-    [ "gearbox_l", 12.5 ], [ "can_l", 16.2 ], [ "shaft_d", 3 ], [ "shaft_flat", 2.5 ], [ "shaft_l", 9 ],
-    [ "bushing_d", 4 ], [ "bushing_h", 0.7 ], [ "hole_pitch", 9 ], [ "tail_l", 3 ],
-    [ "mount", [ m1_6_flat, 3, [ 3.2, 1.3 ] ] ], [ "torque", 2.5 ]
+    ["name", "N20 inline gearmotor, 12 V 1000:1"],
+    ["shape", "rect"],
+    ["w", 12],
+    ["h", 10],
+    ["gearbox_l", 12.5],
+    ["can_l", 16.2],
+    ["shaft_d", 3],
+    ["shaft_flat", 2.5],
+    ["shaft_l", 9],
+    ["bushing_d", 4],
+    ["bushing_h", 0.7],
+    ["hole_pitch", 9],
+    ["tail_l", 3],
+    ["mount", [m1_6_flat, 3, [3.2, 1.3]]],
+    ["torque", 2.5],
 ];
 
 // GA25YN370, 12 V 30 rpm, round 25 mm, for the larger syringes. HERCHR, Amazon.ca B0BX6B91L9; also sold
@@ -44,14 +53,27 @@ n20_1000 = [
 // together: leave them in.
 // torque: Pololu's continuous advice for its 25 mm metal gearboxes; the seller gives 12 kgf.cm at stall.
 ga25_30 = [
-    [ "name", "GA25YN370 gearmotor, 12 V 30 rpm" ], [ "shape", "round" ], [ "gearbox_d", 25 ], [ "gearbox_l", 26.8 ],
-    [ "can_d", 24.3 ], [ "can_l", 30.8 ], [ "shaft_d", 4 ], [ "shaft_flat", 3.5 ], [ "shaft_l", 12.5 ], [ "flat_l", 8 ],
-    [ "bushing_d", 7 ], [ "bushing_h", 2.5 ], [ "hole_pitch", 17 ], [ "hole_depth", 3.5 ], [ "tail_l", 1.75 ],
-    [ "mount", [ m3_button, 4, [ 5.7, 1.65 ] ] ], [ "torque", 4 ]
+    ["name", "GA25YN370 gearmotor, 12 V 30 rpm"],
+    ["shape", "round"],
+    ["gearbox_d", 25],
+    ["gearbox_l", 26.8],
+    ["can_d", 24.3],
+    ["can_l", 30.8],
+    ["shaft_d", 4],
+    ["shaft_flat", 3.5],
+    ["shaft_l", 12.5],
+    ["flat_l", 8],
+    ["bushing_d", 7],
+    ["bushing_h", 2.5],
+    ["hole_pitch", 17],
+    ["hole_depth", 3.5],
+    ["tail_l", 1.75],
+    ["mount", [m3_button, 4, [5.7, 1.65]]],
+    ["torque", 4],
 ];
 
 // The motors, by the Customizer's names.
-motors = [ [ "n20", n20_1000 ], [ "ga25", ga25_30 ] ];
+motors = [["n20", n20_1000], ["ga25", ga25_30]];
 
 // The motor the Customizer names, or undef.
 function motor_by_name(name) = [for (r = motors) if (r[0] == name) r[1]][0];
