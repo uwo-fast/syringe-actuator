@@ -7,8 +7,13 @@ and [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [0.1.0] - 2026-11-21
+
 ### Added
 
+- The public interface for other projects, listed in the README: `actuator()`, `front_x()`,
+  `tip_x()`, `front_face()`, the layout's and the body's named fields, the body, lid and cap, and
+  the preset names
 - A cradle under the plate that grips the motor's gearbox with two set screws, so it cannot rock
   its screws loose; the motor now stands with its screws along the stroke
 - GA25 builds of both 5 mL syringes, `5ml-gnr1-ga25` and `5ml-gnr2-ga25`, sharing one body

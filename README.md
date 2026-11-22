@@ -82,6 +82,26 @@ run, and records the mechanism, the part dimensions and their sources, and what 
    and `front_face(get(L, "body"))` give the front wall's outer face, the body's `mount_front` and
    `mount_top` the holes, and `tip_x(L)` the syringe's tip, once the syringe's `nozzle_l` is known.
 
+## Using it from another project
+
+Another OpenSCAD project can draw an adapter, or the actuator itself, from the layout:
+`use <cad/main.scad>`, at a tagged release. These names are the public interface:
+
+| Name | What it gives |
+| --- | --- |
+| `actuator(name, motor = "auto")` | the layout for a preset by its name below; `motor` is `"auto"`, `"n20"` or `"ga25"` |
+| `front_x(L)` | the x of the front wall's outer face, the face an adapter meets |
+| `tip_x(L)` | the x of the syringe's front end, where its `nozzle_l` is known |
+| `front_face(get(L, "body"))` | the front wall's outline in [y, z] |
+| `get(L, "axis_z")`, `"syringe"`, `"body"` | the syringe axis's height, the syringe's row, the body's spec |
+| the body's `"mount_front"`, `"mount_top"`, `"end_t"`, `"x"` | the mounting holes, the front wall's thickness, the inside's [front, back] x |
+| `body()`, `lid()`, `cap()` | the printed body, lid and cap, drawn from the body's spec |
+
+The presets: `1ml`, `3ml`, `5ml-gnr1`, `5ml-gnr2`, `5ml-gnr1-ga25`, `5ml-gnr2-ga25`, `10ml`,
+`20ml`, `30ml`. Renaming or removing a preset, or changing what one of these names gives, is a
+breaking change; while the version is 0.x, it comes in a new minor version (0.2.0). A preset's
+numbers can still change in any release when its syringe is re-measured, so pin a tag, not `main`.
+
 ## Repository layout
 
 - `cad/`: the OpenSCAD source; `main.scad` draws the assembly or any printed part,
