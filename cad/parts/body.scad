@@ -272,7 +272,7 @@ module lid_rail_section(s, out) {
 function bump_x(s) = get(s, "lid_x")[1] - 1.5;
 
 // The lid, shut: its bump sits in the notch at the window's back edge; grooves near its front give a
-// thumb grip.
+// thumb grip; a tab on its front end closes the barrel's slot in the front wall.
 module lid(s) {
     lx = get(s, "lid_x");
     top = get(s, "T") + get(s, "wall");
@@ -281,6 +281,10 @@ module lid(s) {
     difference() {
         union() {
             along_x(lx[0], lx[1] - lx[0]) lid_section(s);
+            // a tab out from the front end, through the barrel's slot in the front wall's lip to its outer
+            // face, so the shut lid closes the slot at its own level and no light gets in over the barrel
+            let (x0 = get(s, "x")[0] - get(s, "end_t"), w = get(s, "barrel_d") - 2 * get(s, "slide"))
+            translate([x0, -w / 2, top]) cube([lx[0] - x0 + 0.5, w, t]);
             translate([bump_x(s), 0, top]) rotate([90, 0, 0]) linear_extrude(2, center=true)
                         polygon([[-1.5, 0.5], [0, -h], [1.5, 0.5]]);
         }
