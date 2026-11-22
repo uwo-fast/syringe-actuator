@@ -294,6 +294,19 @@ module lid(s) {
     }
 }
 
+// An optional plate over the front face, for a unit with nothing mounted on its front: the face's outline,
+// t thick, through which the front mounting screws pass to nuts outside it, and a hole fit a side over the
+// barrel of barrel_od. With the lid's tab it shuts out light. Drawn flat in [y, z], as it prints.
+module front_plate(s, barrel_od, t = 2) {
+    d = get(get(s, "screw"), "clear") + 2 * get(s, "fit");
+    linear_extrude(t) difference() {
+            polygon(front_face(s));
+            for (h = get(s, "mount_front"))
+                translate(h) circle(d=d);
+            translate([0, get(s, "axis_z")]) circle(d=barrel_od + 2 * get(s, "fit"));
+        }
+}
+
 // The body: shell and cuts, then the lid rails, added after the cuts so no cutter reaches their lips.
 // The rails run out to the shell's sides, filling the roof's shoulders flush over the wider back: no fin
 // to snap, no inside corner to clean. Mounting holes last, sealed by a knockout skin.

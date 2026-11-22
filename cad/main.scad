@@ -31,7 +31,7 @@ include <lib/section.scad>;
 
 // Customizer: one line per setting, its dropdown in the comment beside it.
 /* [View] */
-part = "assembly"; // [assembly, housed, frame, crank, rod, clip, body, lid, cap, cradle, ring_test, report]
+part = "assembly"; // [assembly, housed, frame, crank, rod, clip, body, lid, cap, cradle, front_plate, ring_test, report]
 syringe = "3ml"; // [1ml, 3ml, 5ml-gnr1, 5ml-gnr2, 5ml-gnr1-ga25, 5ml-gnr2-ga25, 10ml, 20ml, 30ml]
 motor = "auto"; // [auto, n20, ga25]
 angle = 180; // [0:5:355]
@@ -77,6 +77,8 @@ section(section, section_at) {
             frame(f);
             translate([get(f, "ring_x") - 1, -100, -1]) cube([get(f, "ring")[1] + 6, 200, 200]);
         }
+    else if (part == "front_plate")
+        front_plate(get(L, "body"), get(get(L, "syringe"), "barrel_od"));
     else if (part == "cradle")
         rotate([180, 0, 0]) cradle(get(L, "cradle"));
     else if (part == "report")
@@ -515,6 +517,9 @@ module report(L) {
             " ", get(get(c, "set"), "name"), " and 2 x M3 ", get(get(c, "nut"), "name"),
             " (against the gearbox); blue threadlocker on every motor and cradle screw"
         )
+    );
+    echo(
+        "front plate, optional: 4 x M3 x 10 from inside the body through its front knockouts, and 4 x M3 nuts on the plate"
     );
     mf = get(b, "mount_front");
     mt = get(b, "mount_top");
