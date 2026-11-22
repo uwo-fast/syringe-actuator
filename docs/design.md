@@ -69,7 +69,11 @@ mL's; `part="report"` gives any syringe's.
     rails along the roof between a lip on the front wall and the cap; a bump under its back end
     clicks into a notch when it is shut and runs in a groove the rest of its travel. Over the wider
     back the rails run out to the sides, filling the roof's shoulders flush with their tops, so they
-    cannot snap off and leave no inside corner to clean.
+    cannot snap off and leave no inside corner to clean. A tab on the lid's front end fills the
+    barrel's slot through the front wall's lip, so the shut lid closes it at its own level. An
+    optional front plate in the front face's outline, held by the four front mounting screws and
+    nuts, with a hole just over the barrel, closes the rest of the slot when nothing is mounted on
+    the front.
   - _Mounting._ Two patterns of four M3 clearance holes, each sealed by a 0.6 mm knockout skin at
     the outer face until a user drills or punches the ones they use; the screws' heads sit inside.
     One is through the front wall beside the barrel's slot, 10 up and the narrowest multiple of 10

@@ -36,8 +36,9 @@ run, and records the mechanism, the part dimensions and their sources, and what 
 
 2. **Export the parts.** `just build` writes every preset's printed parts to `build/<syringe>/`, or
    open `cad/main.scad` in OpenSCAD and pick the syringe and the `part` in the Customizer. The parts
-   are the frame, crank, rod, clip, cradle, body, lid and cap. `ring_test`, not in `build/` but in
-   the Customizer and `just export`, prints the syringe's snap ring alone, to try it first.
+   are the frame, crank, rod, clip, cradle, body, lid and cap, and an optional front plate.
+   `ring_test`, not in `build/` but in the Customizer and `just export`, prints the syringe's snap
+   ring alone, to try it first.
 
 3. **Buy the hardware.** `openscad -D 'syringe="3ml"' -D 'part="report"' -o r.csg cad/main.scad`
    lists it for a syringe:
@@ -52,6 +53,7 @@ run, and records the mechanism, the part dimensions and their sources, and what 
    | Cap screws | all | 2 x M3 x 10 |
    | Crank | all | 1 x M3 x 6 set screw, cup point (ISO 4026), and 1 x M3 nut |
    | Cradle | all | 2 x M3 x 8 socket head; 2 x M3 x 6 set screw, cup point, and 2 x M3 nut |
+   | Front plate (optional) | all | 4 x M3 x 10 socket head and 4 x M3 nuts |
    | Threadlocker | all | blue (medium strength), on every motor and cradle screw |
 
 4. **Print.** PLA or PETG, no supports. The body stands on its front wall: 242 mm tall for the N20
@@ -81,6 +83,9 @@ run, and records the mechanism, the part dimensions and their sources, and what 
    take its numbers from the layout: `use <cad/main.scad>`, then `L = actuator("3ml")`; `front_x(L)`
    and `front_face(get(L, "body"))` give the front wall's outer face, the body's `mount_front` and
    `mount_top` the holes, and `tip_x(L)` the syringe's tip, once the syringe's `nozzle_l` is known.
+   With nothing on the front, the optional `front_plate` closes it against light: the same four
+   screws go through it, from inside the body, to nuts on the plate. Fit it after loading the
+   syringe, as its hole only just passes the barrel.
 
 ## Using it from another project
 
