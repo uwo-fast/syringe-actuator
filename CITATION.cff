@@ -9,7 +9,7 @@ authors:
   - family-names: "Brooks"
     given-names: "Cameron K."
     # orcid: "https://orcid.org/0000-0000-0000-0000"
-version: "0.1.1"
+version: "0.1.2"
 date-released: "2026-11-22"
 repository-code: "https://github.com/uwo-fast/syringe-actuator"
 # Only the software licence goes here. A licence list in CFF means "either licence,
