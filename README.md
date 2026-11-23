@@ -99,6 +99,7 @@ Another OpenSCAD project can draw an adapter, or the actuator itself, from the l
 | `tip_x(L)` | the x of the syringe's front end, where its `nozzle_l` is known |
 | `front_face(get(L, "body"))` | the front wall's outline in [y, z] |
 | `get(L, "axis_z")`, `"syringe"`, `"body"` | the syringe axis's height, the syringe's row, the body's spec |
+| `get(L, "throw")` | the crank's throw: twice it is the stroke the crank drives, the syringe's `stroke` less 1 mm at each end |
 | the body's `"mount_front"`, `"mount_top"`, `"end_t"`, `"x"` | the mounting holes, the front wall's thickness, the inside's [front, back] x |
 | `body()`, `lid()`, `cap()` | the printed body, lid and cap, drawn from the body's spec |
 
