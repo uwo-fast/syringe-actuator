@@ -15,7 +15,7 @@ use <fastener.scad>;
 // head: how length is measured and how it seats. "flat": overall, cone in the hole's mouth; others:
 // under the head, seated on its underside.
 // N20 screws as bought: JIS flat head, 90 degree countersunk, M1.6 x 3 (McMaster 91305A002, page read
-// 2026-10-03).
+// 2026-10-03). The drive is JIS cross, No. 0: Phillips-like, shallower, and turned with a JIS driver.
 m3_shcs = [
     ["name", "ISO 4762 M3"],
     ["head", "socket"],
