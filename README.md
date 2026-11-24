@@ -47,7 +47,7 @@ run, and records the mechanism, the part dimensions and their sources, and what 
    | --- | --- | --- |
    | Gearmotor | 1 to 5 mL | N20, 12 V, about 30 rpm (1000:1), such as Pololu #3046 |
    | Gearmotor | 10 to 30 mL | GA25YN370 (also JGA25-370), 12 V, 30 rpm |
-   | Motor screws | N20 | 2 x M1.6 x 3 flat head |
+   | Motor screws | N20 | 2 x M1.6 x 3 flat head, JIS cross drive No. 0, such as McMaster 91305A002 |
    | Motor screws | GA25 | 2 x M3 x 4 button head (ISO 7380) |
    | Pin screws | all | 2 x M3 x 10 socket head, with 2 x M3 washers |
    | Cap screws | all | 2 x M3 x 10 |
