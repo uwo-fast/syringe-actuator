@@ -134,8 +134,9 @@ just render-stroke # one turn of the crank as an animated GIF
 
 ## Contributing
 
-Contributions are welcome. See the organization
-[contribution guide](https://github.com/uwo-fast/.github/blob/main/CONTRIBUTING.md).
+Contributions are welcome. [`CONTRIBUTING.md`](CONTRIBUTING.md) covers this repository: its
+scope, layout, commands, conventions and workflow. The organization
+[contribution guide](https://github.com/uwo-fast/.github/blob/main/CONTRIBUTING.md) covers the rest.
 
 ## Citation
 
