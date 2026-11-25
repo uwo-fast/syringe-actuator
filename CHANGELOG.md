@@ -7,6 +7,13 @@ and [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Changed
+
+- The bill and the report call for M3 square nuts at the crank, the cradle and the front plate, and
+  an M3 socket-head screw to clamp the crank on the shaft's flat in place of the cup-point set
+  screw. A hex nut turns in the crank's slot; a square nut cannot. The cradle's set screws and
+  nuts are fitted only if the motor can move in it. No part's geometry changes.
+
 ## [0.1.2] - 2026-11-22
 
 ### Added

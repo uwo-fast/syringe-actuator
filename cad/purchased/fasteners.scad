@@ -42,6 +42,9 @@ m1_6_flat = [
     ["head_h", 0.5],
 ];
 m3_washer = [["name", "ISO 7089 M3"], ["id", 3.2], ["od", 7], ["h", 0.5]];
-// ISO 4026 set screw, cup point, and ISO 4032 hex nut table values: the crank's grub screw and the nut trapped in it.
+// The M3 screw through the crank's lobe and the cradle's bosses, and the nut trapped with it. The crank takes
+// an M3 socket head and the cradle ISO 4026 cup-point set screws; both clear 3.4. The nut's slot is sized from
+// these ISO 4032 table values, 6.01 across a hex nut's corners, so a hex nut turns in it; an M3 square nut,
+// 5.5 across its flats, fits it and cannot turn, so the bill calls for square nuts.
 m3_set = [["name", "ISO 4026 set screw, cup point"], ["d", 3], ["clear", 3.4]];
 m3_nut = [["name", "ISO 4032 nut"], ["s", 5.5], ["e", 6.01], ["m", 2.4]];

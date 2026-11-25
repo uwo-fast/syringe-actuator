@@ -6,8 +6,8 @@
  *
  * The rod turns on a boss on the top face; the pin screw clamps a washer on the boss, not the rod.
  * Blind D-bore: pressed on, the crank stops on the shaft's tip, which sets its height.
- * Grub screw: through a lobe on the hub's back (away from the pin) and a nut in a slot from the top,
- * onto the shaft's flat. Steel on steel carries the torque and holds the crank down. The printed D
+ * Clamp screw: an M3 socket head through a lobe on the hub's back (away from the pin) and an M3 square
+ * nut in a slot from the top, onto the shaft's flat; a hex nut turns in the slot. Steel on steel carries the torque and holds the crank down. The printed D
  * alone (keyed by a 0.5 mm flat) wore round in an hour of reversing load, in PETG on an N20.
  * z = 0 at the underside, shaft on the z axis, pin on +x. Prints as it stands.
  */
