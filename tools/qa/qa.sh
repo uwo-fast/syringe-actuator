@@ -1,16 +1,18 @@
 #!/usr/bin/env bash
 # SPDX-License-Identifier: GPL-3.0-or-later
 #
-# Geometry QA beyond just test, for each syringe given: thin material and thin gaps in sections of
-# the body, lid, cap and frame; collisions of the body, lid and cap with every moving part over a
-# turn, with the syringe dropping in through the open lid, and with the core sliding in; overhangs
-# of every printed part as it prints. Each render is its own job, J at a time. With an OpenSCAD that
-# has the Manifold backend it runs on that, in a few minutes.
+# Geometry QA beyond `just test`, for each syringe given:
+#   - thin material and thin gaps in sections of the body, lid, cap and frame;
+#   - collisions of the body, lid and cap with every moving part over a turn, with the syringe
+#     dropping in through the open lid, and with the core sliding in;
+#   - overhangs of every printed part in its print orientation.
+# Each render is a separate job, J at a time. On an OpenSCAD with the Manifold backend it uses that
+# backend and takes a few minutes.
 #
-# A collision is judged by the volume two things share: under a thousandth of a mm3 is two faces
-# touching, which is clear. Exit 1 on a collision, a check that hits nothing it should, or a render
-# that fails; slivers and overhangs are printed for review, since a section through a sloped face
-# shows thin material that is not there in print.
+# A collision is judged by the shared volume: under a thousandth of a mm3 is two faces touching,
+# which counts as clear. Exits 1 on a collision, on a check that misses a known collision, or on a
+# failed render. Slivers and overhangs are printed for review, because a section through a sloped
+# face shows thin material that is not there in the print.
 #
 # usage: tools/qa/qa.sh syringe [...]        e.g. tools/qa/qa.sh 3ml 5ml-gnr2
 #        OPENSCAD=/path/to/openscad J=8 QA_KEEP=1 tools/qa/qa.sh 3ml
@@ -60,7 +62,7 @@ run() { xargs -P "$J" -L 1 bash -c 'job "$@"' _ <"$1"; }
 r() { python3 -c "print('%g' % round($1, 2))"; }
 ANGLES=$(seq 0 15 345)
 
-# per syringe: the body's x range, the lid's travel to open, the roof's underside T, the lid's
+# per syringe: the x range of the body, the lid travel to open, the roof underside T, the lid
 # underside and its back end; then every part, for the overhangs
 for sy in "$@"; do
     read -r bx0 bx1 open T lid0 lidx < <($SCAD -D "syringe=\"$sy\"" -D 'part="report"' -o "$W/$sy.csg" "$Q/body.scad" 2>&1 |
@@ -79,7 +81,7 @@ for sy in "$@"; do
         echo "s_${sy}_body_y_$y"; done
     for z in -30 -27 -25 -22 -20 -17 -15 -12 -10 -7 -5 -3 -2.5 -1 0 0.3 1 2.5 3 4 5 6 10 15 20; do
         echo "s_${sy}_body_z_$z"; done
-    # the roof, its rails and the lid, measured from each body's own roof
+    # the roof, its rails and the lid, measured from the roof of each body
     for dz in -0.8 0.2 1.2 2 2.3 2.7 3.1 3.5 4 4.4; do echo "s_${sy}_body_z_$(r "$T+$dz")"; done
     for dz in 0.1 0.7 1.2 1.9; do echo "s_${sy}_lid_z_$(r "$lid0+$dz")"; done
     for c in "lid_x_-25" lid_x_0 lid_x_40 "lid_x_$(r "$lidx-6")" "lid_x_$(r "$lidx-5")" lid_y_0 lid_y_10 lid_y_15.5 lid_y_16.5 \
@@ -116,7 +118,7 @@ for sy in "$@"; do
         [[ "$m$g" == *BROKEN* || "$m$g" == *MISSING* ]] && bad "slice ${k#s_${sy}_}: $m $g"
         [ "$m$g" = nonenone ] || echo "${k#s_${sy}_}  material: $m  gap: $g" | sed -E 's/^(body|lid|cap|frame)_([xyz])_/\1 \2 /'
     done < <(grep "^s_${sy}_" "$W/slices")
-    # a slice through nothing reports nothing, like a clean one: the lid's must cut it
+    # a slice through empty space reports nothing, like a clean slice, so the lid slice must cut the lid
     for k in $(grep "^s_${sy}_lid_" "$W/slices"); do
         s=$(v "${k}_section")
         [[ $s == none || $s == MISSING || $s == BROKEN ]] && bad "slice ${k#s_${sy}_} cuts no lid: $s"

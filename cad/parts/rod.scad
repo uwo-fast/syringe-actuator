@@ -4,13 +4,13 @@
  * @author Cameron K. Brooks
  * @copyright 2026
  *
- * Both ends turn on the bosses of the crank and the clip, under the washers the pin screws clamp.
+ * Both ends turn on the bosses of the crank and the clip, under the washers clamped by the pin screws.
  * z = 0 at the underside, the clip end at the origin, the crank end on +x. Prints flat.
  */
 
 include <../lib/struct.scad>;
 
-// hole: the bore round each boss.
+// hole: the bore around each boss.
 function rod_spec(hole, len, t, w) =
     [
         ["name", "rod"],

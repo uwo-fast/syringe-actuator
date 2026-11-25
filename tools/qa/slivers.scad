@@ -1,13 +1,13 @@
-// For tools/qa/qa.sh: a printed part's section at xc along axis, in [-z, y], and what in it is
-// thinner than 2 * e: material ("material") or air ("gap") that an opening or a closing by e
-// removes. Run with -D 'part="report"' so main draws nothing itself.
+// For tools/qa/qa.sh: the section of a printed part at xc along axis, in [-z, y], and the regions in
+// it thinner than 2 * e: material ("material") or air ("gap") that a morphological opening or closing
+// by e removes. Run with -D 'part="report"' so main draws nothing itself.
 include <../../cad/main.scad>;
 
 xc = 0;
 what = "material";
 e = 0.25;
 B = get(L, "body");
-// which: the part; axis: the cut's normal
+// which: the part; axis: the normal of the cut
 which = "body";
 axis = "x";
 module placed() {

@@ -4,12 +4,12 @@
  * @author Cameron K. Brooks
  * @copyright 2026
  *
- * get() fails loudly, naming the struct and the key, when the key is missing or its value is undef:
- * an undef reaching geometry is silent in OpenSCAD, and an unmeasured catalog field must stop the
- * build, not draw a 1 mm default.
+ * get() fails with an error naming the struct and the key when the key is missing or its value is
+ * undef. OpenSCAD does not warn when an undef reaches geometry, and an unmeasured catalog field must
+ * stop the build rather than draw a 1 mm default.
  */
 
-// The value at key k in struct s. A struct names itself with a "name" key, for the message.
+// The value at key k in struct s. A struct has a "name" key, used in the error message.
 function get(s, k) =
     let (
         i = search([k], s, 1, 0)[0],
@@ -18,7 +18,7 @@ function get(s, k) =
     assert(i != [], str(who, " has no '", k, "'"))
     assert(!is_undef(s[i][1]), str(who, ": '", k, "' is not known yet, measure it")) s[i][1];
 
-// The value at key k in struct s, or undef where it is missing or undef: for an optional field.
+// The value at key k in struct s, or undef if it is missing or undef: for an optional field.
 function get_or(s, k) = let (i = search([k], s, 1, 0)[0]) i == [] ? undef : s[i][1];
 
 // Whether struct s has key k at all, for a field only some rows carry.

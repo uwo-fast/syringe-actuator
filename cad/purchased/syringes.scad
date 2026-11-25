@@ -13,7 +13,7 @@ use <syringe.scad>;
 
 // Luer-lock syringes. Axis: X; nozzle: -X. Dimensions in mm.
 // Rows: <volume>_<maker>. gnr = generic, hand-measured; bd = BD Plastipak, estimated.
-// Same volume from another maker can differ by ~1 mm: measure yours (docs/measuring.md).
+// A syringe of the same volume from another maker can differ by ~1 mm: measure yours (docs/measuring.md).
 //
 // Measured: 3 mL 2026-09-29; 1 mL, 5 mL gnr1, 20 mL 2026-10-02; 5 mL gnr2 before 2026-11-06.
 // bd: scaled from BD's range photo against the 5 and 20 mL; ODs published (Fisher's 16.21 for 10 mL,
@@ -24,7 +24,7 @@ use <syringe.scad>;
 // nozzle_l: shoulder to the nozzle tip or luer collar, whichever is further
 // (5 mL gnr1: derived, 46.5 - 36.3, not measured).
 // bore_d: nominal BD values, for the torque estimate only.
-// crank_as: keep another syringe's crank position, so only the crank and rod are reprinted.
+// crank_as: keep the crank position of another syringe, so only the crank and rod are reprinted.
 // The build stops unless barrel_od, flange, flange_t, button_d, button_t and plunger_span match.
 syringe_1ml_gnr1 = [
     ["name", "1 mL luer syringe generic 1"],
@@ -150,7 +150,7 @@ syringe_50ml_bd = [
 // The syringes the parts can be built for: [Customizer name, row, default motor, body group].
 // Motor: N20 up to 5 mL; GA25 from 10 mL, whose bore makes vacuum or back-pressure too much for an N20.
 // Body group: syringes in one group share a body, lid and cap, sized for the largest of them; each
-// still gets its own frame, clip, crank and rod. Adding a bigger syringe to a group changes its body.
+// still has its own frame, clip, crank and rod. Adding a larger syringe to a group changes its body.
 // No group: the body is sized for that syringe alone.
 syringes = [
     ["1ml", syringe_1ml_gnr1, "n20", "n20"],
@@ -164,13 +164,13 @@ syringes = [
     ["30ml", syringe_30ml_bd, "ga25"],
 ];
 
-// The syringe the Customizer names, or undef.
+// The syringe with the given Customizer name, or undef.
 function syringe_by_name(name) = [for (r = syringes) if (r[0] == name) r[1]][0];
 
-// The name of the motor the Customizer's syringe gets by default, or undef.
+// The name of the default motor for the named syringe, or undef.
 function syringe_motor(name) = [for (r = syringes) if (r[0] == name) r[2]][0];
 
-// The rows that share a body with the named syringe, itself included; [] if it has no group.
+// The rows that share a body with the named syringe, including itself; [] if it has no group.
 function body_family(name) =
     let (g = [for (r = syringes) if (r[0] == name) r[3]][0]) is_undef(g) ? []
     : [for (r = syringes) if (r[3] == g) r[1]];
