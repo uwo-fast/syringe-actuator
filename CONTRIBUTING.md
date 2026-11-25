@@ -1,8 +1,10 @@
-# AGENTS.md
+# Contributing
 
-Instructions for AI coding agents working in this repository.
+How to work on this repository. The organization's
+[contribution guide](https://github.com/uwo-fast/.github/blob/main/CONTRIBUTING.md) covers what is
+common to every uwo-fast project; this file covers what is particular to this one.
 
-## Project
+## The project
 
 Printed parts that connect a gearmotor (an N20, or a GA25 for 10 mL and up) to a luer syringe so the
 plunger strokes back and forth continuously. The motor runs in one direction straight off a supply;
@@ -21,12 +23,12 @@ hardware has to say why a printed part cannot do the job.
 - **CAD** — OpenSCAD, no external libraries. CI runs 2021.01, what Ubuntu 24.04 packages; the gates
   read the exported mesh, so they pass the same on a current nightly, whose Manifold backend makes
   `just qa` far faster
-- **Tooling** — `just`, `topiary` 0.8.0 for `.scad` (config in `.topiary/languages.ncl`), pre-commit with
-  gitleaks, Python 3 standard library only in `tools/`
+- **Tooling** — [`just`](https://github.com/casey/just), `topiary` 0.8.0 for `.scad` (config in
+  `.topiary/languages.ncl`), pre-commit with gitleaks, Python 3 standard library only in `tools/`
 
 ## Layout
 
-```
+```text
 cad/main.scad       THE ENTRY POINT and the only file that draws: settings, layout() (every part's
                     spec and position), the assembly (View > Animate turns it), `report`, and the
                     part to draw
@@ -41,7 +43,7 @@ tools/render.sh     `just render`: the pictures cad/views.tsv lists, every part,
 cad/views.tsv       the pictures: a name, a syringe, a view and the -D settings to draw
 output/             one-off exports, `just export [syringe]`, with BUILT_FROM (gitignored)
 build/              every syringe's parts, `just build`, with BUILT_FROM (gitignored)
-working/            local scratch: session notes, partspec contracts (gitignored)
+working/            local scratch (gitignored)
 ```
 
 ## Commands
@@ -67,6 +69,18 @@ it exits 1 on a collision.
 `openscad -D 'part="report"' -o /tmp/r.csg cad/main.scad` echoes the screws to buy and the
 derived figures.
 
+## Workflow
+
+1. Create a branch from `main`.
+2. Make the change, and run `just check && just test`; for a geometry change, `just qa` too.
+3. Add a line under `## [Unreleased]` in [`CHANGELOG.md`](CHANGELOG.md) for any change someone
+   building or using the actuator would notice. A release moves those lines under the new version.
+4. Commit with [Conventional Commits](https://www.conventionalcommits.org/):
+   `type(scope): description`, where type is one of `feat`, `fix`, `docs`, `refactor`, `test`, `ci`,
+   `chore` or `build`, in the imperative, lowercase, with no trailing period. One logical change per
+   commit.
+5. Open a pull request against `main`. CI must pass before it merges.
+
 ## Conventions
 
 - **Bought parts are data, printed parts are specs.** Purchased parts are key-value structs in
@@ -89,9 +103,9 @@ derived figures.
 - **One physical fact, one expression.** Derive dimensions from catalog rows; never restate a
   number in a second file.
 - **Look at the parts.** `just render-parts` draws every part, and a current nightly's
-  `openscad --camera=... -o view.png` renders any other PNG with no display; 2021.01 cannot (it segfaults without OpenGL). A section through
-  `tools/qa/slivers.scad` shows a part's cross-section on either. Numbers can pass on a part
-  that is upside down or the wrong shape.
+  `openscad --camera=... -o view.png` renders any other PNG with no display; 2021.01 cannot (it
+  segfaults without OpenGL). A section through `tools/qa/slivers.scad` shows a part's
+  cross-section on either. Numbers can pass on a part that is upside down or the wrong shape.
 
 ## Constraints
 
@@ -102,7 +116,7 @@ derived figures.
   listing figures as such.
 - Do not add dependencies without justification.
 - Do not commit secrets or credentials.
-- Do not add AI attribution to commits or PR descriptions — no co-author trailers, session links,
-  or "generated with" footers.
+- Commit messages and pull requests describe the change, not the tools used to make it: no
+  co-author trailers for tools, session links or "generated with" footers.
 - Do not let a check report success when it could not run. A check that does not apply may pass,
   but must name itself as skipped; one that could not complete must not exit 0.
