@@ -40,9 +40,10 @@ mL's; `part="report"` gives any syringe's.
   plate widens where the cradle needs it to pass between the body's rails. It prints top face down.
 - **Crank.** It presses onto the motor's D-shaft and carries the pin at a throw of half the
   syringe's stroke less a 1 mm margin at each end: 27.6 mm for the 3 mL. Its D-bore is blind, so it
-  stops on the shaft's tip, 1 mm over the plate. An M3 x 6 grub screw (ISO 4026, cup point) runs
-  back through a lobe behind the hub onto the shaft's flat, which faces it, through an M3 nut
-  dropped into a slot from the top: steel on steel carries the torque and holds the crank down.
+  stops on the shaft's tip, 1 mm over the plate. An M3 x 6 socket-head screw runs back through a
+  lobe behind the hub onto the shaft's flat, which faces it, through an M3 square nut dropped into a
+  slot from the top (a hex nut turns in the slot; the square nut cannot): steel on steel carries the
+  torque and holds the crank down.
 - **Rod.** At least three throws long, 90 mm at the shortest, from the crank pin to the clip, lying
   on both parts' top faces. Each end turns on a printed boss 0.3 mm taller than the rod; an M3 x 10
   screw and washer clamp the boss, not the rod, so the joint turns freely with the screw tight.

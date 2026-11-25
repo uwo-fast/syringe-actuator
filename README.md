@@ -51,9 +51,9 @@ run, and records the mechanism, the part dimensions and their sources, and what 
    | Motor screws | GA25 | 2 x M3 x 4 button head (ISO 7380) |
    | Pin screws | all | 2 x M3 x 10 socket head, with 2 x M3 washers |
    | Cap screws | all | 2 x M3 x 10 |
-   | Crank | all | 1 x M3 x 6 set screw, cup point (ISO 4026), and 1 x M3 nut |
-   | Cradle | all | 2 x M3 x 8 socket head; 2 x M3 x 6 set screw, cup point, and 2 x M3 nut |
-   | Front plate (optional) | all | 4 x M3 x 10 socket head and 4 x M3 nuts |
+   | Crank | all | 1 x M3 x 6 socket head and 1 x M3 square nut |
+   | Cradle | all | 2 x M3 x 8 socket head; if the motor can move in it, 2 x M3 x 6 set screw, cup point, and 2 x M3 square nut |
+   | Front plate (optional) | all | 4 x M3 x 10 socket head and 4 x M3 square nuts |
    | Threadlocker | all | blue (medium strength), on every motor and cradle screw |
 
 4. **Print.** PLA or PETG, no supports. The body stands on its front wall: 242 mm tall for the N20
@@ -64,11 +64,11 @@ run, and records the mechanism, the part dimensions and their sources, and what 
 5. **Assemble.**
    - **Motor:** screw it under the plate first, with threadlocker: its shaft comes up through the
      plate, and the crank goes on after.
-   - **Cradle:** slide it up over the motor to the plate and screw it on from below. Drop the nuts
-     into its slots, then turn the set screws in until the gearbox cannot move. Tighten them again
-     after the first day of running, as the print settles.
+   - **Cradle:** slide it up over the motor to the plate and screw it on from below. If the motor can
+     move in it, drop the square nuts into its slots and turn the set screws in until the gearbox
+     cannot move, and tighten them again after the first day of running, as the print settles.
    - **Crank:** drop the nut into its slot, press the crank onto the motor's shaft through the
-     plate, and tighten the set screw onto the shaft's flat. Join the rod to the crank and the clip
+     plate, and tighten the M3 screw onto the shaft's flat. Join the rod to the crank and the clip
      with the pin screws over their washers.
    - **Body:** fit any front mounting screws first (step 6), then slide the frame into the body from
      the back, slide the lid onto its rails from the back, then screw on the cap.

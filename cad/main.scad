@@ -506,20 +506,20 @@ module report(L) {
             "screws: 2 x M3 x ", get(L, "pin_l"), " with 2 x M3 washer (crank pin, clip pin), ", get(L, "pin_thread"),
             " of thread; 2 x ", get(get(L, "motor_screw"), "name"), " x ", get(L, "motor_screw_l"), " (motor), ",
             get(L, "motor_thread"), " of it into the gearbox; 2 x M3 x 10 (cap); 1 x M3 x ",
-            get(get(L, "crank"), "set_l"), " ", get(get(get(L, "crank"), "set"), "name"), " and 1 x M3 ",
-            get(get(get(L, "crank"), "nut"), "name"), " (crank)"
+            get(get(L, "crank"), "set_l"), " socket head and 1 x M3 square nut (crank)"
         )
     );
     c = get(L, "cradle");
     echo(
         str(
             "cradle: 2 x M3 x ", get(L, "cradle_screw_l"), " (into the plate from below); 2 x M3 x ", get(c, "set_l"),
-            " ", get(get(c, "set"), "name"), " and 2 x M3 ", get(get(c, "nut"), "name"),
-            " (against the gearbox); blue threadlocker on every motor and cradle screw"
+            " ", get(get(c, "set"), "name"), " and 2 x M3 square nut",
+            " (against the gearbox, if the motor can move in the cradle); blue threadlocker on every motor and",
+            " cradle screw"
         )
     );
     echo(
-        "front plate, optional: 4 x M3 x 10 from inside the body through its front knockouts, and 4 x M3 nuts on the plate"
+        "front plate, optional: 4 x M3 x 10 from inside the body through its front knockouts, and 4 x M3 square nuts on the plate"
     );
     mf = get(b, "mount_front");
     mt = get(b, "mount_top");
