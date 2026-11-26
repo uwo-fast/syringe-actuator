@@ -13,7 +13,7 @@ module screw(s, len, seat) {
     translate([0, 0, seat - len]) cylinder(d=get(s, "d"), h=len);
 }
 
-// A flat head screw of overall length len, its head's top at z = 0.
+// A flat-head screw of overall length len, with the top of its head at z = 0.
 module flat_screw(s, len) {
     hd = get(s, "head_d");
     translate([0, 0, -(hd - get(s, "d")) / 2]) cylinder(d1=get(s, "d"), d2=hd, h=(hd - get(s, "d")) / 2);

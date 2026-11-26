@@ -1,6 +1,6 @@
-// For tools/qa/qa.sh: the body's inside, front to back; how far the lid slides back to clear the
-// window; the roof's underside T, the lid's underside and the lid's back end, shut. Run with -D 'part="report"' so main draws
-// nothing of its own.
+// For tools/qa/qa.sh: the inside of the body, front to back; how far the lid slides back to clear the
+// window; the roof underside T, and the lid underside and back end when shut. Run with -D 'part="report"'
+// so main draws nothing of its own.
 include <../../cad/main.scad>;
 
 B = get(L, "body");

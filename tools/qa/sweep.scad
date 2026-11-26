@@ -1,5 +1,5 @@
-// The body, lid and cap against one other thing at crank angle a, for tools/qa/qa.sh: what the
-// intersection leaves is a collision. Run with -D 'part="report"' so main draws nothing of its own.
+// The body, lid and cap intersected with one other object at crank angle a, for tools/qa/qa.sh: any
+// remaining intersection is a collision. Run with -D 'part="report"' so main draws nothing of its own.
 include <../../cad/main.scad>;
 
 a = 0;
@@ -42,13 +42,13 @@ module placed(n) {
                 translate([get(L, "crank_x"), 0, get(L, "pocket")]) motor(get(L, "motor"));
                 screws(L, [cp, [px, 0]]);
             }
-    // a known hit: a cube inside the tube's floor
+    // a known collision: a cube inside the floor of the tube
     if (n == "probe")
         translate([get(B, "x")[0] - 1.5, 12, 5]) cube(1, center=true);
     // the tube itself, to check the lid against it
     if (n == "tube")
         body(B);
-    // a known hit on the lid: a cube inside its top flat
+    // a known collision on the lid: a cube inside its flat top
     if (n == "lidprobe")
         translate([20, 0, get(B, "T") + get(B, "wall") + 1]) cube(1, center=true);
     // everything the frame carries at crank angle a, for the lid's path over it
@@ -62,8 +62,8 @@ module placed(n) {
         screws(L, [cp, [px, 0]]);
         translate([0, 0, get(L, "axis_z")]) syringe(get(L, "syringe"), bx);
     }
-    // the syringe's path as it drops in from 60 above, through the window (sampled every 3: a hull of
-    // the whole syringe would wedge between its flange and its nozzle)
+    // the path of the syringe as it drops in from 60 above, through the window (sampled every 3: a hull
+    // of the whole syringe would wedge between its flange and its nozzle)
     if (n == "loading")
         for (dz = [0:3:60])
             translate([0, 0, dz + get(L, "axis_z")]) syringe(get(L, "syringe"), bx);
@@ -82,7 +82,7 @@ intersection() {
             body(B);
         if (!lid_only && other != "insert")
             cap(B);
-        // the mounting screws' heads, fitted after the frame is in
+        // the mounting screw heads, fitted after the frame is in
         if (!lid_only && other != "insert")
             mount_screws(L);
         if (lid_dx >= 0)

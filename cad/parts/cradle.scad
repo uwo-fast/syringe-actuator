@@ -1,27 +1,27 @@
 /**
  * @file cradle.scad
- * @brief The motor's cradle: a sleeve under the plate that holds the gearbox so it cannot rock
+ * @brief The motor cradle: a sleeve under the plate that holds the gearbox so it cannot rock
  * @author Cameron K. Brooks
  * @copyright 2026
  *
- * The rod's force reverses every stroke and acts above the gearbox's face, so it rocks the motor.
- * With only the plate's pocket and the motor's two screws to stop it, the motor worked loose. The
- * cradle grips the gearbox's sides the whole length below the plate: set screws through trapped
- * nuts push the gearbox against the far walls, so nothing is left to rock in.
- * Mounting: two M3 screws from below, through flanges at its front and back, into the plate.
- * Set screws: a rectangular gearbox gets one through the front wall and one through the -y wall; a
- * round one gets two through the front, 30 degrees either side of -x.
- * z = 0 at the plate's underside, the shaft on the z axis, the syringe towards -x. Prints top face
- * down; the nut slots open at what is then its top.
+ * The rod force reverses every stroke and acts above the gearbox face, so it rocks the motor. With
+ * only the pocket in the plate and the two motor screws to restrain it, the motor worked loose. The
+ * cradle grips the sides of the gearbox over its whole length below the plate. Set screws in trapped
+ * nuts push the gearbox against the opposite walls, so there is no play left to rock in.
+ * Mounting: two M3 screws from below, through flanges at the front and back, into the plate.
+ * Set screws: a rectangular gearbox has one through the front wall and one through the -y wall; a
+ * round gearbox has two through the front, 30 degrees either side of -x.
+ * z = 0 at the underside of the plate, the shaft on the z axis, the syringe towards -x. Prints top
+ * face down; the nut slots open at the top in that orientation.
  */
 
 include <../lib/struct.scad>;
 include <../purchased/motor.scad>;
 
-// pocket: the gearbox's depth up into the plate; the cradle holds the rest of it.
-// screw: the plate screws; ear: their flanges' thickness, under the heads; ear_r: the flanges' reach
-// round each screw. set, nut: the set screws and their nuts; fit: per side, round bought stock.
-// wall: the sleeve's; skin: the boss past each nut's slot. set_lengths: stock set screw lengths.
+// pocket: depth of the gearbox up into the plate; the cradle holds the rest of it.
+// screw: the plate screws; ear: thickness of their flanges, under the heads; ear_r: flange radius
+// around each screw. set, nut: the set screws and their nuts; fit: per side, around purchased stock.
+// wall: sleeve wall; skin: boss material past each nut slot. set_lengths: stock set screw lengths.
 function cradle_spec(
     motor,
     pocket,
@@ -39,7 +39,7 @@ function cradle_spec(
         round = motor_round(motor),
         size = motor_size(motor) + [2, 2] * fit,
         depth = get(motor, "gearbox_l") - pocket,
-        // each set screw's direction, and how far out the bore's wall is that way
+        // the direction of each set screw, and the distance to the bore wall in that direction
         sets = round ? [150, 210] : [180, 270],
         reach = [for (a = sets) round ? size[0] / 2 : abs(cos(a)) * size[0] / 2 + abs(sin(a)) * size[1] / 2],
         slot_t = get(nut, "m") + 2 * fit,
@@ -48,9 +48,9 @@ function cradle_spec(
         // the plate screws: one behind the gearbox, one in front beside the front boss
         back = [size[0] / 2 + wall + ear_r, 0],
         front = [-size[0] / 2 - wall - ear_r, boss_hw + ear_r],
-        // the shortest stock set screw that spans the nut's slot and the wall; once on the gearbox it stays inside
+        // the shortest stock set screw that spans the nut slot and the wall; once against the gearbox it stays inside
         set_l = min([for (l = set_lengths) if (l >= slot_t + wall + fit) l]),
-        // the furthest any part reaches across y, for the plate between the body's rails
+        // the largest extent of any part across y, for the plate between the body rails
         half_y = max(
             concat(
                 [size[1] / 2 + wall, front[1] + ear_r],
@@ -85,7 +85,7 @@ function cradle_spec(
         ["half_y", half_y],
     ];
 
-// The cradle, its top face at z = 0, the shaft on the z axis.
+// The cradle, with its top face at z = 0 and the shaft on the z axis.
 module cradle(s) {
     m = get(s, "motor");
     fit = get(s, "fit");
@@ -98,7 +98,7 @@ module cradle(s) {
     difference() {
         union() {
             translate([0, 0, -depth]) linear_extrude(depth) motor_outline(m, fit + wall);
-            // a boss out from the wall for each set screw, holding its nut
+            // a boss on the wall for each set screw, holding its nut
             for (i = [0:len(sets) - 1])
                 rotate([0, 0, sets[i]]) translate([0, -get(s, "boss_hw"), -depth])
                         cube([get(s, "reach")[i] + wall + get(s, "boss_l"), 2 * get(s, "boss_hw"), depth]);
@@ -113,7 +113,7 @@ module cradle(s) {
         for (i = [0:len(sets) - 1])
             rotate([0, 0, sets[i]]) {
                 r = get(s, "reach")[i];
-                // the set screw's hole out through the wall and boss, and its nut's slot, open at the bottom
+                // the set screw hole through the wall and boss, and the nut slot, open at the bottom
                 translate([0, 0, -depth / 2]) rotate([0, 90, 0])
                         cylinder(d=get(get(s, "set"), "clear"), h=r + 50);
                 translate([r + wall, -get(nut, "e") / 2 - fit, -depth - 1])

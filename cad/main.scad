@@ -4,19 +4,20 @@
  * @author Cameron K. Brooks
  * @copyright 2026
  *
- * The only file that draws. Use the Customizer, or -D:
+ * The only file that draws geometry. Use the Customizer, or -D:
  *   openscad -D 'part="crank"' -o crank.stl cad/main.scad
- * View > Animate turns the assembly; `angle` sets the start. `report` echoes screws and derived figures.
+ * View > Animate turns the assembly; `angle` sets the start angle. `report` echoes the screws and the
+ * derived dimensions.
  *
- * In-line crank-slider: motor shaft vertical, on the syringe axis's line, so crank, rod and plunger
- * move in one horizontal plane. The rod lies on the crank's top face and the clip's tongue, both at
- * axis height; its ends turn on bosses clamped by the pin screws through washers. The clip's sled runs
- * between the frame's rails, which take the rod's side load off the plunger.
- * Numbers in layout() without a derivation are choices, and each says why.
+ * In-line crank-slider: the motor shaft is vertical and on the line of the syringe axis, so the crank,
+ * rod and plunger move in one horizontal plane. The rod lies on the top face of the crank and on the
+ * clip tongue, both at axis height. Its ends turn on bosses clamped by the pin screws through washers.
+ * The clip sled runs between the frame rails, which take the side load from the rod off the plunger.
+ * Numbers in layout() without a derivation are design choices, and each has a comment saying why.
  *
- * Frame of reference: x along the syringe axis, 0 at the flange's rear face, nozzle towards -x;
- * z = 0 at the plate's underside. Crank angle a = 0: pin towards +x, plunger pulled out; a = 180:
- * pushed in. Bought parts are drawn from catalog figures, simplified.
+ * Coordinates: x along the syringe axis, 0 at the rear face of the flange, nozzle towards -x;
+ * z = 0 at the underside of the plate. Crank angle a = 0: pin towards +x, plunger pulled out;
+ * a = 180: plunger pushed in. Purchased parts are drawn from catalog dimensions, simplified.
  */
 
 include <purchased/syringes.scad>;
@@ -29,7 +30,7 @@ include <parts/body.scad>;
 include <parts/cradle.scad>;
 include <lib/section.scad>;
 
-// Customizer: one line per setting, its dropdown in the comment beside it.
+// Customizer: one line per setting, with its dropdown values in the comment after it.
 /* [View] */
 part = "assembly"; // [assembly, housed, frame, crank, rod, clip, body, lid, cap, cradle, front_plate, ring_test, report]
 syringe = "3ml"; // [1ml, 3ml, 5ml-gnr1, 5ml-gnr2, 5ml-gnr1-ga25, 5ml-gnr2-ga25, 10ml, 20ml, 30ml]
@@ -40,19 +41,19 @@ section = "none"; // [none, x, y, z]
 section_at = 0; // [-100:1:300]
 
 /* [Print] */
-fit = 0.2; // per side: a printed pocket round bought stock
-press = 0.05; // per side: the crank's bore on the steel shaft
-hole = 0.1; // per side: a small hole a screw threads itself into, which prints undersize
-wall = 3; // the frame's walls either side of the flange's slot and past the motor
-grip = 0.15; // per side: how far the clip's lips reach over the push-button; more holds it tighter
-ring_grip = 0.5; // per side: how much narrower than the barrel the snap ring's opening is; more holds it tighter
+fit = 0.2; // per side: clearance of a printed pocket around purchased stock
+press = 0.05; // per side: crank bore on the steel shaft
+hole = 0.1; // per side: a small self-tapping screw hole, which prints undersize
+wall = 3; // frame walls on either side of the flange slot and past the motor
+grip = 0.15; // per side: how far the clip lips reach over the push-button; more holds it tighter
+ring_grip = 0.5; // per side: how much narrower the snap ring opening is than the barrel; more holds it tighter
 
 /* [Hidden] */
 $fn = 48;
 
 L = actuator(syringe, motor);
 
-// The assembly bare or in its body, or each printed part turned to how it prints; cut open if asked.
+// The assembly with or without the body, or each printed part in its print orientation; sectioned if requested.
 section(section, section_at) {
     if (part == "assembly" || part == "housed")
         assembly(L, angle + 360 * $t, bought=show_bought, body=part == "housed");
@@ -71,7 +72,7 @@ section(section, section_at) {
             rotate([180, 0, 0]) lid(b);
     else if (part == "cap")
         let (b = get(L, "body")) rotate([0, 90, 0]) translate([-get(b, "x")[1] - get(b, "end_t"), 0, 0]) cap(b);
-    // the frame's front end alone, its snap ring on a stub of plate: a quick print to try the snap on a syringe
+    // the front end of the frame only, the snap ring on a stub of plate: a quick print to test the snap on a syringe
     else if (part == "ring_test")
         let (f = get(L, "frame")) intersection() {
             frame(f);
@@ -89,8 +90,8 @@ section(section, section_at) {
 
 // ---- Layout
 
-// The layout for a syringe and motor by Customizer name, at the print settings above.
-// motor "auto": the motor syringes.scad pairs with the syringe.
+// The layout for a syringe and motor, by Customizer name, with the print settings above.
+// motor "auto": the default motor for the syringe in syringes.scad.
 // For an adapter in another project: `use <cad/main.scad>`, then front_x(), tip_x(), and the body's
 // front_face() and mount_front.
 function actuator(syringe, motor = "auto") =
@@ -109,29 +110,29 @@ function actuator(syringe, motor = "auto") =
         hole=hole, wall=wall, grip=grip, ring_grip=ring_grip, family=own ? body_family(syringe) : []
     );
 
-// The x of the front wall's outer face, the face an adapter meets.
+// The x of the outer face of the front wall, which an adapter mounts against.
 function front_x(L) = let (b = get(L, "body")) get(b, "x")[0] - get(b, "end_t");
 
-// The x of the syringe's front end: the nozzle's, or its luer-lock collar's if that reaches further.
+// The x of the front end of the syringe: the nozzle tip, or the luer-lock collar if that extends further.
 function tip_x(L) = let (s = get(L, "syringe")) -get(s, "flange_t") - get(s, "barrel_l") - get(s, "nozzle_l");
 
-// plate_t: stiff enough over the frame's length.
-// pocket: the gearbox's depth into the plate, which locates it square.
-// gap: crank underside over the plate, set by the shaft's tip bottoming in the crank's blind bore.
-// float: clip underside over the plate.
-// clip_wall: the clip's cup; it bears only the stroke on the push-button's rim.
-// rod_min: shortest rod, unless the row has crank_as. At least 3 throws, so the rod leans at most
+// plate_t: stiff enough over the frame length.
+// pocket: depth of the gearbox into the plate, which locates it square.
+// gap: crank underside above the plate, set by the shaft tip bottoming in the blind crank bore.
+// float: clip underside above the plate.
+// clip_wall: the clip cup wall; it carries only the stroke load on the push-button rim.
+// rod_min: shortest rod, unless the row has crank_as. At least 3 throws, so the rod angle is at most
 // asin(1/3) = 19.5 degrees.
-// rod_w: 2 of wall round a boss's bore. boss_d: the washer overlaps the rod's bore by at least 0.5 a side.
-// play: the rod's end float between its seat and the washer.
-// sled: [reach past the clip's pin, depth of its top and the rails' under the rod].
-// slide: per side, sled between the rails.
-// recess: motor screw heads below the plate's top; the motor's row gives its screws and counterbore.
+// rod_w: 2 of wall around a boss bore. boss_d: the washer overlaps the rod bore by at least 0.5 per side.
+// play: axial float of the rod end between its seat and the washer.
+// sled: [extension past the clip pin, depth of the sled top and the rail tops below the rod].
+// slide: per side, clearance of the sled between the rails.
+// recess: depth of the motor screw heads below the plate top; the motor row gives its screws and counterbore.
 // margin: the stopper stops this short of each end of travel, for error in exposed, stroke and print.
-// friction: seal friction, N, assumed, for the report's torque estimate.
-// pin_l: pin screw length. window: body window wider than the flanges by this, room for fingers.
-// family: the rows sharing this syringe's body, itself included; [] for a body of its own.
-// fix: [axis_z, frame width] a family sets; mech_only: skip the body. Both for layout()'s own calls.
+// friction: seal friction, N, assumed, for the torque estimate in the report.
+// pin_l: pin screw length. window: the body window is wider than the flanges by this, room for fingers.
+// family: the rows that share this syringe's body, including itself; [] for a separate body.
+// fix: [axis_z, frame width] set by a family; mech_only: skip the body. Both for recursive calls to layout().
 function layout(
     syringe,
     motor,
@@ -172,7 +173,7 @@ function layout(
         tap = get(pin, "tap") + 2 * hole,
         clip = clip_spec(syringe, tap, fit, clip_wall, boss, rod_w, sled, grip),
         button_in = get(syringe, "exposed") + margin,
-        // a family fixes the axis height and plate width to its largest member's, so one body fits all
+        // a family fixes the axis height and plate width to the largest in the family, so one body fits all
         fixed = !is_undef(fix) ? fix
         : family == [] ? undef
         : [
@@ -188,14 +189,14 @@ function layout(
             ),
             max([for (r = family) plate_w(r, fit)]),
         ],
-        // a row's crank_as: another syringe's layout, whose crank this one keeps, by the rod's length
+        // crank_as: the layout of another syringe whose crank position this one keeps, by adjusting the rod length
         like = has(syringe, "crank_as") ? layout(
                 get(syringe, "crank_as"), motor, pin, pin_washer, fit, press, hole, wall, grip, ring_grip,
                 plate_t, pocket, gap, float, clip_wall, rod_t, rod_min, rod_w, boss_d, play, sled, slide,
                 recess, margin, pin_l, window, friction, [], fixed, true
             )
         : undef,
-        // the frame and the clip are built from these alone, so a crank_as syringe that matches them reuses both
+        // the frame and the clip depend only on these, so a crank_as syringe that matches them reuses both
         differ = is_undef(like) ? []
         : [
             for (f = ["barrel_od", "flange", "flange_t", "button_d", "button_t", "plunger_span"]) if (get(get(like, "syringe"), f) != get(syringe, f)) f,
@@ -218,10 +219,10 @@ function layout(
         motor_bore = mount[2],
         motor_seat_z = plate_t - motor_bore[1] - recess,
         flat_head = get(motor_screw, "head") == "flat",
-        // a flat head seats where its cone matches the clearance hole; other heads sit on the counterbore's floor
+        // a flat head seats where its cone meets the clearance hole; other heads sit on the counterbore floor
         motor_head_z = flat_head ? motor_seat_z + (get(motor_screw, "head_d") - get(motor_screw, "clear") - 2 * fit) / 2
         : motor_seat_z,
-        // a flat head's length is overall, any other's under its head
+        // a flat head screw length is overall; other screw lengths are under the head
         motor_thread = pocket - (motor_head_z - motor_screw_l),
         cradle = cradle_spec(motor, pocket, pin, m3_set, m3_nut, fit),
         own_frame = frame_spec(
@@ -229,7 +230,7 @@ function layout(
             motor_seat_z, motor_bore[0], ring_grip, w=is_undef(fixed) ? undef : fixed[1],
             cradle=cradle, tap=tap
         ),
-        // each member's mechanism, for the shared body; measured from the crank, which sits alike in each
+        // the mechanism of each member, for the shared body; measured from the crank, which is in the same place in each
         members = family == [] || mech_only ? []
         : [
             for (r = family) layout(
@@ -249,11 +250,11 @@ function layout(
                 ]
             )
         ),
-        // front mounting holes, spacing across: the narrowest multiple of 10 whose heads clear the snap ring by
-        // 0.5; a shared body takes its group's widest
+        // front mounting holes, horizontal spacing: the narrowest multiple of 10 at which the heads clear the snap
+        // ring by 0.5; a shared body uses the widest in its group
         ring_half = (get(syringe, "barrel_od") + 2 * fit) / 2 + get(frame, "ring")[2],
         mount_w = 10 * ceil(2 * (ring_half + get(pin, "head_d") / 2 + 0.5) / 10),
-        // what the frame carries at its extremes over a turn, [y, z], for the body to clear
+        // extreme [y, z] points of the frame and its contents over a turn, for the body to clear
         reach = throw + rod_w / 2,
         motor_z = pocket - get(motor, "gearbox_l") - get(motor, "can_l") - get(motor, "tail_l"),
         envelope = [
@@ -266,7 +267,7 @@ function layout(
             [get(syringe, "flange")[0] / 2, axis_z + get(syringe, "flange")[1] / 2],
             [get(clip, "half_w"), axis_z + get(clip, "top")],
         ],
-        // the same in front of where the rod spreads, which it is checked against separately
+        // the same, for the part in front of the rod swing; the rod is checked against it separately
         front = [
             [get(frame, "w") / 2 + get(frame, "dovetail"), 0],
             [get(syringe, "flange")[0] / 2, axis_z + get(syringe, "flange")[1] / 2],
@@ -290,7 +291,7 @@ function layout(
         all = members == [] ? [needs] : [for (m = members) get(m, "needs")],
         sh = members == [] ? [0] : shift,
         n = len(all),
-        // only the body reads the rod's edges, so a member laid out for its needs skips them
+        // only the body uses the rod edges, so a member laid out only for its needs skips them
         rod_edges = mech_only ? []
         : [
             for (x = [get(frame, "x")[0]:1:crank_x]) [x, max([for (i = [0:n - 1]) rod_edge(x - sh[i], all[i][7], all[i][8], all[i][9], rod_w / 2)])],
@@ -368,10 +369,10 @@ function layout(
         ["cradle_screw_l", cradle_screw_l],
     ];
 
-// The syringe axis's height over the plate's underside, for a clip.
+// Height of the syringe axis above the underside of the plate, for a clip.
 function axis_height(plate_t, float, clip) = plate_t + float + get(clip, "half_w");
 
-// The rod's edge at x, at its widest over a turn: how far it swings off the axis there, plus half its width.
+// The rod edge at x, at its widest over a turn: how far the rod swings off the axis there, plus half its width.
 function rod_edge(
     x,
     crank_x,
@@ -389,10 +390,10 @@ function rod_edge(
         ]
     );
 
-// The crank pin's [x, y] at crank angle a.
+// [x, y] of the crank pin at crank angle a.
 function crank_pin(L, a) = [get(L, "crank_x"), 0] + get(L, "throw") * [cos(a), sin(a)];
 
-// The clip pin's x at crank angle a; it stays on the axis.
+// x of the clip pin at crank angle a; it stays on the axis.
 function clip_pin_x(L, a) = crank_pin(L, a)[0] - sqrt(pow(get(L, "rod_l"), 2) - pow(crank_pin(L, a)[1], 2));
 
 // ---- Assembly and report
@@ -423,7 +424,7 @@ module assembly(L, a, bought = true, body = false) {
 }
 
 // Pin screws and washers on their bosses at pins [[x, y], ...]; motor screws in their counterbores.
-// A pin screw's length is under its head.
+// Pin screw length is measured under the head.
 module screws(L, pins) {
     pin = get(L, "pin");
     washer = get(L, "pin_washer");
@@ -441,9 +442,9 @@ module screws(L, pins) {
             screw(ms, get(L, "motor_screw_l"), 0);
 }
 
-// M3 socket heads through the knocked-out mounting holes, heads inside, shown 6 past the body.
-// Fit the front ones first. The top ones can go in first too, if the frame slides in with its crank
-// along the axis; turned across, the crank's pin screws hit them.
+// M3 socket-head screws through the knocked-out mounting holes, heads inside, shown 6 past the body.
+// Fit the front screws first. The top screws can also go in first if the frame slides in with the
+// crank along the axis; with the crank turned across, its pin screws hit them.
 module mount_screws(L) {
     b = get(L, "body");
     sc = get(b, "screw");
@@ -457,14 +458,14 @@ module mount_screws(L) {
     }
 }
 
-// Echoes what to buy and the derived figures.
+// Echoes the parts to buy and the derived dimensions.
 module report(L) {
     f = get(L, "frame");
     throw = get(L, "throw");
     m = get(L, "motor");
     sy = get(L, "syringe");
     echo(str("motor ", get(m, "name")));
-    // the crank's peak torque is about the plunger's force times the throw; kg.cm, as gearmotors are rated
+    // peak crank torque is about the plunger force times the throw; in kg.cm, the unit gearmotors are rated in
     kgcm = throw / 1000 / 0.0980665;
     area = PI * pow(get(sy, "bore_d"), 2) / 4;
     echo(

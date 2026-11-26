@@ -14,14 +14,14 @@ use <motor.scad>;
 
 // shape: gearbox and can section, "rect" (w across y, h across x) or "round" (gearbox_d, can_d).
 // mount: [screw, length, counterbore [d, depth] in the plate] holding the gearbox to the plate.
-// torque: the most the gearbox should see, kg.cm; the report compares the crank's load against it.
+// torque: the maximum torque for the gearbox, kg.cm; the report compares the crank load with it.
 
 // N20, 1000:1. Source: Pololu micro metal gearmotor dimension drawing, 2024-04-03.
 // Section w x h throughout; M1.6 holes hole_pitch apart across w.
 // shaft_l: from the gearbox face, measured 2026-09-29; D-profile over its whole length.
 // tail_l: end cap boss and terminals past the can, NOMINAL.
-// Counterbore: room for an ISO 7045 pan head; the flat heads bought sit on the hole's rim (printed, works).
-// torque: Pololu's advice for this gearbox, instantaneous.
+// Counterbore: sized for an ISO 7045 pan head; the purchased flat heads sit on the rim of the hole (printed, works).
+// torque: Pololu's recommended instantaneous limit for this gearbox.
 n20_1000 = [
     ["name", "N20 inline gearmotor, 12 V 1000:1"],
     ["shape", "rect"],
@@ -44,14 +44,14 @@ n20_1000 = [
 // as JGA25-370 and 25GA-370.
 // Measured 2026-10-03; matches Seeed's JGA25-370 drawing (SKU 114090046) except the gearbox is longer
 // at this ratio.
-// Gearbox gearbox_d x gearbox_l; can can_d x can_l behind it; bushing bushing_d across, bushing_h proud
-// round the centred shaft.
+// Gearbox gearbox_d x gearbox_l; can can_d x can_l behind it; bushing bushing_d across, bushing_h proud,
+// around the centred shaft.
 // shaft_l: from the gearbox face, 10 past the bushing; the D-flat runs flat_l back from the tip.
-// tail_l: the can's end boss and terminals.
+// tail_l: the end boss and terminals of the can.
 // Holes: 2 x M3 tapped, hole_pitch apart across the shaft, hole_depth deep at most (Seeed's drawing,
-// not measured), so the M3 button heads go under 3 in. The face's other two screws hold the gearbox
-// together: leave them in.
-// torque: Pololu's continuous advice for its 25 mm metal gearboxes; the seller gives 12 kgf.cm at stall.
+// not measured), so the M3 button heads go in less than 3. The other two screws in the face hold the
+// gearbox together: leave them in.
+// torque: Pololu's recommended continuous limit for its 25 mm metal gearboxes; the seller gives 12 kgf.cm at stall.
 ga25_30 = [
     ["name", "GA25YN370 gearmotor, 12 V 30 rpm"],
     ["shape", "round"],
@@ -72,8 +72,8 @@ ga25_30 = [
     ["torque", 4],
 ];
 
-// The motors, by the Customizer's names.
+// The motors, by Customizer name.
 motors = [["n20", n20_1000], ["ga25", ga25_30]];
 
-// The motor the Customizer names, or undef.
+// The motor with the given Customizer name, or undef.
 function motor_by_name(name) = [for (r = motors) if (r[0] == name) r[1]][0];

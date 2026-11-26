@@ -12,10 +12,10 @@ include <../lib/struct.scad>;
 use <fastener.scad>;
 
 // Table values: ISO 4762 socket head, ISO 7380 button head, ISO 7089 washer.
-// head: how length is measured and how it seats. "flat": overall, cone in the hole's mouth; others:
-// under the head, seated on its underside.
-// N20 screws as bought: JIS flat head, 90 degree countersunk, M1.6 x 3 (McMaster 91305A002, page read
-// 2026-10-03). The drive is JIS cross, No. 0: Phillips-like, shallower, and turned with a JIS driver.
+// head: how the length is measured and how the head seats. "flat": overall length, cone in the mouth of
+// the hole; others: length under the head, seated on its underside.
+// N20 screws as purchased: JIS flat head, 90 degree countersunk, M1.6 x 3 (McMaster 91305A002, page read
+// 2026-10-03). The drive is JIS cross, No. 0: similar to Phillips but shallower, and turned with a JIS driver.
 m3_shcs = [
     ["name", "ISO 4762 M3"],
     ["head", "socket"],
@@ -42,9 +42,10 @@ m1_6_flat = [
     ["head_h", 0.5],
 ];
 m3_washer = [["name", "ISO 7089 M3"], ["id", 3.2], ["od", 7], ["h", 0.5]];
-// The M3 screw through the crank's lobe and the cradle's bosses, and the nut trapped with it. The crank takes
-// an M3 socket head and the cradle ISO 4026 cup-point set screws; both clear 3.4. The nut's slot is sized from
-// these ISO 4032 table values, 6.01 across a hex nut's corners, so a hex nut turns in it; an M3 square nut,
-// 5.5 across its flats, fits it and cannot turn, so the bill calls for square nuts.
+// The M3 screw through the crank lobe and the cradle bosses, and the nut trapped with it. The crank uses
+// an M3 socket-head screw and the cradle uses ISO 4026 cup-point set screws; both have 3.4 clearance holes.
+// The nut slot is sized from these ISO 4032 table values, 6.01 across the corners of a hex nut, so a hex
+// nut turns in it. An M3 square nut, 5.5 across flats, fits and cannot turn, so the bill specifies square
+// nuts.
 m3_set = [["name", "ISO 4026 set screw, cup point"], ["d", 3], ["clear", 3.4]];
 m3_nut = [["name", "ISO 4032 nut"], ["s", 5.5], ["e", 6.01], ["m", 2.4]];

@@ -46,7 +46,7 @@ fmt-check:
 
 lint: check-scad
 
-# Everything CI runs, bar the tests.
+# Everything CI runs except the tests.
 check: fmt-check check-scad
 
 # A failing assert still exits 0 under `-o *.csg`, so ERROR and WARNING on stderr are the signal,
@@ -76,8 +76,8 @@ check-scad:
     done <<<"$files"
     exit $failed
 
-# .csg does not render, so only an STL export can see a broken or disconnected part; tools/stl_edges.py
-# counts the solids and the edges where two meet, from the mesh, so any OpenSCAD's export reads the same.
+# .csg does not render, so only an STL export can detect a broken or disconnected part. tools/stl_edges.py
+# counts the solids and the edges where two meet, from the mesh, so the result is the same on any OpenSCAD.
 # Every printed part, for every syringe, must export as one closed solid.
 test:
     #!/usr/bin/env bash
@@ -100,7 +100,7 @@ test:
     done
     exit $failed
 
-# Export one syringe's printed parts to output/<part>.stl, the spot for one-off exports; motor overrides its default.
+# Export the printed parts for one syringe to output/<part>.stl, for one-off exports; motor overrides the default.
 export syringe="3ml" motor="auto":
     #!/usr/bin/env bash
     set -uo pipefail
@@ -114,7 +114,7 @@ export syringe="3ml" motor="auto":
     done
     just _stamp output "{{syringe}}, motor {{motor}}"
 
-# Export every printed part for every syringe to build/<syringe>/<part>.stl, but ring_test.
+# Export every printed part except ring_test, for every syringe, to build/<syringe>/<part>.stl.
 build:
     #!/usr/bin/env bash
     set -uo pipefail
@@ -123,7 +123,7 @@ build:
         mkdir -p "build/$s"
         for p in {{PARTS}}; do
             rm -f "build/$s/$p.stl"
-            # ring_test only tries a snap ring, so a unit's set leaves it out; `just export` has it
+            # ring_test is only for trying the snap ring, so it is not part of a unit's set; `just export` includes it
             [ "$p" = ring_test ] && continue
             {{OPENSCAD}} -o "build/$s/$p.stl" -D "syringe=\"$s\"" -D "part=\"$p\"" {{MAIN}} 2>"build/$s/$p.err"
             if grep -qE '^(ERROR|WARNING)' "build/$s/$p.err"; then echo "FAIL  $s $p"; exit 1; fi
@@ -132,8 +132,8 @@ build:
     done
     just _stamp build "{{SYRINGES}}"
 
-# Write what an export was made from to <dir>/BUILT_FROM: once the commit moves on, or reads -dirty,
-# the files may not be what the source draws now.
+# Record what an export was made from in <dir>/BUILT_FROM: once the commit moves on, or reads -dirty,
+# the files may no longer match what the source draws.
 _stamp dir syringes:
     #!/usr/bin/env bash
     set -uo pipefail
@@ -157,7 +157,7 @@ render-parts syringe="5ml-gnr2" filter="*":
 render-stroke view="top" syringe="5ml-gnr2" flags="":
     @PARTS="{{PARTS}}" OPENSCAD="{{OPENSCAD}}" tools/render.sh stroke "{{view}}" "{{syringe}}" '{{flags}}'
 
-# tools/qa/qa.sh says what it checks; it takes a few minutes on an OpenSCAD with the Manifold backend.
+# tools/qa/qa.sh describes what it checks; it takes a few minutes on an OpenSCAD with the Manifold backend.
 # Geometry QA beyond test, slivers, collisions over a turn and overhangs, for every syringe or those named.
 qa *syringes:
     OPENSCAD="{{OPENSCAD}}" tools/qa/qa.sh {{ if syringes == "" { SYRINGES } else { syringes } }}

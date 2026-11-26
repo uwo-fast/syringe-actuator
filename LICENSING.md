@@ -15,8 +15,8 @@ the two covers a given file:
   (`CERN-OHL-S-2.0`) — [`LICENSES/CERN-OHL-S-2.0.txt`](LICENSES/CERN-OHL-S-2.0.txt)
 
 The root [`LICENSE`](LICENSE) is a copy of the GPL text. GitHub reports only one
-licence per repository and reads that file, so this document is where the full
-picture lives.
+licence per repository and reads that file, so this document gives the complete
+licensing.
 
 ## What applies where
 

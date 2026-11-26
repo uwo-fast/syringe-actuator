@@ -1,24 +1,25 @@
 /**
  * @file crank.scad
- * @brief The crank: a hub pressed onto the motor's D-shaft and an arm out to the crank pin
+ * @brief The crank: a hub pressed onto the motor D-shaft and an arm out to the crank pin
  * @author Cameron K. Brooks
  * @copyright 2026
  *
  * The rod turns on a boss on the top face; the pin screw clamps a washer on the boss, not the rod.
- * Blind D-bore: pressed on, the crank stops on the shaft's tip, which sets its height.
- * Clamp screw: an M3 socket head through a lobe on the hub's back (away from the pin) and an M3 square
- * nut in a slot from the top, onto the shaft's flat; a hex nut turns in the slot. Steel on steel carries the torque and holds the crank down. The printed D
- * alone (keyed by a 0.5 mm flat) wore round in an hour of reversing load, in PETG on an N20.
- * z = 0 at the underside, shaft on the z axis, pin on +x. Prints as it stands.
+ * Blind D-bore: when pressed on, the crank stops on the tip of the shaft, which sets its height.
+ * Clamp screw: an M3 socket-head screw through a lobe on the back of the hub (away from the pin) and
+ * an M3 square nut in a slot from the top, onto the flat of the shaft; a hex nut turns in the slot.
+ * The steel-on-steel contact carries the torque and holds the crank down. The printed D alone (keyed
+ * by a 0.5 mm flat) wore round in an hour of reversing load, in PETG on an N20.
+ * z = 0 at the underside, shaft on the z axis, pin on +x. Prints in the orientation shown.
  */
 
 include <../lib/struct.scad>;
 
-// tap: the pin screw's self-threading hole. throw: shaft axis to pin axis.
+// tap: self-tapping hole for the pin screw. throw: shaft axis to pin axis.
 // press: per side, printed bore on the steel shaft. h: underside to the top face the rod lies on.
-// boss: the pin boss [d, h]. bore: blind bore depth, the shaft's reach into the crank.
-// end_d: the pin end, the rod's width. set, nut: grub screw and its nut, in a slot from the top.
-// fit: per side, round them. web: shaft flat to nut. skin: lobe past the nut. floor: under the nut slot.
+// boss: the pin boss [d, h]. bore: blind bore depth, how far the shaft enters the crank.
+// end_d: the pin end, equal to the rod width. set, nut: grub screw and its nut, in a slot from the top.
+// fit: per side, around them. web: shaft flat to nut. skin: lobe past the nut. floor: under the nut slot.
 // hub_d: hub width. set_lengths: stock set screw lengths; the longest within the lobe is chosen.
 function crank_spec(
     motor,
@@ -40,10 +41,10 @@ function crank_spec(
 ) =
     let (
         flat_y = get(motor, "shaft_flat") - get(motor, "shaft_d") / 2,
-        // the D's bottom: where the shaft's flat starts, or the crank's underside
+        // bottom of the D: where the flat on the shaft starts, or the underside of the crank
         d0 = has(motor, "flat_l") ? max(0, bore - get(motor, "flat_l")) : 0,
         set_z = max(get(nut, "s") / 2 + fit + floor, (d0 + bore) / 2),
-        // the nut's slot, and the lobe's end, measured back from the shaft's axis
+        // the nut slot, and the end of the lobe, measured back from the shaft axis
         slot = [flat_y + web, flat_y + web + get(nut, "m") + 2 * fit],
         back = slot[1] + skin,
         set_l = max([for (l = set_lengths) if (l <= back - flat_y) l])
@@ -66,11 +67,11 @@ function crank_spec(
         ["set_z", set_z],
         ["slot", slot],
         ["back", back],
-        // the grub screw's length, its tip on the flat and its end inside the lobe
+        // grub screw length, with its tip on the flat and its end inside the lobe
         ["set_l", set_l],
     ];
 
-// The shaft's D section, grown by press all round: round d, flat at shaft_flat across.
+// The D section of the shaft, grown by press all round: round d, flat at shaft_flat across.
 module d_shaft(motor, press) {
     d = get(motor, "shaft_d");
     flat = get(motor, "shaft_flat") - d / 2 + press;
@@ -93,7 +94,7 @@ module crank(s) {
                 }
             translate([throw, 0, h - 1]) cylinder(d=boss[0], h=boss[1] + 1);
         }
-        // D only as far as the shaft's flat runs (a GA25's stops short of its bushing); round below.
+        // D only as far as the flat on the shaft extends (on a GA25 it stops short of the bushing); round below.
         // The flat faces -x, towards the grub screw.
         m = get(s, "motor");
         bore = get(s, "bore");
@@ -105,7 +106,7 @@ module crank(s) {
         else
             translate([0, 0, -1]) linear_extrude(bore + 1) rotate(90) d_shaft(m, get(s, "press"));
         translate([throw, 0, -1]) cylinder(d=get(s, "tap"), h=h + boss[1] + 2);
-        // the grub screw's hole back along -x through the lobe, and the nut's slot across it, open at the top
+        // the grub screw hole back along -x through the lobe, and the nut slot across it, open at the top
         fit = get(s, "fit");
         nut = get(s, "nut");
         slot = get(s, "slot");
