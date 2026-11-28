@@ -7,6 +7,8 @@ and [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [0.1.3] - 2026-11-28
+
 ### Changed
 
 - The bill of materials and the report specify M3 square nuts at the crank, the cradle and the

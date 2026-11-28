@@ -1,6 +1,6 @@
 cff-version: 1.2.0
 message: "If you use this project, please cite it using the metadata below."
-title: "Syringe Actuator"
+title: "syringe-actuator"
 abstract: >-
   A 3D-printed crank that drives a luer syringe's plunger back and forth
   from a continuously running gearmotor, for syringes from 1 to 30 mL.
@@ -9,8 +9,8 @@ authors:
   - family-names: "Brooks"
     given-names: "Cameron K."
     # orcid: "https://orcid.org/0000-0000-0000-0000"
-version: "0.1.2"
-date-released: "2026-11-22"
+version: "0.1.3"
+date-released: "2026-11-28"
 repository-code: "https://github.com/uwo-fast/syringe-actuator"
 # Only the software licence goes here. A licence list in CFF means "either licence,
 # at your option", which is not what a repository licensed separately by component
