@@ -3,6 +3,7 @@
 > A 3D-printed crank mechanism that drives a syringe plunger back and forth from a continuously
 > running gearmotor.
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.24634367.svg)](https://doi.org/10.5281/zenodo.24634367)
 [![Licensing](https://img.shields.io/badge/Licensing-by_component-lightgrey.svg)](https://github.com/uwo-fast/syringe-actuator/blob/main/LICENSING.md)
 [![Contributions welcome](https://img.shields.io/badge/Contributions-welcome-brightgreen.svg)](https://github.com/uwo-fast/.github/blob/main/CONTRIBUTING.md)
 
